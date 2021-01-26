@@ -1,0 +1,150 @@
+* {
+  /*margin-top: revert;
+  margin-bottom: revert;
+  margin-right: revert;
+  margin-left: revert;*/
+  all: revert;
+}
+
+#default {
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 14px;
+    border: 1px solid #ddd;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#default td, #default th {
+    border: 1px solid #dddddd;
+    text-align: left;
+}
+
+/* rowtable */
+
+#rowtable {
+    font-family: Helvetica, Arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#rowtable td, #rowtable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#rowtable tr:nth-child(even){background-color: #f2f2f2;}
+#rowtable tr:hover {background-color: #ddd;}
+
+#rowtable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: #4CAF50;
+    color: white;
+}
+
+/* rowtable no hover */
+
+#rowtablenoh {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+}
+
+#rowtablenoh td, #rowtablenoh th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#rowtablenoh tr:nth-child(even){background-color: #f2f2f2;}
+
+#rowtablenoh th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: grey;
+    color: white;
+}
+
+/* hometable no hover */
+
+#hometable {
+    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+    border-collapse: collapse;
+    width: 70%;
+}
+
+#hometable td, #hometable th {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+#hometable tr:nth-child(even){background-color: #f2f2f2;}
+
+#hometable th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-align: left;
+    background-color: grey;
+    color: white;
+}
+
+
+
+
+/* Add a black background color to the top navigation */
+.topnav {
+    background-color: #333;
+    width: 100%;
+    overflow: hidden;
+    border: 0;
+}
+
+.topnav_autoindex {
+    background-color: #333;
+    width: 100%;
+    overflow: hidden;
+}
+/* Style the links inside the navigation bar */
+.topnav a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    border: 0;
+    text-decoration: none;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+
+.topnav_autoindex a {
+    float: left;
+    color: #f2f2f2;
+    text-align: center;
+    padding: 14px 16px;
+    border: 0;
+    text-decoration: none;
+    font-family: Helvetica, Arial, sans-serif;
+    font-size: 17px;
+}
+/* Change the color of links on hover */
+.topnav a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+.topnav_autoindex a:hover {
+    background-color: #ddd;
+    color: black;
+}
+
+/* Add a color to the active/current link */
+.topnav a.active {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.topnav_autoindex a.active {
+    background-color: #4CAF50;
+    color: white;
+}

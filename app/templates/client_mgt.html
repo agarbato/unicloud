@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+{% set active_page = "clients" %}
+{% block title %}Add New Client{% endblock %}
+{% block content %}
+<p>
+<form method=POST action="/clients/add/process">                                                                              
+ <table id=hometable>
+    <th width='15%'>Add Client &nbsp;&nbsp;</td>
+    <th><input type="submit" value="Add"></th>
+    <tr><td>Clientname</TD><TD><input type="text" name="name" size=25></td></tr>                           
+    <tr><td>SSH Key</td><td><textarea cols='75' rows='10' name="ssh_key" size=75 value=""></textarea></td></tr>
+    <tr><td>Share</td>
+    <td><select name="share">
+    {% for s in sharelist %}
+        <option value="{{ s[0] }}">{{ s[0] }}</option>
+    {% endfor %}
+    </select></td></tr>
+ </table>  
+</form>
+</p>
+<p>
+<form method=POST action="/clients/del/process">
+ <table id=hometable>
+    <th width='15%'>Remove Client &nbsp;&nbsp;</td>
+     <th><input type="submit" value="Remove"></th>
+     <tr><td>Clientname</td>
+     <td><select name="del_name" >
+     {% for client in clientlist %}
+         <option value="{{ client[0] }}">{{ client[0] }}</option>
+     {% endfor %}
+     </select></td></tr>
+ </table>
+</p>
+{% endblock %}
+

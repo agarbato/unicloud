@@ -1,0 +1,131 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %} - Unison Cloud App</title>
+        <meta charset="UTF-8">
+        <title>Clients</title>
+                
+                <!-- css from w3 site for the table -->
+        <style>
+            default {
+                /*font-family: arial, sans-serif;*/
+                font-family: Helvetica, Arial, sans-serif;
+                border-collapse: collapse;
+                width: 100%;
+            }
+
+            #default td, #default th {
+                border: 1px solid #dddddd;
+                text-align: left;
+                padding: 8px;
+            }
+
+	    /* rowtable */
+
+	    #rowtable {
+              /*font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;*/
+              font-family: Helvetica, Arial, sans-serif;
+              border-collapse: collapse;
+              width: 100%;
+            }
+            
+            #rowtable td, #rowtable th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+            
+            #rowtable tr:nth-child(even){background-color: #f2f2f2;}
+            #rowtable tr:hover {background-color: #ddd;}
+            
+            #rowtable th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              background-color: #4CAF50;
+              color: white;
+            }
+
+            /* rowtable no hover */
+
+	    #rowtablenoh {
+              /*font-family: "Trebuchet MS", Arial, Helvetica, sans-serif; */
+              border-collapse: collapse;
+              width: 100%;
+            }
+
+            #rowtablenoh td, #rowtablenoh th {
+              border: 1px solid #ddd;
+              padding: 8px;
+            }
+
+            #rowtablenoh tr:nth-child(even){background-color: #f2f2f2;}
+
+            #rowtablenoh th {
+              padding-top: 12px;
+              padding-bottom: 12px;
+              text-align: left;
+              background-color: grey;
+              color: white;
+            }
+	    
+            /* Add a black background color to the top navigation */
+            .topnav {
+              background-color: #333;
+              overflow: hidden;
+            }
+            
+            /* Style the links inside the navigation bar */
+            .topnav a {
+              float: left;
+              color: #f2f2f2;
+              text-align: center;
+              padding: 14px 16px;
+              text-decoration: none;
+              font-size: 17px;
+            }
+            
+            /* Change the color of links on hover */
+            .topnav a:hover {
+              background-color: #ddd;
+              color: black;
+            }
+            
+            /* Add a color to the active/current link */
+            .topnav a.active {
+              background-color: #4CAF50;
+              color: white;
+            }
+    </style>
+  </head>
+  <body>
+
+{% block topnav %}
+
+{% set navigation_bar = [
+    ('/', 'home', 'Home'),
+    ('/shares', 'shares', 'Shares'),
+    ('/clients', 'clients', 'Clients'),
+    ('/events', 'events', 'Events'),
+    ('/', 'doc', 'Doc'),
+    ('/', 'about', 'About')
+] -%}
+
+{% set active_page = active_page|default('home') -%}
+
+ <div class="topnav">
+    {% for href, id, caption in navigation_bar %}
+    <a {% if id == active_page %} class="active" {% endif%}
+       href="{{ href|e }}">{{ caption|e }}</a>
+    {% endfor %}
+</div> 
+
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>
+
+
+

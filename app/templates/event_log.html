@@ -1,0 +1,19 @@
+{% extends "layout.html" %}
+{% set active_page = "events" %}
+{% block title %}Events{% endblock %}
+{% block content %}
+    <p><a title="Back" href="/events/{{ event[0][0]|dec }}">Back</a>&nbsp;&nbsp;&nbsp;
+        <a title="Next" href="/events/{{ event[0][0]|inc }}">Next</a>
+    </p>
+    <table id="rowtablenoh">
+        <tr>
+            <th>[ {{ event[0][0] }} ] Event Log </th>
+        </tr>
+        <tr><td>[ {{ event[0][1] }} ][ {{ event[0][7] }} ][ {{ event[0][4]|dt }} ][ {{ event[0][5]|dt }} ][ {{ event[0][6] }}s ][ {{ event[0][2] }} ] </td></tr>
+        <tr><td><code>
+            {% set list1 = event[0][3].split('\n') %}
+            {% for item in list1 %}
+                {{ item }}<br>
+            {% endfor %}</tr></code></td>
+    </table>
+{% endblock %}

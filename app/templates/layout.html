@@ -1,0 +1,44 @@
+<!doctype html>
+<html>
+  <head>
+    <title>{% block title %}{% endblock %} - Unison Cloud App</title>
+        <meta charset="UTF-8">
+        <title>Clients</title>
+                
+                <!-- css from w3 site for the table -->
+      <link rel="stylesheet"
+            href="{{ url_for('static', filename='style.css') }}" />
+  </head>
+  <body>
+
+{% block topnav %}
+
+{% set navigation_bar = [
+    ('/', 'home', 'Home'),
+    ('/shares', 'shares', 'Shares'),
+    ('/files', 'files', 'Files'),
+    ('/clients', 'clients', 'Clients'),
+    ('/events', 'events', 'Events'),
+    ('/', 'doc', 'Doc'),
+    ('/', 'about', 'About')
+] -%}
+
+{% set active_page = active_page|default('home') -%}
+
+ <div class="topnav">
+    {% for href, id, caption in navigation_bar %}
+    <a {% if id == active_page %} class="active" {% endif%}
+       href="{{ href|e }}">{{ caption|e }}</a>
+    {% endfor %}
+</div> 
+
+{% endblock %}
+
+{% block content %}
+{% endblock %}
+
+</body>
+</html>
+
+
+

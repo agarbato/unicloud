@@ -1,0 +1,46 @@
+{% extends "layout.html" %}
+{% set active_page = "clients" %}
+{% block title %}Clients{% endblock %}
+{% block content %}
+            <table><tr><th><h1><strong>CLIENTS</strong></th>
+            <th></th><th><a href="/clients/mgt"><img width="48" height="48" title="Manage" src="/static/images/settings.png"></a></th></table>
+            <table id="rowtable">
+            <tr>
+                <th>Client</th>
+                <th>Status</th>
+                <th>Last Seen</th>
+                <th>Join Date</th>
+		<th>Sync Status</th>
+            </tr>
+            {% set red   = "#ff0000" %}		
+            {% set green = "#008000" %}		
+            {% set blue  = "#0000ff" %}	
+            {% for client in clients %}
+                <tr>
+                    <td><a title="Info" href="/clients/info/ui/{{ client[0] }}">{{client[0]}}</a></td>
+		    {% if client[1] == 'Registered' %}
+		    <td><form method=POST action="/clients/activate/process">
+                    <input type="submit" value="ACTIVATE"></td>
+		    <input type="hidden" name="name" value="{{client[0]}}"></td>
+          	    <input type="hidden" name="ssh_key" value="{{client[4]}}"></td>
+                    {% else %}
+		    <td>{{ client[1]}}</td>
+		    {% endif%}
+		    <td>{{ client[5]|dt }}</td>
+                    <td>{{ client[2]|dt }}</td>
+                    {% if client[3] == 0 %}
+		    <td><span style='color: {{ blue }};'>Enable Threshold First</td></span>
+                    {% else %}
+                    {% set filter_status = client[0]|sync_status %}
+                    {% if filter_status == "Out of Sync": %}
+                    <td><span style='color: {{ red }};'>Out of Sync</td></span>
+                    {% elif filter_status == "In Sync": %}
+                    <td><span style='color: {{ green }};'>In Sync</td></span>
+                    {% elif filter_status == "Never synced": %}
+                    <td><span style='color: {{ blue }};'>Never synced</td></span>
+                    {% endif%}
+                    {% endif%}
+                  </tr>
+            {% endfor %}
+	</table><br><br>
+{% endblock %}

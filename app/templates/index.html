@@ -1,0 +1,114 @@
+{% extends "layout.html" %}
+{% set active_page = "home" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+    {% set white = "#ffffff" %}
+    {% set grey = "#808080" %}
+    {% set red   = "#ff0000" %}
+    {% set green = "#008000" %}
+    {% set lgreen = "#00cc66" %}
+    {% set blue  = "#0000ff" %}
+    {% set lblue = "#33afff" %}
+    {% set orange = "#ff751a" %}
+{#    <h1><strong>Unicloud, a smart unison file syncronizer</strong></h1>#}
+    <br>
+    <div class="stats">
+           <span style='color: {{ white }};background-color: {{ grey }}'>
+           <strong><br>&nbsp;&nbsp;&nbsp;&nbsp;Unicloud, a smart unison file syncronizer&nbsp;&nbsp;&nbsp;&nbsp;<br><br></strong>
+           </span>
+    </div><br>
+    <table id="hometable">
+            <td><br>
+              <img align="center" src="/static/images/unibox-home.png">
+            </td>
+            <td>
+            <br><strong>&nbsp;&nbsp;System Stats: <br><br></strong>
+            <div class="stats">
+            <span style='color: {{ white }};background-color: {{ lblue }};width:90%'><br>
+            &nbsp;&nbsp;Load: {{ sys_stats['av1'] }} {{ sys_stats['av2'] }} {{ sys_stats['av3'] }}<br>
+            &nbsp;&nbsp;Memory: {{ sys_stats['memory_percent'] }}%<br>
+            &nbsp;&nbsp;Cpu: {{ sys_stats['cpu_percent'] }}%<br><br>
+            </span>
+            </div>
+            <div class="stats">
+            <br><strong>&nbsp;&nbsp;System Uptime:<br><br></strong>
+            <span style='color: {{ white }};background-color: {{ lgreen }};width:90%'>
+            &nbsp;&nbsp;{{ sys_stats['boot_uptime_days'] }}d, {{ sys_stats['boot_uptime_hours'] }}h, {{ sys_stats['boot_uptime_minutes'] }}m, {{ sys_stats['boot_uptime_seconds'] }}s <br>
+            </span>
+            </div>
+            </td>
+            <td>
+            <br><strong>&nbsp;&nbsp;Runtime:<br><br></strong>
+            <div class="stats">
+            <span style='color: {{ white }};background-color: {{ lblue }};width:90%'><br>
+            &nbsp;&nbsp;Python Version: {{ runtime_stats['python_version'] }}<br>
+            &nbsp;&nbsp;Unison Version: {{ runtime_stats['unison_version'] }}&nbsp;<br>
+            &nbsp;&nbsp;Flask  Version: {{ runtime_stats['flask_version'] }}<br><br>
+            </span>
+            </div>
+            <div class="stats">
+            <br><strong>&nbsp;&nbsp;Process Uptime:<br><br></strong>
+            <span style='color: {{ white }};background-color: {{ lgreen }};width:85%'>
+            &nbsp;&nbsp;{{ sys_stats['uptime_days'] }}d, {{ sys_stats['uptime_hours'] }}h, {{ sys_stats['uptime_minutes'] }}m, {{ sys_stats['uptime_seconds'] }}s <br>
+            </span>
+            </div>
+            </td>
+            <td>
+            <br><strong>&nbsp;&nbsp;Unicloud Stats:</strong><br><br>
+            <div class="stats">
+            <span style='color: {{ white }};background-color: {{ orange }};width:90%'><br>
+            &nbsp;&nbsp;Total Events: {{ unicloud_stats['nevents'] }}&nbsp;<br>
+            &nbsp;&nbsp;Sync OK: {{ unicloud_stats['nevents_ok'] }}<br>
+            &nbsp;&nbsp;Sync KO: {{ unicloud_stats['nevents_ko'] }}<br>
+            &nbsp;&nbsp;Clients: {{ unicloud_stats['nclients'] }}<br>
+            &nbsp;&nbsp;Shares: {{ unicloud_stats['nshares'] }}<br><br>
+            </span>
+            </div><br><br>
+            </td>
+        </tr>
+    </table><br>
+    <div class="stats">
+           <span style='color: {{ white }};background-color: {{ grey }}'>
+           <br><strong>&nbsp;&nbsp;&nbsp;&nbsp;Unicloud Status&nbsp;&nbsp;&nbsp;&nbsp;<br><br></strong>
+           </span>
+    </div><br>
+    <table id="hometable">
+       <tr><td>
+          {% if unicloud_stats['toregister'] > 0 %}
+             <span style='color: {{ red }};'>
+             Found {{ unicloud_stats['toregister'] }} client/s to register, go to <a title="Clients" href="/clients">clients</a> page to complete registration<br>
+             </span>
+          {% elif unicloud_stats['nclients'] == 0  %}
+             <span style='color: {{ red }};'>
+             No registered clients, refresh the page or register at least one<br>
+             </span>
+          {% else %}
+             <span style='color: {{ green }};'>
+              All clients are registered<br>
+             </span>
+          {% endif %}
+       {% if unicloud_stats['nshares'] == 0 %}
+          <span style='color: {{ red }};'>
+          No shares defined, define one <a title="Share MGT" href="/shares/mgt">here.</a><br>
+          </span>
+       {% endif %}
+       {% if unicloud_stats['outsync'] > 0 and unicloud_stats['active'] > 0 %}
+          <span style='color: {{ red }};'>
+          Found {{ unicloud_stats['outsync'] }} client/s out of sync, go to <a title="Clients" href="/clients">clients</a> page<br>
+          </span>
+       {% elif unicloud_stats['outsync'] == 0 and unicloud_stats['active'] == 0  %}
+           <span style='color: {{ red }};'>
+          No Active clients found<br>
+          </span>
+       {% elif unicloud_stats['nevents_ok'] > 0 and unicloud_stats['thresholds'] >0 %}
+          <span style='color: {{ green }};'>
+          All clients are in sync.<br>
+          </span>
+       {% else %}
+          <span style='color: {{ blue }};'>
+          No sync thresholds defined on any client.
+          </span>
+       {% endif %}
+       </td></tr>
+    </table>
+{% endblock %}

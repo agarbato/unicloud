@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% set active_page = "shares" %}
+{% block title %}{{ result }}{% endblock %}
+{% block content %}
+<p>{{ result|safe }}</p>
+<p> Redirect to Shares in 3secs.. </p>
+<meta http-equiv="refresh" content="3;url=/shares" />
+{% endblock %}
+
+
+
