@@ -1,0 +1,17 @@
+{% extends "layout***REMOVED***html" %}
+{% set active_page = "events" %}
+{% block title %}Events{% endblock %}
+{% block content %}
+    <p><a title="Back" href="/events/{{ id|dec }}">Back</a>&nbsp;&nbsp;&nbsp;
+        <a title="Next" href="/events/{{ id|inc }}">Next</a>
+    </p>
+    <table id="rowtablenoh">
+        <tr>
+            <th>Event Log </th>
+        </tr>
+        <tr><td></td></tr>
+        <tr><td><code>
+            Event {{ id }} not found
+            </tr></code></td>
+    </table>
+{% endblock %}

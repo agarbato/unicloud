@@ -1,0 +1,62 @@
+version: '3***REMOVED***3'
+services:
+  test_unicloud_server:
+    build: ***REMOVED***
+    image: unicloud-local:latest
+    ports:
+     - "2222:22"
+     - "5000:80"
+    environment:
+     #- TZ=Europe/Rome
+     - SERVER_HOSTNAME=unicloud_testing_server
+     - SERVER_UI_USERNAME=Admin
+     - SERVER_UI_PASSWORD=abcd12345
+     #- SERVER_DEBUG=False
+     #- MAX_LOG_EVENTS=1000
+     - ROLE=SERVER
+     #- USER=unison
+     #- USERID=1000
+    networks:
+      unison:
+        aliases:
+          - unicloud_server
+    volumes:
+      - type: bind
+        source: ***REMOVED***/local_tests/server
+        target: /data
+      - type: bind
+        source: ***REMOVED***/local_tests/server/shares
+        target: /shares
+  test_unicloud_client:
+   image: unicloud-local:latest
+   environment:
+    #- TZ=Europe/Rome
+    - CLIENT_HOSTNAME=testing-client1
+    - ROLE=CLIENT
+    #- USER=unison
+    #- USERID=1000
+    - SERVER_HOSTNAME=unicloud_server
+    - SERVER_PORT=22
+    - SERVER_SHARE=share1
+    - SHARE_IGNORE=***REMOVED***git*|***REMOVED***idea|***REMOVED***unison|***REMOVED***DS_Store
+    - API_PROTOCOL=http
+    - API_PORT=80
+    #- UNISON_PARAMS=owner=false|perms=0|dontchmod=true
+    - SYNC_INTERVAL=30
+   restart: on-failure 
+   volumes:
+     - type: bind
+       source: ***REMOVED***/local_tests/client
+       target: /data
+     - type: bind
+       source: ***REMOVED***/local_tests/client/share
+       target: /data/share
+   networks:
+     unison:
+
+networks:
+  unison:
+    driver: bridge
+    ipam:
+      driver: default
+

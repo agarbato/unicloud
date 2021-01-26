@@ -1,0 +1,90 @@
+{% extends "layout***REMOVED***html" %}
+{% set active_page = "events" %}
+{% block title %}Events{% endblock %}
+{% block content %}
+        <p></p>
+        <table id="rowtable">
+            <tr>
+                <th>Client</th>
+                <th>Share</th>
+                <th>Status</th>
+                <th>Sync Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Duration</th>
+                <th>Id</th>
+            </tr>
+            {% set red   = "#ff0000" %}		
+            {% set green = "#008000" %}		
+            {% set blue  = "#0000ff" %}
+            {% set orange = "#ffa833" %}
+	    <!-- res = query_db("select client, start_ts, end_ts, status, duration, share from events") --!>
+            <form action="#" method="post">
+	     Limit:               &nbsp;&nbsp;
+             <input type="text" name="limit" value="50" maxlength="4" size="4">
+             Client:              &nbsp;&nbsp;
+             <select name="client" >
+                 <option {% if request***REMOVED***form['client'] == "None" %} selected="selected" {% endif %} value="ALL">ALL</option>
+                 {% for client in clientlist %}
+                     <option {% if request***REMOVED***form['client'] == client[0] %} selected="selected" {% endif %} value="{{ client[0] }}">{{ client[0] }}</option>
+                 {% endfor %}
+             </select>
+             Status: &nbsp;&nbsp;
+             <select name="status">
+                {% if request***REMOVED***form['status'] == "None" %} <option selected="selected" value="ALL">ALL</option> {% endif %}
+                <option {% if request***REMOVED***form['status'] == "ALL" %} selected="selected" {% endif %} value="ALL">ALL</option>
+                <option {% if request***REMOVED***form['status'] == "OK"  %} selected="selected" {% endif %} value="OK">OK</option>
+                <option {% if request***REMOVED***form['status'] == "WARNING"  %} selected="selected" {% endif %} value="WARNING">WARNING</option>
+                <option {% if request***REMOVED***form['status'] == "KO"  %} selected="selected" {% endif %} value="KO">KO</option>
+                <option {% if request***REMOVED***form['status'] == "SYNCING"  %} selected="selected" {% endif %} value="SYNCING">SYNCING</option>
+              </select>&nbsp;
+            Sync Status:
+             <select name="sync_status">
+                {% if request***REMOVED***form['sync_status'] == "None" %} <option selected="selected" value="ALL">ALL</option> {% endif %}
+                <option {% if request***REMOVED***form['sync_status'] == "ALL" %} selected="selected" {% endif %} value="ALL">ALL</option>
+                <option {% if request***REMOVED***form['sync_status'] == "UNCHANGED"  %} selected="selected" {% endif %} value="UNCHANGED">UNCHANGED</option>
+                <option {% if request***REMOVED***form['sync_status'] == "CHANGED"  %} selected="selected" {% endif %} value="CHANGED">CHANGED</option>
+                <option {% if request***REMOVED***form['sync_status'] == "UNKNOWN"  %} selected="selected" {% endif %} value="UNKNOWN">UNKNOWN</option>
+             </select>&nbsp;
+             <input type="submit" value="Filter">
+            </form>
+	    &nbsp;&nbsp;  <button onclick=location=URL>Refresh</button><br><br>
+            {% for event in events %}
+                <tr>
+                    <td><a title="Info" href="/clients/info/ui/{{ event[0] }}">{{ event[0] }}</a></td>
+		    <td><a title="Info" href="/shares/info/ui/{{ event[5] }}">{{ event[5] }}</a></td>
+		            {% if event[3] == "OK": %}
+                       <td><span style='color: {{ green }};'>{{ event[3] }}</td></span>
+                    {% elif event[3] == "KO": %}
+                       <td><span style='color: {{ red }};'>{{ event[3] }}</td></span>
+                    {% elif event[3] == "SYNCING": %}
+                       <td><span style='color: {{ blue }};'>{{ event[3] }}</td></span>
+                    {% elif event[3] == "WARNING": %}
+                        <td><span style='color: {{ orange }};'>{{ event[3] }}</td></span>
+                    {% endif %}
+                    {% if event[7] == "UNCHANGED": %}
+                        <td><span style='color: {{ green }};'>{{ event[7] }}</td></span>
+                    {% elif event[7] == "UNKNOWN": %}
+                        <td><span style='color: {{ red }};'>{{ event[7] }}</td></span>
+                    {% elif event[7] == "CHANGED": %}
+                        <td><span style='color: {{ blue }};'>{{ event[7] }}</td></span>
+                    {% elif event[7] == "WARNING": %}
+                        <td><span style='color: {{ orange }};'>{{ event[7] }}</td></span>
+                    {% else %}
+                        <td>{{ event[7] }}</td>
+                    {% endif %}
+                    <td>{{ event[1]|dt }}</td>
+                    <td>{{ event[2]|dt }}</td>
+                    <td>{{ event[4] }}s</td>
+                    {% if event[3] == "SYNCING": %}
+                       <td>{{ event[6] }}</td>
+                    {% else %}
+                       <td><a title="EventInfo" href="/events/{{ event[6] }}">{{ event[6] }}</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock %}
+
+#query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events order by start_ts desc limit %d" % int(limit)
+

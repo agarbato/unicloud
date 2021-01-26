@@ -1,0 +1,33 @@
+{% extends "layout***REMOVED***html" %}
+{% set active_page = "shares" %}
+{% block title %}Shares{% endblock %}
+{% block content %}
+            <table><tr><th><h1><strong>SHARES</strong></th>
+            <th></th><th><a href="/shares/mgt"><img width="48" height="48" title="Manage" src="/static/images/settings***REMOVED***png"></a></th></table>
+        <table id=rowtable>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Path</th>
+                <th>Size</th>
+                <th></th>
+            </tr>
+            {% set red   = "#ff0000" %}		
+            {% set green = "#008000" %}		
+            {% set blue  = "#0000ff" %}	
+            {% for share in shares %}
+                <tr>
+	            <td width='20%'><a title="Info" href="/shares/info/ui/{{ share[0] }}">{{ share[0] }}</a></td>
+                    <td width='40%'>{{ share[1] }}</td>
+                    <td width='20%'>{{ share[3] }}</td>
+		    <td width='20%'>{{ share[2] }}</td>
+		    <td><form method=POST action="/shares/getsize/{{ share[0] }}/process">
+                    <input type="submit" value="Refresh">
+                    <input type="hidden" name="name" value="{{share[0]}}">
+		    <input type="hidden" name="path" value="{{share[3]}}"></td></form>
+                  </tr>
+            {% endfor %}
+	</table><br><br>
+{% endblock %}
+
+

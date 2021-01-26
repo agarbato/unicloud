@@ -1,0 +1,33 @@
+{% extends '__autoindex__/autoindex***REMOVED***html' %}
+{% block meta %}
+    {{ super() }}
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='autoindex5***REMOVED***css') }}" />
+{% endblock %}
+
+{% block header %}
+    {% set navigation_bar = [
+    ('/', 'home', 'Home'),
+    ('/shares', 'shares', 'Shares'),
+    ('/files', 'files', 'Files'),
+    ('/clients', 'clients', 'Clients'),
+    ('/events', 'events', 'Events'),
+    ('/', 'doc', 'Doc'),
+    ('/', 'about', 'About')
+] -%}
+
+    {% set active_page = active_page|default('files') -%}
+
+    <div class="topnav_autoindex">
+        {% for href, id, caption in navigation_bar %}
+            <a {% if id == active_page %} class="active" {% endif%}
+                                          href="{{ href|e }}">{{ caption|e }}</a>
+        {% endfor %}
+    </div>
+    <div>
+        <h1><strong>Data files</strong></h1><br>
+{% endblock %}
+
+{% block footer %}
+    </div>
+{% endblock %}

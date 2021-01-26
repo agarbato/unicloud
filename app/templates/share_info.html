@@ -1,0 +1,32 @@
+{% extends "layout***REMOVED***html" %}
+{% set active_page = "shares" %}
+{% block title %}Share{% endblock %}
+{% block content %}
+<p>
+    <table id="rowtablenoh">
+    <tr>
+       <th width="1%"></th>
+       <td width='20%' align="center">
+       <img width='40%', height='40%' align="center" src="/static/images/folder-icon***REMOVED***jpg"></td>
+       <td width='50%'>
+       <table width="80%">
+          <tr><th>Name</th>
+          <td>{{ share['name']}}</td></tr>
+          <tr><th>Description</th>
+          <td>{{ share['description']}}</td></tr>
+	  <tr><th>Path</th>
+          <td>{{ share['path']}}</td></tr>
+	  <tr><th>Size</th>
+          <td>{{ share['size']}}</td></tr>
+      <tr><th>Clients</th>
+          <td>{{ share['clients_count']}}</td></tr>
+      <tr><th>Client/s List</th>
+          <td>{{ share['clients']}}</td></tr>
+       </td>
+       </table>
+       <th width="1%"></th>
+    </tr>
+    </table>
+</p>
+{% endblock %}
+

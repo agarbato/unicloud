@@ -1,0 +1,62 @@
+{% extends "layout***REMOVED***html" %}
+{% set active_page = "clients" %}
+{% block title %}Client Info{% endblock %}
+{% block content %}
+<p>
+    <table id="rowtablenoh">
+    <tr>
+       <th width="1%"></th>
+       <td width='20%' align="center">
+       <img width='85%', height='85%' title="Manage" src="/static/images/docker-alpine***REMOVED***jpg"></td>
+       <td width='50%'>
+       <table width="80%">
+          {% set red   = "#ff0000" %}         
+          {% set green = "#008000" %}         
+          {% set blue  = "#0000ff" %} 
+	  <th width='30%'>Name</th>
+          <td>{{ client }}</td>  
+          <tr><th>Share</th>
+          <td>{{ status['share']}}</td></tr>
+          <tr><th>Join Date</th>
+          <td>{{ status['joindate']|dt}}</td></tr>
+          <tr><th>Status</th>
+          <td>{{ status['status']}}</td></tr>
+          <tr><th>Sync Status</th>
+          {% if status['threshold'] == 0 %}
+          <td><span style='color: {{ blue }};'>Enable Threshold first</td></tr></span>
+          {% else %}
+          {% if sync_status == "Out of Sync": %}
+          <td><span style='color: {{ red }};'>{{ sync_status }}</td></span></tr>
+          {% elif sync_status == "In Sync": %}
+          <td><span style='color: {{ green }};'>{{ sync_status }}</td></span></tr>
+          {% elif sync_status == "Never synced": %}
+          <td><span style='color: {{ blue }};'>{{ sync_status }}</td></span></tr>
+          {% endif %}
+          {% endif%}
+	  <tr><th>Last Seen</th>
+          {% if status['lastseen'] == "Never" %}
+          <td><span style='color: {{ blue }};'>Never</td></tr></span>
+          {% else %}
+          <td>{{ status['lastseen']|dt}}</td></tr>
+          {% endif %}
+          <tr><th>OK</th>
+          <td>{{ status['ok'] }}</td></tr>
+          <tr><th>KO</th>
+          <td>{{ status['ko'] }}</td></tr>
+          <tr><th>Total</th>
+          <td>{{ status['total']}}</td></tr>
+          <tr><th>Average Sync Duration</th>
+          <td>{{ status['avg_duration']}}s</td></tr>
+          <tr><th>Threshold</th>
+	  <td><form method=POST action="/clients/threshold/process">
+          <input type="text" name="threshold" value={{ status['threshold']}} size=7>
+          <input type="hidden" name="name" value="{{client}}">
+	  <input type="submit" value="Save"></td></form></tr>
+       </td>
+       </table>
+    <th width="1%"></th>
+    </tr>
+    </table>
+</p>
+{% endblock %}
+
