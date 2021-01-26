@@ -33,9 +33,9 @@ The test client will try to register and before you can start to sync you should
 When you activate a client the ssh pub key will be automatically added to the authorized key and unison will be able to sync using SSH.     
 Follow the messages and the links on the homepage to complete all the required steps.   
 
-![homepage](./docs/screenshots/homepage-events.jpg)
+![homepage-events](./docs/screenshots/homepage-events.jpg)
 
-![homepage](./docs/screenshots/activate-client.jpg)
+![activate-client](./docs/screenshots/activate-client.jpg)
 
 
 
