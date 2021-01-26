@@ -27,11 +27,24 @@ Simply run :
 Docker will build the image and start the project.   
 Open your browser [here](http://127.0.0.1:5000/) passing credentials specified on the docker-compose file.
 
+Wait a few seconds and the app should be up and running.   
+On the homepage you will see that there are no registered clients and no shares defined.   
+The test client will try to register and before you can start to sync you should first activate the client and define the `test1` share name defined on the docker compose through the `SHARE_NAME` env variable.   
+When you activate a client the ssh pub key will be automatically added to the authorized key and unison will be able to sync using SSH.     
+Follow the messages and the links on the homepage to complete all the required steps.   
+
+![homepage](./docs/screenshots/homepage-events.jpg)
+
+![homepage](./docs/screenshots/activate-client.jpg)
+
+
+
 If you want to start again fresh, simple run :
 
     local_test/cleanup.sh
     docker-compose up -d
     
+
 
 ## Environment variables
 
