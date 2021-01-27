@@ -89,9 +89,9 @@ def create_table(conn, create_table_sql):
 # SCHEDULER
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=scheduler_tasks_update_sync_status, trigger="interval", seconds=10, args=(app,))
-scheduler.add_job(func=scheduler_tasks_share_update_size, trigger="interval", seconds=30, args=(app,))
-scheduler.add_job(func=scheduler_tasks_purge_logs, trigger="interval", minutes=10, args=(app,))
+scheduler.add_job(func=scheduler_tasks_update_sync_status, trigger="interval", seconds=60, args=(app,))
+scheduler.add_job(func=scheduler_tasks_share_update_size, trigger="interval", hours=6, args=(app,))
+scheduler.add_job(func=scheduler_tasks_purge_logs, trigger="interval", hours=12, args=(app,))
 scheduler.start()
 
 # Shut down the scheduler when exiting the app

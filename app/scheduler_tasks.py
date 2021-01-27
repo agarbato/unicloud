@@ -25,7 +25,7 @@ def scheduler_tasks_share_update_size(app):
       share = ShareMgt("all")
       share_list = share.share_list()
       if share_list:
-          print("Found some shares")
+          #print("Found some shares")
           for s in share_list:
               #print (s[0])
               s_size = ShareMgt(s[0])
@@ -38,10 +38,10 @@ def scheduler_tasks_purge_logs(app):
         maxid = query_db(query)
         if maxid[0][0] > int(max_log_events):
            query = "select max(id-%d) from events where log!=''" % int(max_log_events)
-           print(query)
+           #print(query)
            start_id_to_delete = query_db(query)
            query = "update events set log='None' where id < %d" % start_id_to_delete[0][0]
-           print(query)
+           #print(query)
            query_db(query)
            get_db().commit()
            query = "vacuum"
