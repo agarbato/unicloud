@@ -112,7 +112,11 @@ You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var, 
 
 ### Thresholds
 
-In order to have a clear view if a client is in sync you can set a sync threshold (seconds) on client configuration page***REMOVED*** If you do so, you can check if a client  is *Out of Sync* on the clients page and you will see a message on the homepage warning you that one or more clients are out of sync***REMOVED***   
+In order to have a clear view if a client is in sync you can set a sync threshold (seconds) on client configuration page***REMOVED***   
+If you do so, you can check if a client  is *Out of Sync* on the clients page and you will see a message on the homepage warning you that one or more clients are out of sync***REMOVED***      
+
+<br>
+<img src="***REMOVED***/docs/screenshots/client-info***REMOVED***jpg" />
 
 
 
