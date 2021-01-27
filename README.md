@@ -109,6 +109,8 @@ On the event page you can filter events by different criteria***REMOVED***
 In order to keep sqlite database small events logs are purged with a daily scheduled tasks***REMOVED***   
 Events are not deleted, just  the logs are replaced with a *None* ***REMOVED***   
 You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var,  default is 1000***REMOVED***   
+<br>
+<img src="***REMOVED***/docs/screenshots/event-detail***REMOVED***jpg" />   
 
 ### Thresholds
 
