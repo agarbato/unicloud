@@ -2,17 +2,23 @@
 
 <img src="./docs/screenshots/homepage.jpg" width="90%" height="90%"/>
 
-This started as a personal project a while ago until I decided it was stable and "smart" enough to make it public. I've been using unison for a long time to keep folders in sync between different computers.  I guess I never totally trusted public clouds to host my files.  At first I just added a few cron jobs on my machines and ran unison every n minutes but I felt that in this way I had lost control of it, especially when for some reasons the sync was broken.
-I decided to create this project to add a web UI to unison,  monitor all sync and make it simpler to add a new replica of my files.  Add docker to  the recipe, an automatic way to manage your clients  and share your ssh keys and you'll understand the power of this tool :-)
-This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style.  I hope someone is willing to contribute and make it better.
+This started as a personal project a while ago but I decided to make it public. I've been using unison for a long time to keep folders in sync between different computers.  
+I guess I never totally trusted public clouds to host my files.  At first, like I guess everybody using unison I just added a few cron jobs on my machines and ran unison   
+every *n* minutes but I felt that I had lost control of it, especially when for some reasons the sync was broken.   
+I decided to create this project to add a web interface to unison,  monitor all sync and make it simpler to add a new replica of my files and run unison on docker.  
+In this way when I have a spare computer where I can run docker I just add another replica to my important files.      
+The tool provide an automatic way to manage your clients through a registration process and give you a nice overview of sync events and status.   
+This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style.  
+I would be happy if someone is willing to contribute and make it look more nice.   
 
 <br>
 
 # Features
 
+ - Fast and simple way to add replicas to your files thanks to docker.
  - Central API Server to register clients, record logs, manage shares
  - Bi-directional Sync thanks to [Unison](https://www.cis.upenn.edu/~bcpierce/unison/)
- - Log sync events
+ - Log sync events filtered by status, changes etc.
  - Simple file Manager for shares
  - Sync Threshold warning
  - Small memory usage and image footprint, thanks to [Alpine Linux](https://alpinelinux.org/)
@@ -71,7 +77,14 @@ If you want to start again fresh, simple run :
 
 <br>
 
+## The first Sync
 
+If you never used unison you should have a look first at [unison doc](https://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html) to better understand how it works and why it's better than other sync tools.   
+It's been around since 1998 but it's still an active project and people still rely on it to secure their files.      
+When you add a large share folder unison needs to index first your files. The first sync could take a while but this is totally normal, once the index is in place   
+you will notice the next syncs will be very fast even for a very large folder.   
+  
+<br>
 ## Volumes and persistence
 
 Client needs two volumes, one to persist its configuration and unison profiles/db files and one for the actual share folder to keep in sync.
