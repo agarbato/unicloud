@@ -27,7 +27,7 @@ I would be happy if someone is willing to contribute and make it look more nice.
 
 ## Quick start
 
-Before you can seriously start using this tools you might want to test locally with docker-compose.
+Before you can start using this tools you might want to test locally with docker-compose.   
 Simply run :
 
     docker-compose up -d
@@ -79,7 +79,7 @@ If you want to start again fresh, simple run :
 
 ## The first Sync
 
-If you never used unison you should have a look first at [unison doc](https://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html) to better understand how it works and why it's better than other sync tools.   
+If you never used unison you should have a look first at [unison doc](https://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html) to better understand how it works and why it's better than other sync tools.
 It's been around since 1998 but it's still an active project and people still rely on it to secure their files.      
 When you add a large share folder unison needs to index first your files. The first sync could take a while but this is totally normal, once the index is in place   
 you will notice the next syncs will be very fast even for a very large folder.   
@@ -118,7 +118,7 @@ To add a little bit of security and avoid that a client could actually SSH into 
 
 *authorized_keys* file will have this format:      
 
-    command="/usr/bin/unison -server" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCrNRVWTvt9wLUUXJE6chb8+t24lroL5vOBHAxZ8iIZVrjLm7HOlzX+2kueVQcDkXj+Z44lT6fdvWSG5qksODKzL1LrWRpeJTXGlprjOQE8qobmk68Zh+fWWuPbF5F9pW5856+spfR/ihPzNj9Ih5QM03C0haUHoGfYL+05AnPstSzuhyMOuH/XuH/LNnAQm+Kzg1VJ3l9OUjaQOYvKkQhoQ//bn1ByGmOtQsdqzJBElHJ9nFLkqQLHGTED9sk0TVTe+gifVQVQHz3HXsYM3KyT4VYfznFPcPNJ+SdpyVgdwIwnsa65dWb3uJa/1dIKJ8DHwRrRmwaL0Ck4fkJ5vbvIMtc59cNI11GBEsSUGrxWwcGthH/936l3D3gUnxDVuzgQFMhDJNUewRhk8ttWfn8lY3h/OKyeudlGTFb2Cuy+narK6m4VBYk+mPsdSNxWdchIVxHbXxF//l95JoEp6vm+ZavhKb18DzVbwZ015Gg6O9RneoYnMB9MI0Bxf+/V4/c= unicloud@2078f83040f3 CLIENT:testing-client1./local_tests/cleanup.sh   
+    command="/usr/bin/unison -server" ssh-rsa AAAAB3NzaC1yc2EAAAADAQAB... CLIENT:testing-client1   
     
 To add more security a chroot env could be eventually added in the next future.   
    
