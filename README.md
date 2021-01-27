@@ -1,6 +1,6 @@
 # Unicloud, a smart web unison file syncronizer
 
-<img src="./docs/screenshots/homepage.jpg" width="80%" height="80%"/>
+<img src="./docs/screenshots/homepage.jpg" width="90%" height="90%"/>
 
 This started as a personal project a while ago until I decided it was stable and "smart" enough to make it public. I've been using unison for a long time to keep folders in sync between different computers.  I guess I never totally trusted public clouds to host my files.  At first I just added a few cron jobs on my machines and ran unison every n minutes but I felt that in this way I had lost control of it, especially when for some reasons the sync was broken.
 I decided to create this project to add a web UI to unison,  monitor all sync and make it simpler to add a new replica of my files.  Add docker to  the recipe, an automatic way to manage your clients  and share your ssh keys and you'll understand the power of this tool :-)
