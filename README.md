@@ -109,6 +109,7 @@ To add a little bit of security and avoid that a client could actually SSH into 
 To add more security a chroot env could be eventually added in the next future.   
    
 <br>     
+
 ## Sync Events / Thresholds
 
 ### Events
