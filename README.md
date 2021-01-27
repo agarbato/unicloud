@@ -67,6 +67,8 @@ If you want to start again fresh, simple run :
 | USER |unicloud  |Client/Server|Username for running app
 | USERID |1000  |Client|Userid for running app
 
+<br><br><br>
+
 
 ## Volumes and persistence
 
@@ -82,15 +84,16 @@ Server also need two volumes:
 
 It's best to have a single shares root folder volume and then assign, mount and configure all shares as sub-folders.   
    
-\+ [**/shares**]
-&ensp;&ensp;&ensp;[**/shares/share1**]
-&ensp;&ensp;&ensp;[**/shares/share2**]
+\+ [**/shares**]    
+&ensp;&ensp;&ensp;[**/shares/share1**]    
+&ensp;&ensp;&ensp;[**/shares/share2**]   
    
 Shares root folder can be changed with *SHARES_PATH* env variable.   
 
 Nothing prevents you to mount additional volumes on the server and configure them as shares on a different path, just remember to configure correctly *USERID* variable so that the application can read files.   
 Shares root is also used by the file manager as root folder so if you mount on a different location you won't be able to browse files.   
 
+<br><br><br>
 
 ## Sync Events / Thresholds
 
