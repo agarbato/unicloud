@@ -6,6 +6,7 @@ This started as a personal project a while ago until I decided it was stable and
 I decided to create this project to add a web UI to unison,  monitor all sync and make it simpler to add a new replica of my files.  Add docker to  the recipe, an automatic way to manage your clients  and share your ssh keys and you'll understand the power of this tool :-)
 This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style.  I hope someone is willing to contribute and make it better.
 
+<br><br>
 
 # Features
 
@@ -16,6 +17,7 @@ This was one of my first python projects and I have zero to little experience wi
  - Sync Threshold warning
  - Small memory usage and image footprint, thanks to [Alpine Linux](https://alpinelinux.org/)
 
+<br><br>
 
 ## Quick start
 
@@ -42,7 +44,7 @@ If you want to start again fresh, simple run :
     ./local_tests/cleanup.sh
     docker-compose up -d
 
-
+<br><br>
 
 ## Environment variables
 
@@ -67,7 +69,7 @@ If you want to start again fresh, simple run :
 | USER |unicloud  |Client/Server|Username for running app
 | USERID |1000  |Client|Userid for running app
 
-<br><br><br>
+<br><br>
 
 
 ## Volumes and persistence
@@ -93,7 +95,7 @@ Shares root folder can be changed with *SHARES_PATH* env variable.
 Nothing prevents you to mount additional volumes on the server and configure them as shares on a different path, just remember to configure correctly *USERID* variable so that the application can read files.   
 Shares root is also used by the file manager as root folder so if you mount on a different location you won't be able to browse files.   
 
-<br><br><br>
+<br><br>
 
 ## Sync Events / Thresholds
 
