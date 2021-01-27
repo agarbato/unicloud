@@ -105,7 +105,7 @@ You can see details about an event id, basically you will see unison log there.
 On the event page you can filter events by different criteria.    
 <br>
 <img src="./docs/screenshots/events.jpg" />   
-<br><br>
+<br>
 In order to keep sqlite database small events logs are purged with a daily scheduled tasks.   
 Events are not deleted, just  the logs are replaced with a *None* .   
 You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var,  default is 1000.   
