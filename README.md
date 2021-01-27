@@ -12,26 +12,26 @@ This was one of my first python projects and I have zero to little experience wi
  - Central API Server to register clients, record logs, manage shares
  - Bi-directional Sync thanks to [Unison](https://www.cis.upenn.edu/~bcpierce/unison/)
  - Log sync events
- - Simple file Manager for shares 
- - Sync Threshold warning 
+ - Simple file Manager for shares
+ - Sync Threshold warning
  - Small memory usage and image footprint, thanks to [Alpine Linux](https://alpinelinux.org/)
 
 
 ## Quick start
 
-Before you can seriously start using this tools you might want to test locally with docker-compose.   
+Before you can seriously start using this tools you might want to test locally with docker-compose.
 Simply run :
 
     docker-compose up -d
 
-Docker will build the image and start the project.   
+Docker will build the image and start the project.
 Open your browser [here](http://127.0.0.1:5000/) passing credentials specified on the docker-compose file.
 
-Wait a few seconds and the app should be up and running.   
-On the homepage you will see that there are no registered clients and no shares defined.   
-The test client will try to register and before you can start to sync you should first activate the client and define the `test1` share name defined on the docker compose through the `SHARE_NAME` env variable.   
-When you activate a client the ssh pub key will be automatically added to the authorized key and unison will be able to sync using SSH.     
-Follow the messages and the links on the homepage to complete all the required steps.   
+Wait a few seconds and the app should be up and running.
+On the homepage you will see that there are no registered clients and no shares defined.
+The test client will try to register and before you can start to sync you should first activate the client and define the `test1` share name defined on the docker compose through the `SHARE_NAME` env variable.
+When you activate a client the ssh pub key will be automatically added to the authorized key and unison will be able to sync using SSH.
+Follow the messages and the links on the homepage to complete all the required steps.
 
 
 <img src="./docs/screenshots/homepage-events.jpg" width="60%" height="60%"/>
@@ -41,7 +41,7 @@ If you want to start again fresh, simple run :
 
     ./local_tests/cleanup.sh
     docker-compose up -d
-    
+
 
 
 ## Environment variables
@@ -52,7 +52,7 @@ If you want to start again fresh, simple run :
 | SERVER_UI_USERNAME |admin  |Server|Ui Basic Auth Username
 | SERVER_UI_PASSWORD |None  |Server|Ui Basic Auth Password
 | SHARES_PATH |/shares  |Server|Server Shares volume
-| MAX_LOG_EVENTS |1000  |Server|Max Sync Logs to keep 
+| MAX_LOG_EVENTS |1000  |Server|Max Sync Logs to keep
 | CLIENT_HOSTNAME |$HOSTNAME  |Client|Client Hostname (see notes below)
 | CLIENT_DEST |/data/share  |Client|Path of synced folder
 | SERVER_HOSTNAME |None  |Client|Server Hostname
@@ -70,15 +70,44 @@ If you want to start again fresh, simple run :
 
 ## Volumes and persistence
 
-Client needs two volumes, one to persist its configuration and unison profiles/db files and one for the actual share folder to keep in sync.   
+Client needs two volumes, one to persist its configuration and unison profiles/db files and one for the actual share folder to keep in sync.
 
-- [/data]          Unison and system configuration.   
-- [/data/share]    Sync volume (can be changed with CLIENT_DEST env variable).    
+ - [**/data**]          Unison and system configuration.
+ - [**/data/share**]    Sync volume (can be changed with *CLIENT_DEST* env variable).
 
-Server also need two volumes:   
+Server also need two volumes:
 
-- [/data]          Unison and system configuration.   
+- [**/data**]          Unison and system configuration.
+- [**/shares**]        Shares root folder.
 
-- [/shares]        Shares root folder.   
+It's best to have a single shares root folder volume and then assign, mount and configure all shares as sub-folders.   
+   
+\+ [**/shares**]
+&ensp;&ensp;&ensp;[**/shares/share1**]
+&ensp;&ensp;&ensp;[**/shares/share2**]
+   
+Shares root folder can be changed with *SHARES_PATH* env variable.   
 
-It's best to have a root folder for all the shares and mount/create/configure all the others like /shares/Documents, /shares/myfiles etc.
+Nothing prevents you to mount additional volumes on the server and configure them as shares on a different path, just remember to configure correctly *USERID* variable so that the application can read files.   
+Shares root is also used by the file manager as root folder so if you mount on a different location you won't be able to browse files.   
+
+
+## Sync Events / Thresholds
+
+### Events
+One of the most fancy feature of the app is the events section.   
+You can see details about an event id, basically you will see unison log there.   
+On the event page you can filter events by different criteria.    
+
+<img src="./docs/screenshots/events.jpg" width="60%" height="60%"/>
+
+In order to keep sqlite database small events logs are purged with a daily scheduled tasks.   
+Events are not deleted, just  the logs are replaced with a *None* .   
+You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var,  default is 1000.   
+
+### Thresholds
+
+In order to have a clear view if a client is in sync you can set a sync threshold (seconds) on client configuration page. If you do so, you can check if a client  is *Out of Sync* on the clients page and you will see a message on the homepage warning you that one or more clients are out of sync.   
+
+
+
