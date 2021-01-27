@@ -47,7 +47,7 @@
           <td>{{ status['total']}}</td></tr>
           <tr><th>Average Sync Duration</th>
           <td>{{ status['avg_duration']}}s</td></tr>
-          <tr><th>Threshold</th>
+          <tr><th>Threshold (seconds)</th>
 	  <td><form method=POST action="/clients/threshold/process">
           <input type="text" name="threshold" value={{ status['threshold']}} size=7>
           <input type="hidden" name="name" value="{{client}}">
