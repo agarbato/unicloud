@@ -103,9 +103,9 @@ Shares root is also used by the file manager as root folder so if you mount on a
 One of the most fancy feature of the app is the events section***REMOVED***   
 You can see details about an event id, basically you will see unison log there***REMOVED***   
 On the event page you can filter events by different criteria***REMOVED***    
-
+<br>
 <img src="***REMOVED***/docs/screenshots/events***REMOVED***jpg" width="90%" height="90%"/>
-
+<br>
 In order to keep sqlite database small events logs are purged with a daily scheduled tasks***REMOVED***   
 Events are not deleted, just  the logs are replaced with a *None* ***REMOVED***   
 You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var,  default is 1000***REMOVED***   
