@@ -37,12 +37,9 @@ Follow the messages and the links on the homepage to complete all the required s
 <img src="***REMOVED***/docs/screenshots/homepage-events***REMOVED***jpg" width="50%" height="50%"/>
 
 
-<img src="***REMOVED***/docs/screenshots/activate-client***REMOVED***jpg" width="50%" height="50%"/>
-
-
 If you want to start again fresh, simple run :
 
-    local_test/cleanup***REMOVED***sh
+    ***REMOVED***/local_tests/cleanup***REMOVED***sh
     docker-compose up -d
     
 
@@ -71,3 +68,17 @@ If you want to start again fresh, simple run :
 | USERID |1000  |Client|Userid for running app
 
 
+## Volumes and persistence
+
+Client needs two volumes, one to persist its configuration and unison profiles/db files and one for the actual share folder to keep in sync***REMOVED***   
+
+- [/data]          Unison and system configuration***REMOVED***   
+- [/data/share]    Sync volume (can be changed with CLIENT_DEST env variable)***REMOVED***    
+
+Server also need two volumes:   
+
+- [/data]          Unison and system configuration***REMOVED***   
+
+- [/shares]        Shares root folder***REMOVED***   
+
+It's best to have a root folder for all the shares and mount/create/configure all the others like /shares/Documents, /shares/myfiles etc***REMOVED***
