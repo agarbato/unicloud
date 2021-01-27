@@ -12,14 +12,16 @@
     {% set orange = "#ff751a" %}
 {#    <h1><strong>Unicloud, a smart unison file syncronizer</strong></h1>#}
     <br>
-    <div class="stats">
-           <span style='color: {{ white }};background-color: {{ grey }}'>
-           <strong><br>&nbsp;&nbsp;&nbsp;&nbsp;Unicloud, a smart unison file syncronizer&nbsp;&nbsp;&nbsp;&nbsp;<br><br></strong>
-           </span>
-    </div><br>
+{#    <div class="stats">#}
+{#           <span style='color: {{ white }};background-color: {{ grey }}'>#}
+{#           <strong><br>&nbsp;&nbsp;&nbsp;&nbsp;Unicloud, a smart unison file syncronizer&nbsp;&nbsp;&nbsp;&nbsp;<br><br></strong>#}
+{#           </span>#}
+{#    </div><br>#}
     <table id="hometable">
-            <td><br>
-              <img align="center" src="/static/images/unibox-home.png">
+            <tr><td>Unicloud, a smart unison file syncronizer
+            </td></tr>
+            <tr><td><br>
+              <img align="center" src="/static/images/unibox-home2.png">
             </td>
             <td>
             <br><strong>&nbsp;&nbsp;System Stats: <br><br></strong>
@@ -67,13 +69,15 @@
             </td>
         </tr>
     </table><br>
-    <div class="stats">
-           <span style='color: {{ white }};background-color: {{ grey }}'>
-           <br><strong>&nbsp;&nbsp;&nbsp;&nbsp;Unicloud Status&nbsp;&nbsp;&nbsp;&nbsp;<br><br></strong>
-           </span>
-    </div><br>
+
     <table id="hometable">
        <tr><td>
+           <div>
+{#           <span style='color: {{ white }};background-color: {{ grey }}'>#}
+           Unicloud Status<br>
+{#           </span>#}
+           </div></td></tr>
+          <tr><td>
           {% if unicloud_stats['toregister'] > 0 %}
              <span style='color: {{ red }};'>
              Found {{ unicloud_stats['toregister'] }} client/s to register, go to <a title="Clients" href="/clients">clients</a> page to complete registration<br>
