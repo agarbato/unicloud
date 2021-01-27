@@ -77,7 +77,7 @@ If you want to start again fresh, simple run :
 | SYNC_INTERVAL |300  |Client|Sync Interval seconds
 | ROLE |client  |Client/Server|Sync Role: [client\|server]
 | USER |unicloud  |Client/Server|Username for running app
-| USERID |1000  |Client|Userid for running app
+| USERID |1000  |Client/Server|Userid for running app
 
 <br>
 
