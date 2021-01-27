@@ -36,7 +36,7 @@ When you activate a client the ssh pub key will be automatically added to the au
 Follow the messages and the links on the homepage to complete all the required steps.
 
 
-<img src="./docs/screenshots/homepage-events.jpg" width="60%" height="60%"/>
+<img src="./docs/screenshots/homepage-events.jpg" width="50%" height="50%"/>
 
 
 If you want to start again fresh, simple run :
