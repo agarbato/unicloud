@@ -110,7 +110,7 @@ In order to keep sqlite database small events logs are purged with a daily sched
 Events are not deleted, just  the logs are replaced with a *None* ***REMOVED***   
 You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var,  default is 1000***REMOVED***   
 <br>
-<img src="***REMOVED***/docs/screenshots/event-detail***REMOVED***jpg" />   
+<img src="***REMOVED***/docs/screenshots/event-detail***REMOVED***jpg" width="70%" height="70%" />   
 
 ### Thresholds
 
@@ -118,7 +118,7 @@ In order to have a clear view if a client is in sync you can set a sync threshol
 If you do so, you can check if a client  is *Out of Sync* on the clients page and you will see a message on the homepage warning you that one or more clients are out of sync***REMOVED***      
 
 <br>
-<img src="***REMOVED***/docs/screenshots/client-info***REMOVED***jpg" width="70%" height="70%" />
+<img src="***REMOVED***/docs/screenshots/client-info***REMOVED***jpg"  />
 
 
 
