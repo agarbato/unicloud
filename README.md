@@ -2,7 +2,7 @@
 
 <img src="./docs/screenshots/homepage.jpg" width="90%" height="90%"/>
 
-This started as a personal project a while ago but I decided to make it public. I've been using unison for a long time to keep folders in sync between different computers.  
+This started as a personal project a while ago but I decided to make it public. I've been using unison for a long time to keep folders in sync between different computers.
 I guess I never totally trusted public clouds to host my files.  At first, like I guess everybody using unison I just added a few cron jobs on my machines and ran unison   
 every *n* minutes but I felt that I had lost control of it, especially when for some reasons the sync was broken.   
 I decided to create this project to add a web interface to unison,  monitor all sync and make it simpler to add a new replica of my files and run unison on docker.  
@@ -85,6 +85,7 @@ When you add a large share folder unison needs to index first your files. The fi
 you will notice the next syncs will be very fast even for a very large folder.   
   
 <br>
+
 ## Volumes and persistence
 
 Client needs two volumes, one to persist its configuration and unison profiles/db files and one for the actual share folder to keep in sync.
