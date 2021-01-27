@@ -85,8 +85,9 @@ class ClientMgt(object):
         self***REMOVED***ssh_key = ssh_key
         self***REMOVED***authkeyfile = authkeyfile
         print (ssh_key)
-        with open (authkeyfile,'a') as f:
-          f***REMOVED***write("\n" + ssh_key + " CLIENT:%s" % self***REMOVED***client)
+        auth_command = 'command="/usr/bin/unison -server"'
+        with open (authkeyfile, 'a') as f:
+          f***REMOVED***write("\n" + auth_command + " " + ssh_key + " CLIENT:%s" % self***REMOVED***client)
         return "<br>Client %s added to Authorized Keys" % self***REMOVED***client
 
     def activate(self, ssh_key, authkeyfile):
