@@ -37,13 +37,17 @@ Open your browser [here](http://127.0.0.1:5000/) passing credentials specified o
 
 Wait a few seconds and the app should be up and running.
 On the homepage you will see that there are no registered clients and no shares defined.
-The test client will try to register and before you can start to sync you should first activate the client and define the `test1` share name defined on the docker compose through the `SHARE_NAME` env variable.
-When you activate a client the ssh pub key will be automatically added to the authorized key and unison will be able to sync using SSH.
-Follow the messages and the links on the homepage to complete all the required steps.
+The test client will try to connect to the server but, before you can start to sync, two steps are required:   
 
+ - Activate the client from the [clients](http://127.0.0.1:5000/clients) page.
+ - Create your first share and name it `share1` from the [shares](http://127.0.0.1:5000/shares/mgt) management page    
+
+**The share name must match the one defined on the docker-compose by the `SHARE_NAME` env variable.**
+When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH.  
+
+Follow messages on the homepage to complete all the required steps.   
 
 <img src="./docs/screenshots/homepage-events.jpg" width="50%" height="50%"/>
-
 
 If you want to start again fresh, simple run :
 
