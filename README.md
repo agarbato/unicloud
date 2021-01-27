@@ -27,7 +27,7 @@ I would be happy if someone is willing to contribute and make it look more nice*
 
 ## Quick start
 
-Before you can start using this tools you might want to test locally with docker-compose***REMOVED***   
+Before you can start using this tool you might want to test locally with docker-compose***REMOVED***   
 Simply run :
 
     docker-compose up -d
@@ -126,7 +126,7 @@ To add a little bit of security and avoid that a client could actually SSH into 
 
     command="/usr/bin/unison -server" ssh-rsa AAAAB3NzaC1yc2EAAAADAQAB***REMOVED******REMOVED******REMOVED*** CLIENT:testing-client1   
     
-To add more security a chroot env could be eventually added in the next future***REMOVED***   
+To add more security a chroot env could be eventually added in the future***REMOVED***   
    
 <br>     
 
