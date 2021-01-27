@@ -123,7 +123,7 @@ If you do so, you can check if a client  is *Out of Sync* on the clients page an
 <br><br>
 
 ### Simple file manager
-A simple file manager provided by [Flask Autoindex](https://flask-autoindex***REMOVED***readthedocs***REMOVED***io/en/latest/) is included in the project
+A simple file manager provided by [Flask Autoindex](https://flask-autoindex***REMOVED***readthedocs***REMOVED***io/en/latest/) is included in the project   
 <br>
 <img src="***REMOVED***/docs/screenshots/filemanager***REMOVED***jpg"  />
 
