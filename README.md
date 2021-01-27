@@ -42,7 +42,7 @@ The test client will try to connect to the server but, before you can start to s
  - Activate the client from the [clients](http://127***REMOVED***0***REMOVED***0***REMOVED***1:5000/clients) page***REMOVED***
  - Create your first share and name it `share1` from the [shares](http://127***REMOVED***0***REMOVED***0***REMOVED***1:5000/shares/mgt) management page    
 
-**The share name must match the one defined on the docker-compose by the `SHARE_NAME` env variable***REMOVED*****
+**The share name must match the one defined on the docker-compose by the `SHARE_NAME` env variable***REMOVED*****   
 When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH***REMOVED***  
 
 Follow messages on the homepage to complete all the required steps***REMOVED***   
