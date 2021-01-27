@@ -77,12 +77,14 @@ If you want to start again fresh, simple run :
 
 <br>
 
-## The first Sync
+## Sync
 
 If you never used unison you should have a look first at [unison doc](https://www***REMOVED***cis***REMOVED***upenn***REMOVED***edu/~bcpierce/unison/download/releases/stable/unison-manual***REMOVED***html) to better understand how it works and why it's better than other sync tools***REMOVED***
 It's been around since 1998 but it's still an active project and people still rely on it to secure their files***REMOVED***      
-When you add a large share folder unison needs to index first your files***REMOVED*** The first sync could take a while but this is totally normal, once the index is in place   
+When you add a large share folder unison needs to index first your files***REMOVED*** The first sync could take a while but this is totally normal, once the index is in place 
 you will notice the next syncs will be very fast even for a very large folder***REMOVED***   
+
+The default sync interval is 300s (5mins)***REMOVED***  I suggest to avoid a sync interval smaller than 60seconds***REMOVED***       
   
 <br>
 
