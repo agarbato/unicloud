@@ -97,6 +97,18 @@ Shares root is also used by the file manager as root folder so if you mount on a
 
 <br><br>
 
+## SSH Security
+
+As already described ssh key exchange is done automatically when you activate a client for the first time***REMOVED***   
+To add a little bit of security and avoid that a client could actually SSH into the server a restriction is in place to allow only unison command***REMOVED***   
+
+*authorized_keys* file will have this format:      
+
+    command="/usr/bin/unison -server" ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCrNRVWTvt9wLUUXJE6chb8+t24lroL5vOBHAxZ8iIZVrjLm7HOlzX+2kueVQcDkXj+Z44lT6fdvWSG5qksODKzL1LrWRpeJTXGlprjOQE8qobmk68Zh+fWWuPbF5F9pW5856+spfR/ihPzNj9Ih5QM03C0haUHoGfYL+05AnPstSzuhyMOuH/XuH/LNnAQm+Kzg1VJ3l9OUjaQOYvKkQhoQ//bn1ByGmOtQsdqzJBElHJ9nFLkqQLHGTED9sk0TVTe+gifVQVQHz3HXsYM3KyT4VYfznFPcPNJ+SdpyVgdwIwnsa65dWb3uJa/1dIKJ8DHwRrRmwaL0Ck4fkJ5vbvIMtc59cNI11GBEsSUGrxWwcGthH/936l3D3gUnxDVuzgQFMhDJNUewRhk8ttWfn8lY3h/OKyeudlGTFb2Cuy+narK6m4VBYk+mPsdSNxWdchIVxHbXxF//l95JoEp6vm+ZavhKb18DzVbwZ015Gg6O9RneoYnMB9MI0Bxf+/V4/c= unicloud@2078f83040f3 CLIENT:testing-client1***REMOVED***/local_tests/cleanup***REMOVED***sh   
+    
+To add more security a chroot env could be eventually added in the next future***REMOVED***   
+   
+     
 ## Sync Events / Thresholds
 
 ### Events
