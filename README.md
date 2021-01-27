@@ -111,6 +111,7 @@ Events are not deleted, just  the logs are replaced with a *None* ***REMOVED***
 You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var,  default is 1000***REMOVED***   
 <br>
 <img src="***REMOVED***/docs/screenshots/event-detail***REMOVED***jpg" width="70%" height="70%" />   
+<br><br>
 
 ### Thresholds
 
@@ -119,6 +120,7 @@ If you do so, you can check if a client  is *Out of Sync* on the clients page an
 
 <br>
 <img src="***REMOVED***/docs/screenshots/client-info***REMOVED***jpg"  />
+<br><br>
 
 ### Simple file manager
 A simple file manager provided by [Flask Autoindex](https://flask-autoindex***REMOVED***readthedocs***REMOVED***io/en/latest/) is included in the project
