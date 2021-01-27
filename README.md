@@ -65,7 +65,7 @@ If you want to start again fresh, simple run :
 | CLIENT_DEST |/data/share  |Client|Path of synced folder
 | SERVER_HOSTNAME |None  |Client|Server Hostname
 | SERVER_PORT |22  |Client|Server SSH Port to connect
-| SERVER_SHARE |22  |Client|Server Share Name (not path!!)
+| SERVER_SHARE |None  |Client|Server Share Name (not path!!)
 | API_PROTOCOL |http  |Client|Api protocol: [http\|https]
 | API_PORT |80  |Client|Api port
 | SHARE_IGNORE |***REMOVED***unison  |Client|Ignore files from share, eg : ***REMOVED***git\|***REMOVED***idea\|***REMOVED***DS_Store
