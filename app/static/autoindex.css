@@ -14,82 +14,57 @@
     width: 100%;
 }
 
-#default td, #default th {
-    border: 1px solid #dddddd;
-    text-align: left;
-}
+/*#default td, #default th {*/
+/*    border: 1px solid #dddddd;*/
+/*    text-align: left;*/
+/*}*/
 
-/* rowtable */
+/*!* rowtable *!*/
 
-#rowtable {
-    font-family: Helvetica, Arial, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
+/*#rowtable {*/
+/*    font-family: Helvetica, Arial, sans-serif;*/
+/*    border-collapse: collapse;*/
+/*    width: 100%;*/
+/*}*/
 
-#rowtable td, #rowtable th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
+/*#rowtable td, #rowtable th {*/
+/*    border: 1px solid #ddd;*/
+/*    padding: 8px;*/
+/*}*/
 
-#rowtable tr:nth-child(even){background-color: #f2f2f2;}
-#rowtable tr:hover {background-color: #ddd;}
+/*#rowtable tr:nth-child(even){background-color: #f2f2f2;}*/
+/*#rowtable tr:hover {background-color: #ddd;}*/
 
-#rowtable th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: #4CAF50;
-    color: white;
-}
+/*#rowtable th {*/
+/*    padding-top: 12px;*/
+/*    padding-bottom: 12px;*/
+/*    text-align: left;*/
+/*    background-color: #4CAF50;*/
+/*    color: white;*/
+/*}*/
 
-/* rowtable no hover */
+/*!* rowtable no hover *!*/
 
-#rowtablenoh {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-}
+/*#rowtablenoh {*/
+/*    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;*/
+/*    border-collapse: collapse;*/
+/*    width: 100%;*/
+/*}*/
 
-#rowtablenoh td, #rowtablenoh th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
+/*#rowtablenoh td, #rowtablenoh th {*/
+/*    border: 1px solid #ddd;*/
+/*    padding: 8px;*/
+/*}*/
 
-#rowtablenoh tr:nth-child(even){background-color: #f2f2f2;}
+/*#rowtablenoh tr:nth-child(even){background-color: #f2f2f2;}*/
 
-#rowtablenoh th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: grey;
-    color: white;
-}
-
-/* hometable no hover */
-
-#hometable {
-    font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 70%;
-}
-
-#hometable td, #hometable th {
-    border: 1px solid #ddd;
-    padding: 8px;
-}
-
-#hometable tr:nth-child(even){background-color: #f2f2f2;}
-
-#hometable th {
-    padding-top: 12px;
-    padding-bottom: 12px;
-    text-align: left;
-    background-color: grey;
-    color: white;
-}
-
-
+/*#rowtablenoh th {*/
+/*    padding-top: 12px;*/
+/*    padding-bottom: 12px;*/
+/*    text-align: left;*/
+/*    background-color: grey;*/
+/*    color: white;*/
+/*}*/
 
 
 /* Add a black background color to the top navigation */
@@ -105,6 +80,7 @@
     width: 100%;
     overflow: hidden;
 }
+
 /* Style the links inside the navigation bar */
 ***REMOVED***topnav a {
     float: left;
