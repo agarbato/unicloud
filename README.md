@@ -118,7 +118,7 @@ In order to have a clear view if a client is in sync you can set a sync threshol
 If you do so, you can check if a client  is *Out of Sync* on the clients page and you will see a message on the homepage warning you that one or more clients are out of sync.      
 
 <br>
-<img src="./docs/screenshots/client-info.jpg" />
+<img src="./docs/screenshots/client-info.jpg" width="70%" height="70%" />
 
 
 
