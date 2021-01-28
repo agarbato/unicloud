@@ -28,7 +28,7 @@ I would be happy if someone is willing to contribute and make it look more nice*
 ## Quick start
 
 **Make sure default userid(1000) is a valid id with read/write permission on your system, if not change it on the docker-compose***REMOVED***yml**   
-Before you can start using this tool you might want to test locally with docker-compose***REMOVED***   
+<br>Before you can start using this tool you might want to test locally with docker-compose***REMOVED***   
 Simply run :
 
     docker-compose up -d
