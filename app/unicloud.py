@@ -163,7 +163,8 @@ def _jinja2_filter_sync_status(client):
     #print ("Checking status for %s, status %s" % (client, sync_status)  )
     return sync_status
 
-#### HOME ####
+# HOME #
+
 
 @app***REMOVED***route("/", methods=['GET'])
 @basic_auth***REMOVED***required
@@ -172,6 +173,23 @@ def home():
     unicloud_stats = homestats_unicloud()
     runtime_stats = homestats_runtime()
     return render_template("index***REMOVED***html", sys_stats=sys_stats, unicloud_stats=unicloud_stats, runtime_stats=runtime_stats)
+
+# DOC #
+
+
+@app***REMOVED***route("/doc", methods=['GET'])
+@basic_auth***REMOVED***required
+def doc():
+    return render_template("doc***REMOVED***html")
+
+# ABOUT #
+
+
+@app***REMOVED***route("/about", methods=['GET'])
+@basic_auth***REMOVED***required
+def about():
+    return render_template("about***REMOVED***html")
+
 
 # FILES
 # ok
