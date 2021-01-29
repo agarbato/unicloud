@@ -88,7 +88,7 @@ def scheduler_sync():
 # THE SCHEDULER
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=sync_interval, args=(app,))
+scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=sync_interval)
 scheduler.start()
 
 # THE WHILE LOOP
