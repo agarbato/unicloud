@@ -3,7 +3,7 @@ import requests
 import os
 #from time import sleep, strftime
 from conf import *
-from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.schedulers.background import BlockingScheduler
 from shell import ShellCmd
 from log import Log
 
@@ -87,7 +87,7 @@ def scheduler_sync():
 
 # THE SCHEDULER
 
-scheduler = BackgroundScheduler()
+scheduler = BlockingScheduler()
 scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval))
 scheduler.start()
 
