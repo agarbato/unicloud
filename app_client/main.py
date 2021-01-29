@@ -72,12 +72,6 @@ def end_sync(result, start_ts, log):
   log.sync_end(result)
   log.header()
 
-# THE SCHEDULER
-
-scheduler = BackgroundScheduler()
-scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=sync_interval, args=(app,))
-scheduler.start()
-
 def scheduler_sync():
   log = Log(logfile)
   start_ts = get_ts()
@@ -90,6 +84,12 @@ def scheduler_sync():
   else:
     end_sync(result, start_ts, log)
   log.close()
+
+# THE SCHEDULER
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=sync_interval, args=(app,))
+scheduler.start()
 
 # THE WHILE LOOP
 
