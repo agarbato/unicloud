@@ -1,7 +1,5 @@
 import time
 import requests
-import os
-#from time import sleep, strftime
 from conf import *
 from apscheduler***REMOVED***schedulers***REMOVED***background import BlockingScheduler
 from shell import ShellCmd
@@ -46,7 +44,7 @@ def start_sync(log, start_ts):
         result***REMOVED***insert(2, 'WARNING')
       else:
         result***REMOVED***insert(2, 'KO')
-      unisonstderr=run***REMOVED***rstderr()
+      unisonstderr = run***REMOVED***rstderr()
       result***REMOVED***insert(3, unisonstderr)
       if "Nothing to do" in unisonstderr:
         result***REMOVED***insert(4, "UNCHANGED")
@@ -91,26 +89,6 @@ scheduler = BlockingScheduler()
 scheduler***REMOVED***add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval))
 scheduler***REMOVED***start()
 
-# THE WHILE LOOP
-
-# while True:
-#   if not os***REMOVED***path***REMOVED***exists(lockfile):
-#     log = Log(logfile)
-#     filevar = start_lock(lockfile)
-#     start_ts = get_ts()
-#     result = start_sync(log)
-#     #print (result)
-#     if result == 6 or result == 503:
-#       log***REMOVED***client_error("Client %s can't contact API Server [ %s ]" % (client_hostname, start_sync_url) )
-#     elif result == 500:
-#       log***REMOVED***client_error("Client %s is not enabled, enable it from server UI" % client_hostname)
-#     else:
-#       end_sync(result, log)
-#     remove_lock(lockfile, filevar)
-#   else:
-#     print ("Lock File exist, wait")
-#   log***REMOVED***close()
-#   sleep(int(sync_interval))
 
 
 
