@@ -2,6 +2,7 @@ import time
 import requests
 from conf import *
 from apscheduler.schedulers.background import BlockingScheduler
+from datetime import datetime
 from shell import ShellCmd
 from log import Log
 
@@ -85,8 +86,9 @@ def scheduler_sync():
 
 # THE SCHEDULER
 
+
 scheduler = BlockingScheduler()
-scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval))
+scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval), next_run_time=datetime.now())
 scheduler.start()
 
 
