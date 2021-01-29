@@ -1,7 +1,5 @@
 import time
 import requests
-import os
-#from time import sleep, strftime
 from conf import *
 from apscheduler.schedulers.background import BlockingScheduler
 from shell import ShellCmd
@@ -46,7 +44,7 @@ def start_sync(log, start_ts):
         result.insert(2, 'WARNING')
       else:
         result.insert(2, 'KO')
-      unisonstderr=run.rstderr()
+      unisonstderr = run.rstderr()
       result.insert(3, unisonstderr)
       if "Nothing to do" in unisonstderr:
         result.insert(4, "UNCHANGED")
@@ -91,26 +89,6 @@ scheduler = BlockingScheduler()
 scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval))
 scheduler.start()
 
-# THE WHILE LOOP
-
-# while True:
-#   if not os.path.exists(lockfile):
-#     log = Log(logfile)
-#     filevar = start_lock(lockfile)
-#     start_ts = get_ts()
-#     result = start_sync(log)
-#     #print (result)
-#     if result == 6 or result == 503:
-#       log.client_error("Client %s can't contact API Server [ %s ]" % (client_hostname, start_sync_url) )
-#     elif result == 500:
-#       log.client_error("Client %s is not enabled, enable it from server UI" % client_hostname)
-#     else:
-#       end_sync(result, log)
-#     remove_lock(lockfile, filevar)
-#   else:
-#     print ("Lock File exist, wait")
-#   log.close()
-#   sleep(int(sync_interval))
 
 
 
