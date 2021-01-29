@@ -88,7 +88,7 @@ def scheduler_sync():
 # THE SCHEDULER
 
 scheduler = BackgroundScheduler()
-scheduler***REMOVED***add_job(func=scheduler_sync, trigger="interval", seconds=sync_interval, args=(app,))
+scheduler***REMOVED***add_job(func=scheduler_sync, trigger="interval", seconds=sync_interval)
 scheduler***REMOVED***start()
 
 # THE WHILE LOOP
