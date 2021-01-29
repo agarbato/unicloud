@@ -78,7 +78,9 @@ def add_user():
 def gen_key():
   print ("Generating %s ssh keys" % role)
   if role == "server":
-    cmd = ShellCmd("ssh-keygen -A ; mv /etc/ssh /data/")
+    ShellCmd("ssh-keygen -A ; mv /etc/ssh /data/")
+    # fix possible wrong permission on home folder that prevents ssh to work properly
+    ShellCmd("chmod g-w /data")
   else:
     #print (ShellCmd("ls -al /data/"))
     cmd = ShellCmd("su -c \"ssh-keygen -f /data/.ssh/id_rsa -t rsa -N '' \" %s" % user)
