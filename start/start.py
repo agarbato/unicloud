@@ -103,8 +103,8 @@ def conf_supervisord():
      # SERVER CONFIG
      with open(supervise_cfg, 'a') as svcfg:
        svcfg***REMOVED***write("[program:sshd]" + nl)
-       #svcfg***REMOVED***write("command = /usr/sbin/sshd -D -f /etc/sshd_config -E /data/log/sshlog" + nl)
-       svcfg***REMOVED***write("command = /usr/sbin/sshd -D -f /etc/sshd_config -e" + nl)
+       svcfg***REMOVED***write("command = /usr/sbin/sshd -D -f /etc/sshd_config -E /data/log/sshlog" + nl)
+       #svcfg***REMOVED***write("command = /usr/sbin/sshd -D -f /etc/sshd_config -e" + nl)
        svcfg***REMOVED***write("redirect_stderr=true" + nl)
        svcfg***REMOVED***write("[program:nginx]" + nl)
        svcfg***REMOVED***write("command=/usr/sbin/nginx -g 'daemon off';" + nl)
