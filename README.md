@@ -46,6 +46,8 @@ Before you can start to sync, two steps are required:
 **The share name must match the one defined on the docker-compose by the `SERVER_SHARE` env variable.**   
 The client will keep restarting until registration is completed and the share is defined, check docker-compose logs for troubleshooting.   
 When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH.   
+   
+      
 Follow messages on the homepage to complete all the required steps.   
 
 <img src="./docs/screenshots/homepage-events.jpg" width="50%" height="50%"/>
