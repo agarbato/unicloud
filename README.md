@@ -44,10 +44,9 @@ Before you can start to sync, two steps are required:
  - Create your first share and name it `share1` from the [shares](http://127***REMOVED***0***REMOVED***0***REMOVED***1:5000/shares/mgt) management page    
 
 **The share name must match the one defined on the docker-compose by the `SERVER_SHARE` env variable***REMOVED*****   
-The client will keep restarting until registration is completed and the share is defined, check docker-compose logs for troubleshooting***REMOVED***      
-When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH***REMOVED***   
-<br>   
-Follow messages on the homepage to complete all the required steps***REMOVED***   
+The client will keep restarting until registration is completed and the share is defined, check docker-compose logs for troubleshooting***REMOVED***       
+<br>When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH***REMOVED***   
+<br>Follow messages on the homepage to complete all the required steps***REMOVED***   
 <img src="***REMOVED***/docs/screenshots/homepage-events***REMOVED***jpg" width="50%" height="50%"/>
 
 If you want to start again fresh, simple run :
