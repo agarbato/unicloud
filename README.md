@@ -8,9 +8,9 @@ every *n* minutes but I felt that I had lost control of it, especially when for 
 I decided to create this project to add a web interface to unison,  monitor all sync and make it simpler to add a new replica of my files and run unison on docker***REMOVED***  
 In this way when I have a spare computer where I can run docker I just add another replica to my important files***REMOVED***      
 The tool provide an automatic way to manage your clients through a registration process and give you a nice overview of sync events and status***REMOVED***   
-This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style***REMOVED***     
-I'm planning to include bootstrap as soon as I will have some free time***REMOVED***      
-I would be happy if someone is willing to contribute and make it look more nice***REMOVED***   
+This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style***REMOVED***   
+I'm planning to integrate bootstrap in the project as soon as I will have some free time***REMOVED***    
+
 
 <br>
 
