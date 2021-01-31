@@ -10,7 +10,7 @@ In this way when I have a spare computer where I can run docker I just add anoth
 The tool provide an automatic way to manage your clients through a registration process and give you a nice overview of sync events and status.   
 This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style.   
 I'm planning to integrate bootstrap in the project as soon as I will have some free time.    
-I would be happy if someone is willing to contribute and make it look more nice.   
+
 
 <br>
 
@@ -29,26 +29,25 @@ I would be happy if someone is willing to contribute and make it look more nice.
 ## Quick start
 
 **Make sure default userid(1000) is a valid id with read/write permission on your system, if not change it on the docker-compose.yml**   
-<br>Before you can start using this tool you might want to test locally with docker-compose.   
+<br>Before you can start using this tool you might want to test locally with [docker-compose](https://docs.docker.com/compose/install/).   
 Simply run :
 
     docker-compose up -d
 
-Docker will build the image and start the project.
+Docker will build the image and start the project.   
 Open your browser [here](http://127.0.0.1:5000/) passing credentials specified on the docker-compose file.
 
-Wait a few seconds and the app should be up and running.
-On the homepage you will see that there are no registered clients and no shares defined.
-The test client will try to connect to the server but, before you can start to sync, two steps are required:   
-
+Wait a few seconds and the app should be up and running.   
+On the homepage you will see that there are no registered clients and no shares defined.   
+Before you can start to sync, two steps are required:       
+  
  - Activate the client from the [clients](http://127.0.0.1:5000/clients) page.
  - Create your first share and name it `share1` from the [shares](http://127.0.0.1:5000/shares/mgt) management page    
 
-**The share name must match the one defined on the docker-compose by the `SHARE_NAME` env variable.**   
-When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH.  
-
-Follow messages on the homepage to complete all the required steps.   
-
+**The share name must match the one defined on the docker-compose by the `SERVER_SHARE` env variable.**   
+The client will keep restarting until registration is completed and the share is defined, check docker-compose logs for troubleshooting.       
+<br>When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH.   
+<br>Follow messages on the homepage to complete all the required steps.   
 <img src="./docs/screenshots/homepage-events.jpg" width="50%" height="50%"/>
 
 If you want to start again fresh, simple run :
