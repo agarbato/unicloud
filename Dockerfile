@@ -26,13 +26,11 @@ RUN apk add --no-cache \
     dumb-init \
     python3 \
     py3-pip \
-    python3-dev  
+    python3-dev \
+    && pip3 install flask flask_restful uwsgi requests flask-basicAuth flask-autoindex psutil apscheduler \
+    && apk del libc-dev linux-headers gcc python3-dev 
 
-RUN mkdir -p /var/run/sshd 
-RUN mkdir -p /run/nginx
-RUN mkdir -p /usr/local/unicloud
-RUN pip3 install flask flask_restful uwsgi requests flask-basicAuth flask-autoindex psutil apscheduler
-RUN apk del libc-dev linux-headers gcc python3-dev 
+RUN mkdir -p /var/run/sshd /run/nginx /usr/local/unicloud
 ADD app/    /usr/local/unicloud/
 ADD app_client/    /usr/local/unicloud_client/
 ADD conf/sshd/sshd_config_alpine /etc/sshd_config
