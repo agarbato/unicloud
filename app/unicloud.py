@@ -134,17 +134,8 @@ def status():
 @app***REMOVED***route("/clients", methods=['GET'])
 @basic_auth***REMOVED***required
 def clients():
-    query = """ SELECT clients***REMOVED***name,
-                  clients***REMOVED***status,
-                  clients***REMOVED***joindate,
-                  clients***REMOVED***threshold,
-                  clients***REMOVED***ssh_key,
-                  max(events***REMOVED***end_ts)
-                FROM clients
-                LEFT JOIN events on events***REMOVED***client = clients***REMOVED***name
-                GROUP BY clients***REMOVED***name
-                ORDER BY events***REMOVED***end_ts desc """
-    res = query_db(query)
+    client = ClientMgt("all-clients-page")
+    res = client***REMOVED***list_clients_page()
     #print (res)
     return render_template("clients***REMOVED***html", clients=res)
 
@@ -161,7 +152,7 @@ def client_mgt():
 
 @app***REMOVED***route("/clients/status/<client>", methods=['GET'])
 def client_status(client):
-    cl=ClientMgt(client)
+    cl = ClientMgt(client)
     exist = cl***REMOVED***exist()
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
@@ -183,7 +174,7 @@ def client_info(client):
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status=cl***REMOVED***info()
+      status = cl***REMOVED***info()
       return jsonify(status)
 
 
@@ -201,7 +192,7 @@ def client_info_ui(client):
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status=cl***REMOVED***info()
+      status = cl***REMOVED***info()
       return render_template("client_info***REMOVED***html", status=status, client=client, sync_status=sync_status)
 
 
