@@ -177,3 +177,23 @@ class ClientMgt(object):
         query = "select name from clients where threshold !=0"
         clientlist = query_db(query)
         return clientlist
+
+    def start_sync(self, start_ts, share, status="SYNCING"):
+        self***REMOVED***start_ts = start_ts
+        self***REMOVED***share = share
+        self***REMOVED***status = status
+        query = ("insert into events (client,start_ts,share,status) values ('%s',%d,'%s','%s')") % (self***REMOVED***client, start_ts, share, status)
+        #print (query)
+        query_db(query)
+        get_db()***REMOVED***commit()
+
+    def end_sync(self, start_ts, end_ts, status, sync_status, log):
+        self***REMOVED***start_ts = start_ts
+        self***REMOVED***end_ts = end_ts
+        self***REMOVED***status = status
+        self***REMOVED***sync_status = sync_status
+        self***REMOVED***log = log
+        duration = self***REMOVED***end_ts - self***REMOVED***start_ts
+        query = ("update events set status='%s', sync_status='%s', end_ts=%d, duration=%d, log='%s' where client='%s' and start_ts=%d") % (status, sync_status, end_ts, duration, log, self***REMOVED***client, start_ts)
+        query_db(query)
+        get_db()***REMOVED***commit()
