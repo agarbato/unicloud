@@ -125,3 +125,8 @@ class ShareMgt(object):
             get_db().commit()
         else:
             print("Size is the same, no need to update db")
+
+    def list_all_info(self):
+        query = "select name, description, size, path from shares"
+        res = query_db(query)
+        return res

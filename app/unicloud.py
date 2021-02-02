@@ -282,8 +282,8 @@ def set_threshold():
 @app.route("/shares", methods=['GET'])
 @basic_auth.required
 def shares():
-    query = "select name, description, size, path from shares"
-    res = query_db(query)
+    shares = ShareMgt("all")
+    res = shares.list_all_info()
     return render_template("shares.html", shares=res)
 
 
@@ -338,7 +338,6 @@ def share_add_process():
     name = request.form.get('name')
     path = request.form.get('path')
     description = request.form.get('description')
-    ssh_key = request.form.get('ssh_key')
     create = request.form.get('create')
     if name is not None or path is not None or description is not None:
        share = ShareMgt(name)
@@ -405,6 +404,7 @@ def shares_exist():
 
 #### EVENTS HTML ##########
 
+
 @app.route("/events", methods=['PUT','POST','GET'])
 @basic_auth.required
 def events():
@@ -418,7 +418,7 @@ def events():
     #print ("Client %s Status %s" % (client,status))
 
     # ALL RESULTS
-    if client == "ALL" and  status == "ALL" and sync_status== "ALL" or client is None and status is None and sync_status is None: # ALL RESULTS
+    if client == "ALL" and status == "ALL" and sync_status== "ALL" or client is None and status is None and sync_status is None: # ALL RESULTS
       query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events order by start_ts desc limit %d" % int(limit)
     # SPECIFIC CLIENT AND ALL STATUS AND ALL SYNC_STATUS
     elif client != "ALL" and status == "ALL" and sync_status == "ALL":
