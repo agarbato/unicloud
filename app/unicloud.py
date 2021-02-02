@@ -282,8 +282,8 @@ def set_threshold():
 @app***REMOVED***route("/shares", methods=['GET'])
 @basic_auth***REMOVED***required
 def shares():
-    query = "select name, description, size, path from shares"
-    res = query_db(query)
+    shares = ShareMgt("all")
+    res = shares***REMOVED***list_all_info()
     return render_template("shares***REMOVED***html", shares=res)
 
 
@@ -338,7 +338,6 @@ def share_add_process():
     name = request***REMOVED***form***REMOVED***get('name')
     path = request***REMOVED***form***REMOVED***get('path')
     description = request***REMOVED***form***REMOVED***get('description')
-    ssh_key = request***REMOVED***form***REMOVED***get('ssh_key')
     create = request***REMOVED***form***REMOVED***get('create')
     if name is not None or path is not None or description is not None:
        share = ShareMgt(name)
@@ -405,6 +404,7 @@ def shares_exist():
 
 #### EVENTS HTML ##########
 
+
 @app***REMOVED***route("/events", methods=['PUT','POST','GET'])
 @basic_auth***REMOVED***required
 def events():
@@ -418,7 +418,7 @@ def events():
     #print ("Client %s Status %s" % (client,status))
 
     # ALL RESULTS
-    if client == "ALL" and  status == "ALL" and sync_status== "ALL" or client is None and status is None and sync_status is None: # ALL RESULTS
+    if client == "ALL" and status == "ALL" and sync_status== "ALL" or client is None and status is None and sync_status is None: # ALL RESULTS
       query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events order by start_ts desc limit %d" % int(limit)
     # SPECIFIC CLIENT AND ALL STATUS AND ALL SYNC_STATUS
     elif client != "ALL" and status == "ALL" and sync_status == "ALL":
