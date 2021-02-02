@@ -1,6 +1,7 @@
 import time
 from db_conn import get_db, query_db
 
+
 class ClientMgt(object):
     client = ""
     def __init__(self, client):
@@ -42,7 +43,6 @@ class ClientMgt(object):
                            'lastseen': lastseen[0][0], 'joindate': joindate[0][0], 'status': status[0][0], 'ssh_key': ssh_key[0][0],
                            'threshold': threshold[0][0], 'avg_duration': float("{0:***REMOVED***2f}"***REMOVED***format(avg_duration[0][0]))})
         return result
-
 
     def status(self):
         query = "select name,status from clients where name='%s'" % self***REMOVED***client
@@ -129,11 +129,9 @@ class ClientMgt(object):
                 return "Out of Sync"
            else:
               return "Never synced"
-
            #print ("Delta is %d, Lastok: %d, Threshold is %d," % ( delta, lastok[0][0], threshold[0][0] ))
            #print ("LastOk %d" % lastok[0][0])
            #print ("Threshold %d" % threshold[0][0])
-
 
     def update_sync_status(self, s_status):
         #print(self***REMOVED***client)

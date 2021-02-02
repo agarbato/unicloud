@@ -73,13 +73,13 @@ def query_db(query, args = (), one = False):
 
 ### INIT DB AND TABLES
 
-conn = create_connection(database)
-
-if conn is not None:
-    create_table(conn, sql_table_shares)
-    create_table(conn, sql_table_events)
-    create_table(conn, sql_table_clients)
-    conn***REMOVED***close()
-else:
-    print ("Error! can't create database connection")
-    print (conn)
+def init_db():
+   conn = create_connection(database)
+   if conn is not None:
+      create_table(conn, sql_table_shares)
+      create_table(conn, sql_table_events)
+      create_table(conn, sql_table_clients)
+      conn***REMOVED***close()
+   else:
+      print ("Error! can't create database connection")
+      print (conn)
