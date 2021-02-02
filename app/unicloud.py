@@ -1,11 +1,10 @@
-import sqlite3
 import time
 import atexit
+from db_conn import *
 from flask import Flask, g, render_template, jsonify, request
 from flask_restful import Api, Resource, reqparse
 from flask_basicauth import BasicAuth
 from flask_autoindex import AutoIndex
-from sqlite3 import Error
 from client_mgt import ClientMgt
 from share_mgt import ShareMgt
 from homestats import *
@@ -16,11 +15,10 @@ from conf import *
 root_dir     = "/data"
 database     = root_dir + "/unicloud***REMOVED***db"
 authkeyfile  = root_dir + "/***REMOVED***ssh/unicloud_authorized_keys"
-#shares_path  = "/shares"
-
 startTime = time***REMOVED***time()
 
 app = Flask(__name__, static_url_path='/static')
+files_index = AutoIndex(app, shares_path, add_url_rules=False)
 api = Api(app)
 
 if server_debug:
@@ -35,57 +33,6 @@ app***REMOVED***config['BASIC_AUTH_USERNAME'] = server_ui_username
 app***REMOVED***config['BASIC_AUTH_PASSWORD'] = server_ui_password
 basic_auth = BasicAuth(app)
 
-
-sql_table_shares = """ CREATE TABLE IF NOT EXISTS shares (
-                         id INTEGER PRIMARY KEY,
-                         size TEXT NOT NULL,
-                         name TEXT NOT NULL,
-                         description TEXT NOT NULL,
-                         path TEXT NOT NULL); """
-
-sql_table_events = """ CREATE TABLE IF NOT EXISTS events (
-                         id INTEGER PRIMARY KEY,
-                         client TEXT NOT NULL,
-                         share TEXT NOT NULL,
-                         log TEXT,
-                         start_ts   DATETIME,
-                         end_ts   DATETIME,
-                         duration INTEGER,
-                         sync_status TEXT,
-                         status TEXT); """
-
-sql_table_clients = """ CREATE TABLE IF NOT EXISTS clients (
-                         id INTEGER PRIMARY KEY,
-                         name TEXT NOT NULL,
-                         ssh_key TEXT NOT NULL,
-                         status TEXT NOT NULL,
-                         share TEXT NOT NULL,
-                         threshold INTEGER NOT NULL,
-                         sync_status TEXT,
-                         joindate DATETIME); """
-
-
-def create_connection(db_file):
-    """ create a database connection to a SQLite database """
-    try:
-        conn = sqlite3***REMOVED***connect(db_file)
-        return conn
-    except Error as e:
-        print(e)
-
-def create_table(conn, create_table_sql):
-    """ create a table from the create_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
-    """
-    try:
-        c = conn***REMOVED***cursor()
-        c***REMOVED***execute(create_table_sql)
-    except Error as e:
-        print(e)
-#    conn***REMOVED***close()
-
 # SCHEDULER
 
 scheduler = BackgroundScheduler()
@@ -97,38 +44,8 @@ scheduler***REMOVED***start()
 # Shut down the scheduler when exiting the app
 atexit***REMOVED***register(lambda: scheduler***REMOVED***shutdown())
 
-### INIT DB AND TABLES
-
-conn = create_connection(database)
-
-if conn is not None:
-    create_table(conn, sql_table_shares)
-    create_table(conn, sql_table_events)
-    create_table(conn, sql_table_clients)
-    conn***REMOVED***close()
-else:
-    print ("Error! can't create database connection")
-    print (conn)
-
-
-### FLASK DB ###
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g***REMOVED***_database = sqlite3***REMOVED***connect(database)
-        #db***REMOVED***row_factory = sqlite3***REMOVED***Row
-    return db
-
-
-def query_db(query, args=(), one=False):
-    cur = get_db()***REMOVED***execute(query, args)
-    rv = cur***REMOVED***fetchall()
-    cur***REMOVED***close()
-    return (rv[0] if rv else None) if one else rv
 
 ### FILTERS
-
 
 # helper to close
 @app***REMOVED***teardown_appcontext
@@ -198,8 +115,6 @@ def about():
 
 
 # FILES
-# ok
-files_index = AutoIndex(app, shares_path, add_url_rules=False)
 # Custom indexing
 @app***REMOVED***route('/files/<path:path>', strict_slashes=False)
 @app***REMOVED***route("/files", strict_slashes=False, methods=['GET'])
