@@ -176,6 +176,42 @@ class ClientMgt(object):
         clientlist = query_db(query)
         return clientlist
 
+    def list_clients_page(self):
+        maxrows = 50000
+        query = "select max(id) from events"
+        maxid = query_db(query)
+        #print (maxid)
+        if maxid[0][0]:
+            maxid = int(maxid[0][0])
+        else:
+            maxid = 0
+        if maxid > maxrows:
+            query = """ SELECT clients.name,
+                      clients.status,
+                      clients.joindate,
+                      clients.threshold,
+                      clients.ssh_key,
+                      events.end_ts
+                    FROM clients
+                    LEFT JOIN events on events.client = clients.name
+                    WHERE events.id > '%d'
+                    GROUP BY clients.name
+                    ORDER BY events.end_ts desc """ % (maxid - maxrows)
+        else:
+            query = """ SELECT clients.name,
+                      clients.status,
+                      clients.joindate,
+                      clients.threshold,
+                      clients.ssh_key,
+                      events.end_ts
+                    FROM clients
+                    LEFT JOIN events on events.client = clients.name
+                    GROUP BY clients.name
+                    ORDER BY events.end_ts desc """
+        #print (query)
+        res = query_db(query)
+        return res
+
     def start_sync(self, start_ts, share, status="SYNCING"):
         self.start_ts = start_ts
         self.share = share

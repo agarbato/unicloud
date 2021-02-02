@@ -134,17 +134,8 @@ def status():
 @app.route("/clients", methods=['GET'])
 @basic_auth.required
 def clients():
-    query = """ SELECT clients.name,
-                  clients.status,
-                  clients.joindate,
-                  clients.threshold,
-                  clients.ssh_key,
-                  max(events.end_ts)
-                FROM clients
-                LEFT JOIN events on events.client = clients.name
-                GROUP BY clients.name
-                ORDER BY events.end_ts desc """
-    res = query_db(query)
+    client = ClientMgt("all-clients-page")
+    res = client.list_clients_page()
     #print (res)
     return render_template("clients.html", clients=res)
 
@@ -161,7 +152,7 @@ def client_mgt():
 
 @app.route("/clients/status/<client>", methods=['GET'])
 def client_status(client):
-    cl=ClientMgt(client)
+    cl = ClientMgt(client)
     exist = cl.exist()
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
@@ -183,7 +174,7 @@ def client_info(client):
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status=cl.info()
+      status = cl.info()
       return jsonify(status)
 
 
@@ -201,7 +192,7 @@ def client_info_ui(client):
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status=cl.info()
+      status = cl.info()
       return render_template("client_info.html", status=status, client=client, sync_status=sync_status)
 
 
