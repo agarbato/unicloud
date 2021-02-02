@@ -12,11 +12,12 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from scheduler_tasks import *
 from conf import *
 
-root_dir     = "/data"
-database     = root_dir + "/unicloud.db"
-authkeyfile  = root_dir + "/.ssh/unicloud_authorized_keys"
+root_dir = "/data"
+database = root_dir + "/unicloud.db"
+authkeyfile = root_dir + "/.ssh/unicloud_authorized_keys"
 startTime = time.time()
 
+init_db()
 app = Flask(__name__, static_url_path='/static')
 files_index = AutoIndex(app, shares_path, add_url_rules=False)
 api = Api(app)
