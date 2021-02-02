@@ -10,9 +10,9 @@ from db_conn import get_db, query_db
 def homestats_sys(startTime):
     result={}
     av1, av2, av3 = os.getloadavg()
-    av1 = round(av1,2)
-    av2 = round(av2,2)
-    av3 = round(av3,2)
+    av1 = round(av1, 2)
+    av2 = round(av2, 2)
+    av3 = round(av3, 2)
     cpu_percent = psutil.cpu_percent()
     memory_percent = psutil.virtual_memory().percent
     bootDelta = int(time.time() - psutil.boot_time())

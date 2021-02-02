@@ -1,11 +1,10 @@
-import sqlite3
 import time
 import atexit
+from db_conn import *
 from flask import Flask, g, render_template, jsonify, request
 from flask_restful import Api, Resource, reqparse
 from flask_basicauth import BasicAuth
 from flask_autoindex import AutoIndex
-from sqlite3 import Error
 from client_mgt import ClientMgt
 from share_mgt import ShareMgt
 from homestats import *
@@ -13,14 +12,14 @@ from apscheduler.schedulers.background import BackgroundScheduler
 from scheduler_tasks import *
 from conf import *
 
-root_dir     = "/data"
-database     = root_dir + "/unicloud.db"
-authkeyfile  = root_dir + "/.ssh/unicloud_authorized_keys"
-#shares_path  = "/shares"
-
+root_dir = "/data"
+database = root_dir + "/unicloud.db"
+authkeyfile = root_dir + "/.ssh/unicloud_authorized_keys"
 startTime = time.time()
 
+init_db()
 app = Flask(__name__, static_url_path='/static')
+files_index = AutoIndex(app, shares_path, add_url_rules=False)
 api = Api(app)
 
 if server_debug:
@@ -35,57 +34,6 @@ app.config['BASIC_AUTH_USERNAME'] = server_ui_username
 app.config['BASIC_AUTH_PASSWORD'] = server_ui_password
 basic_auth = BasicAuth(app)
 
-
-sql_table_shares = """ CREATE TABLE IF NOT EXISTS shares (
-                         id INTEGER PRIMARY KEY,
-                         size TEXT NOT NULL,
-                         name TEXT NOT NULL,
-                         description TEXT NOT NULL,
-                         path TEXT NOT NULL); """
-
-sql_table_events = """ CREATE TABLE IF NOT EXISTS events (
-                         id INTEGER PRIMARY KEY,
-                         client TEXT NOT NULL,
-                         share TEXT NOT NULL,
-                         log TEXT,
-                         start_ts   DATETIME,
-                         end_ts   DATETIME,
-                         duration INTEGER,
-                         sync_status TEXT,
-                         status TEXT); """
-
-sql_table_clients = """ CREATE TABLE IF NOT EXISTS clients (
-                         id INTEGER PRIMARY KEY,
-                         name TEXT NOT NULL,
-                         ssh_key TEXT NOT NULL,
-                         status TEXT NOT NULL,
-                         share TEXT NOT NULL,
-                         threshold INTEGER NOT NULL,
-                         sync_status TEXT,
-                         joindate DATETIME); """
-
-
-def create_connection(db_file):
-    """ create a database connection to a SQLite database """
-    try:
-        conn = sqlite3.connect(db_file)
-        return conn
-    except Error as e:
-        print(e)
-
-def create_table(conn, create_table_sql):
-    """ create a table from the create_table_sql statement
-    :param conn: Connection object
-    :param create_table_sql: a CREATE TABLE statement
-    :return:
-    """
-    try:
-        c = conn.cursor()
-        c.execute(create_table_sql)
-    except Error as e:
-        print(e)
-#    conn.close()
-
 # SCHEDULER
 
 scheduler = BackgroundScheduler()
@@ -97,34 +45,6 @@ scheduler.start()
 # Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
 
-### INIT DB AND TABLES
-
-conn = create_connection(database)
-
-if conn is not None:
-     create_table(conn, sql_table_shares)
-     create_table(conn, sql_table_events)
-     create_table(conn, sql_table_clients)
-     conn.close()
-else:
-    print ("Error! can't create database connection")
-    print (conn)
-
-
-### FLASK DB ###
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(database)
-        #db.row_factory = sqlite3.Row
-    return db
-
-def query_db(query, args=(), one=False):
-    cur = get_db().execute(query, args)
-    rv = cur.fetchall()
-    cur.close()
-    return (rv[0] if rv else None) if one else rv
 
 ### FILTERS
 
@@ -134,6 +54,7 @@ def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
       db.close()
+
 
 @app.template_filter('dt')
 def _jinja2_filter_datetime(date, fmt=None):
@@ -145,15 +66,18 @@ def _jinja2_filter_datetime(date, fmt=None):
     else:
         return "None"
 
+
 @app.template_filter('inc')
 def _jinja2_filter_inc(number):
    number += 1
    return number
 
+
 @app.template_filter('dec')
 def _jinja2_filter_dec(number):
     number -= 1
     return number
+
 
 @app.template_filter('sync_status')
 def _jinja2_filter_sync_status(client):
@@ -192,8 +116,6 @@ def about():
 
 
 # FILES
-# ok
-files_index = AutoIndex(app, shares_path, add_url_rules=False)
 # Custom indexing
 @app.route('/files/<path:path>', strict_slashes=False)
 @app.route("/files", strict_slashes=False, methods=['GET'])
@@ -203,26 +125,20 @@ def autoindex(path='.'):
 
 #### CLIENTS REQUESTS #########
 
+
 @app.route("/status", methods=['GET'])
 def status():
    return "[OK] Ready to serve sir..\n" , 200
 
+
 @app.route("/clients", methods=['GET'])
 @basic_auth.required
 def clients():
-    query = """ SELECT clients.name,
-                  clients.status,
-                  clients.joindate,
-                  clients.threshold,
-                  clients.ssh_key,
-                  max(events.end_ts)
-                FROM clients
-                LEFT JOIN events on events.client = clients.name
-                GROUP BY clients.name
-                ORDER BY events.end_ts desc """
-    res = query_db(query)
+    client = ClientMgt("all-clients-page")
+    res = client.list_clients_page()
     #print (res)
     return render_template("clients.html", clients=res)
+
 
 @app.route("/clients/mgt", methods=['GET'])
 @basic_auth.required
@@ -233,9 +149,10 @@ def client_mgt():
     sharelist = share.share_list()
     return render_template("client_mgt.html", clientlist=clientlist, sharelist=sharelist)
 
+
 @app.route("/clients/status/<client>", methods=['GET'])
 def client_status(client):
-    cl=ClientMgt(client)
+    cl = ClientMgt(client)
     exist = cl.exist()
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
@@ -249,6 +166,7 @@ def client_status(client):
         return "Client %s need to be activated. Activate from server UI!" % status[0][0], 401
       #return jsonify(status)
 
+
 @app.route("/clients/info/<client>", methods=['GET'])
 def client_info(client):
     cl = ClientMgt(client)
@@ -256,8 +174,9 @@ def client_info(client):
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status=cl.info()
+      status = cl.info()
       return jsonify(status)
+
 
 @app.route("/clients/info/ui/<client>", methods=['GET'])
 @basic_auth.required
@@ -273,8 +192,9 @@ def client_info_ui(client):
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status=cl.info()
+      status = cl.info()
       return render_template("client_info.html", status=status, client=client, sync_status=sync_status)
+
 
 @app.route("/clients/register", methods=['POST'])
 def client_register():
@@ -300,6 +220,7 @@ def client_register():
         rc = 500
     return jsonify(result), rc
 
+
 @app.route("/clients/add/process", methods=['POST'])
 @basic_auth.required
 def client_process():
@@ -316,6 +237,7 @@ def client_process():
            result = "\n".join(client.add(ssh_key, authkeyfile, register_type, share))
            rc = 200
        return render_template("client_mgt_result.html", result=result), rc
+
 
 @app.route("/clients/del/process", methods=['POST'])
 @basic_auth.required
@@ -343,6 +265,7 @@ def activate_process():
        print (result)
        return render_template("client_activate_result.html", result=result), 200
 
+
 @app.route("/clients/threshold/process", methods=['POST'])
 @basic_auth.required
 def set_threshold():
@@ -354,6 +277,7 @@ def set_threshold():
     return render_template("client_threshold_result.html", result=result, name=name), 200
 
 #### SHARES REQUESTS ######
+
 
 @app.route("/shares", methods=['GET'])
 @basic_auth.required
@@ -375,6 +299,7 @@ def shares_info_ui(name):
     else:
       return render_template("share_info.html", share=result)
 
+
 @app.route("/shares/info/<name>")
 def share_info(name):
     info = "all"
@@ -385,6 +310,7 @@ def share_info(name):
       return result, 404
     else:
       return jsonify(result), 200
+
 
 @app.route("/shares/info/<name>/path")
 def share_info_path(name):
@@ -397,12 +323,14 @@ def share_info_path(name):
     else:
       return result + "\n", 200
 
+
 @app.route("/shares/mgt", methods=['GET'])
 @basic_auth.required
 def share_mgt():
     share = ShareMgt("all")
     sharelist = share.share_list()
     return render_template("share_mgt.html", shares_path=shares_path, sharelist=sharelist)
+
 
 @app.route("/shares/add/process", methods=['POST'])
 @basic_auth.required
@@ -425,6 +353,7 @@ def share_add_process():
     else:
        result = "Please Fill all the fields in the form..."
     return render_template("share_mgt_result.html", result=result), rc
+
 
 @app.route("/shares/del/process", methods=['POST'])
 @basic_auth.required
@@ -532,40 +461,36 @@ def event_id(id):
 
 ####  SYNC ENDPOINTS ####
 
+
 @app.route("/sync/start/<client>", methods=['PUT','POST'])
 def sync_start(client):
     share = request.form.get('share')
     start_ts = int(request.form.get('start_ts'))
     clientmgt = ClientMgt(client)
+    #print("Start Sync")
     if clientmgt.exist()[0] == 0:
       return "Client %s does not exist, register first" % client, 500
     else:
       clientmgt.check_pending()
-      status = "SYNCING"
-      query = ("insert into events (client,start_ts,share,status) values ('%s',%d,'%s','%s')") % (client, start_ts, share, status)
-      #print (query)
-      query_db(query)
-      get_db().commit()
+      clientmgt.start_sync(start_ts, share)
       return "Sync Started, record updated with status %s" % status, 200
+
 
 @app.route("/sync/end/<client>", methods=['PUT','POST'])
 def sync_end(client):
-    share = request.form.get('share')
     start_ts = int(request.form.get('start_ts'))
     status = request.form.get('status')
     sync_status = request.form.get('sync_status')
     log = request.form.get('log')
     end_ts = int(request.form.get('end_ts'))
-    duration = end_ts - start_ts
     clientmgt = ClientMgt(client)
+    #print("End Sync")
     #print("%s : Log Sync Enc Received: %s" % (client, log) )
     if clientmgt.exist()[0] == 0:
       return "Client %s does not exist, register first" % client, 500
     else:
-      query = ("update events set status='%s', sync_status='%s', end_ts=%d, duration=%d, log='%s' where client='%s' and start_ts=%d") % (status, sync_status, end_ts, duration, log, client, start_ts)
-      query_db(query)
-      get_db().commit()
-      return "Sync Terminated, record updated with status %s, duration %d" % (status, duration) , 201
+      clientmgt.end_sync(start_ts, end_ts, status, sync_status, log)
+      return "Sync Terminated, record updated with status %s" % status, 201
 
 ############
 

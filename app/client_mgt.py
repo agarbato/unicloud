@@ -1,6 +1,7 @@
 import time
 from db_conn import get_db, query_db
 
+
 class ClientMgt(object):
     client = ""
     def __init__(self, client):
@@ -42,7 +43,6 @@ class ClientMgt(object):
                            'lastseen': lastseen[0][0], 'joindate': joindate[0][0], 'status': status[0][0], 'ssh_key': ssh_key[0][0],
                            'threshold': threshold[0][0], 'avg_duration': float("{0:.2f}".format(avg_duration[0][0]))})
         return result
-
 
     def status(self):
         query = "select name,status from clients where name='%s'" % self.client
@@ -129,11 +129,9 @@ class ClientMgt(object):
                 return "Out of Sync"
            else:
               return "Never synced"
-
            #print ("Delta is %d, Lastok: %d, Threshold is %d," % ( delta, lastok[0][0], threshold[0][0] ))
            #print ("LastOk %d" % lastok[0][0])
            #print ("Threshold %d" % threshold[0][0])
-
 
     def update_sync_status(self, s_status):
         #print(self.client)
@@ -177,3 +175,61 @@ class ClientMgt(object):
         query = "select name from clients where threshold !=0"
         clientlist = query_db(query)
         return clientlist
+
+    def list_clients_page(self):
+        maxrows = 50000
+        query = "select max(id) from events"
+        maxid = query_db(query)
+        #print (maxid)
+        if maxid[0][0]:
+            maxid = int(maxid[0][0])
+        else:
+            maxid = 0
+        if maxid > maxrows:
+            #print ("Max")
+            query = """ SELECT clients.name,
+                      clients.status,
+                      clients.joindate,
+                      clients.threshold,
+                      clients.ssh_key,
+                      max(events.end_ts)
+                    FROM clients
+                    LEFT JOIN events on events.client = clients.name
+                    WHERE events.id > '%d'
+                    GROUP BY clients.name
+                    ORDER BY events.end_ts desc """ % (maxid - maxrows)
+        else:
+            #print ("Else")
+            query = """ SELECT clients.name,
+                      clients.status,
+                      clients.joindate,
+                      clients.threshold,
+                      clients.ssh_key,
+                      events.end_ts
+                    FROM clients
+                    LEFT JOIN events on events.client = clients.name
+                    GROUP BY clients.name
+                    ORDER BY events.end_ts desc """
+        #print (query)
+        res = query_db(query)
+        return res
+
+    def start_sync(self, start_ts, share, status="SYNCING"):
+        self.start_ts = start_ts
+        self.share = share
+        self.status = status
+        query = ("insert into events (client,start_ts,share,status) values ('%s',%d,'%s','%s')") % (self.client, start_ts, share, status)
+        #print (query)
+        query_db(query)
+        get_db().commit()
+
+    def end_sync(self, start_ts, end_ts, status, sync_status, log):
+        self.start_ts = start_ts
+        self.end_ts = end_ts
+        self.status = status
+        self.sync_status = sync_status
+        self.log = log
+        duration = self.end_ts - self.start_ts
+        query = ("update events set status='%s', sync_status='%s', end_ts=%d, duration=%d, log='%s' where client='%s' and start_ts=%d") % (status, sync_status, end_ts, duration, log, self.client, start_ts)
+        query_db(query)
+        get_db().commit()
