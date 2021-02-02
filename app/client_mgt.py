@@ -1,6 +1,7 @@
 import time
 from db_conn import get_db, query_db
 
+
 class ClientMgt(object):
     client = ""
     def __init__(self, client):
@@ -42,7 +43,6 @@ class ClientMgt(object):
                            'lastseen': lastseen[0][0], 'joindate': joindate[0][0], 'status': status[0][0], 'ssh_key': ssh_key[0][0],
                            'threshold': threshold[0][0], 'avg_duration': float("{0:***REMOVED***2f}"***REMOVED***format(avg_duration[0][0]))})
         return result
-
 
     def status(self):
         query = "select name,status from clients where name='%s'" % self***REMOVED***client
@@ -129,11 +129,9 @@ class ClientMgt(object):
                 return "Out of Sync"
            else:
               return "Never synced"
-
            #print ("Delta is %d, Lastok: %d, Threshold is %d," % ( delta, lastok[0][0], threshold[0][0] ))
            #print ("LastOk %d" % lastok[0][0])
            #print ("Threshold %d" % threshold[0][0])
-
 
     def update_sync_status(self, s_status):
         #print(self***REMOVED***client)
@@ -177,3 +175,61 @@ class ClientMgt(object):
         query = "select name from clients where threshold !=0"
         clientlist = query_db(query)
         return clientlist
+
+    def list_clients_page(self):
+        maxrows = 50000
+        query = "select max(id) from events"
+        maxid = query_db(query)
+        #print (maxid)
+        if maxid[0][0]:
+            maxid = int(maxid[0][0])
+        else:
+            maxid = 0
+        if maxid > maxrows:
+            #print ("Max")
+            query = """ SELECT clients***REMOVED***name,
+                      clients***REMOVED***status,
+                      clients***REMOVED***joindate,
+                      clients***REMOVED***threshold,
+                      clients***REMOVED***ssh_key,
+                      max(events***REMOVED***end_ts)
+                    FROM clients
+                    LEFT JOIN events on events***REMOVED***client = clients***REMOVED***name
+                    WHERE events***REMOVED***id > '%d'
+                    GROUP BY clients***REMOVED***name
+                    ORDER BY events***REMOVED***end_ts desc """ % (maxid - maxrows)
+        else:
+            #print ("Else")
+            query = """ SELECT clients***REMOVED***name,
+                      clients***REMOVED***status,
+                      clients***REMOVED***joindate,
+                      clients***REMOVED***threshold,
+                      clients***REMOVED***ssh_key,
+                      events***REMOVED***end_ts
+                    FROM clients
+                    LEFT JOIN events on events***REMOVED***client = clients***REMOVED***name
+                    GROUP BY clients***REMOVED***name
+                    ORDER BY events***REMOVED***end_ts desc """
+        #print (query)
+        res = query_db(query)
+        return res
+
+    def start_sync(self, start_ts, share, status="SYNCING"):
+        self***REMOVED***start_ts = start_ts
+        self***REMOVED***share = share
+        self***REMOVED***status = status
+        query = ("insert into events (client,start_ts,share,status) values ('%s',%d,'%s','%s')") % (self***REMOVED***client, start_ts, share, status)
+        #print (query)
+        query_db(query)
+        get_db()***REMOVED***commit()
+
+    def end_sync(self, start_ts, end_ts, status, sync_status, log):
+        self***REMOVED***start_ts = start_ts
+        self***REMOVED***end_ts = end_ts
+        self***REMOVED***status = status
+        self***REMOVED***sync_status = sync_status
+        self***REMOVED***log = log
+        duration = self***REMOVED***end_ts - self***REMOVED***start_ts
+        query = ("update events set status='%s', sync_status='%s', end_ts=%d, duration=%d, log='%s' where client='%s' and start_ts=%d") % (status, sync_status, end_ts, duration, log, self***REMOVED***client, start_ts)
+        query_db(query)
+        get_db()***REMOVED***commit()
