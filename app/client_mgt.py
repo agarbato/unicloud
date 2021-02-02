@@ -186,18 +186,20 @@ class ClientMgt(object):
         else:
             maxid = 0
         if maxid > maxrows:
+            #print ("Max")
             query = """ SELECT clients.name,
                       clients.status,
                       clients.joindate,
                       clients.threshold,
                       clients.ssh_key,
-                      events.end_ts
+                      max(events.end_ts)
                     FROM clients
                     LEFT JOIN events on events.client = clients.name
                     WHERE events.id > '%d'
                     GROUP BY clients.name
                     ORDER BY events.end_ts desc """ % (maxid - maxrows)
         else:
+            #print ("Else")
             query = """ SELECT clients.name,
                       clients.status,
                       clients.joindate,
