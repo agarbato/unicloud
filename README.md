@@ -34,7 +34,7 @@ Simply run :
 
     docker-compose up -d
 
-Docker will build the image and start the project***REMOVED***   
+Docker will pull the image from the docker hub and start the project***REMOVED***   
 Open your browser [here](http://127***REMOVED***0***REMOVED***0***REMOVED***1:5000/) passing credentials specified on the docker-compose file***REMOVED***
 
 Wait a few seconds and the app should be up and running***REMOVED***   
