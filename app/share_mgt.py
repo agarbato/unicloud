@@ -6,8 +6,10 @@ import subprocess
 
 class ShareMgt(object):
     share = ""
+
     def __init__(self, name):
       self.name = name
+
     def add(self, path, description, create):
       self.path = path
       self.description = description
