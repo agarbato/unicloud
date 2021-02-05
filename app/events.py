@@ -18,11 +18,6 @@ class Event(object):
         res = query_db(query)
         return res
 
-    # client = request.form.get('client')
-    # status = request.form.get('status')
-    # sync_status = request.form.get('sync_status')
-    # limit = request.form.get('limit')
-
 
 def event_form(client, status, sync_status, limit=50):
     # ALL RESULTS
