@@ -4,6 +4,7 @@ from db_conn import get_db, query_db
 
 class ClientMgt(object):
     client = ""
+
     def __init__(self, client):
         self***REMOVED***client = client
 
