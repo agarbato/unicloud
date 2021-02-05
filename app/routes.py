@@ -7,6 +7,7 @@ from flask_basicauth import BasicAuth
 from flask_autoindex import AutoIndex
 from client_mgt import ClientMgt
 from share_mgt import ShareMgt
+from events import Event, event_form
 from homestats import *
 from apscheduler.schedulers.background import BackgroundScheduler
 from scheduler_tasks import *
@@ -412,50 +413,22 @@ def events():
     status = request.form.get('status')
     sync_status = request.form.get('sync_status')
     limit = request.form.get('limit')
-    #print ("Client %s, Status %s" % (client, status) )
     if limit is None:
       limit = 50
-    #print ("Client %s Status %s" % (client,status))
-
-    # ALL RESULTS
-    if client == "ALL" and status == "ALL" and sync_status== "ALL" or client is None and status is None and sync_status is None: # ALL RESULTS
-      query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events order by start_ts desc limit %d" % int(limit)
-    # SPECIFIC CLIENT AND ALL STATUS AND ALL SYNC_STATUS
-    elif client != "ALL" and status == "ALL" and sync_status == "ALL":
-      query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client = '%s' order by start_ts desc limit %d" % (client,int(limit))
-    # SPECIFIC CLIENT AND SPECIFIC STATUS AND ALL SYNC_STATUS
-    elif client != "ALL" and status != "ALL" and sync_status == "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client = '%s' and status = '%s' order by start_ts desc limit %d" % (client, status, int(limit))
-    # SPECIFIC CLIENT AND SPECIFIC SYNC_STATUS AND ALL STATUS
-    elif client != "ALL" and sync_status != "ALL" and status == "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client = '%s' and sync_status = '%s' order by start_ts desc limit %d" % (client, sync_status, int(limit))
-    # SPECIFIC CLIENT AND SPECIFIC STATUS AND SPECIFIC SYNC_STATUS
-    elif client != "ALL" and status != "ALL" and sync_status != "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client = '%s' and status = '%s' and sync_status = '%s' order by start_ts desc limit %d" % (client, status, sync_status, int(limit))
-    # SPECIFIC STATUS AND ALL CLIENTS
-    elif status != "ALL" and client == "ALL" and sync_status == "ALL":
-      query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where status = '%s' order by start_ts desc limit %d" % (status, int(limit))
-    # SPECIFIC SYNC_STATUS AND ALL CLIENTS
-    elif sync_status != "ALL" and client == "ALL" and status == "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where sync_status = '%s' order by start_ts desc limit %d" % (sync_status, int(limit))
-    # SPECIFIC SYNC_STATUS AND SPECIFIC STATUS
-    elif sync_status != "ALL" and client == "ALL" and status != "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where sync_status = '%s' and status ='%s' order by start_ts desc limit %d" % (sync_status, status, int(limit))
-    #print ("Query %s" % query)
-    res = query_db(query)
+    events_list = event_form(client, status, sync_status, limit)
     client = ClientMgt("all")
     clientlist = client.list_clients()
-    return render_template("events.html", events=res, clientlist=clientlist), 200
+    return render_template("events.html", events=events_list, clientlist=clientlist), 200
 
 
 @app.route("/events/<id>", methods=['GET'])
 @basic_auth.required
 def event_id(id):
-    query = "select count(id) from events where id=%d and status is not 'SYNCING'" % int(id)
-    if int(query_db(query)[0][0]) > 0:
-       query = "select id,client,status,log,start_ts,end_ts,duration,share from events where id=%d" % int(id)
-       res = query_db(query)
-       return render_template("event_log.html", event=res)
+    event = Event(id)
+    exist = event.exist()
+    if exist:
+        event_result = event.info()
+        return render_template("event_log.html", event=event_result), 200
     else:
        return render_template("event_404.html", id=int(id)), 404
 
