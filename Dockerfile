@@ -34,8 +34,8 @@ RUN mkdir -p /var/run/sshd /run/nginx /usr/local/unicloud
 ADD app/    /usr/local/unicloud/
 ADD app_client/    /usr/local/unicloud_client/
 ADD conf/sshd/sshd_config_alpine /etc/sshd_config
-RUN mv /etc/nginx/conf***REMOVED***d/default***REMOVED***conf /etc/nginx/conf***REMOVED***d/default***REMOVED***conf***REMOVED***install
-ADD conf/nginx/default***REMOVED***conf /etc/nginx/conf***REMOVED***d/default***REMOVED***conf
+RUN mv /etc/nginx/http***REMOVED***d/default***REMOVED***conf /etc/nginx/http***REMOVED***d/default***REMOVED***conf***REMOVED***install
+ADD conf/nginx/default***REMOVED***conf /etc/nginx/http***REMOVED***d/default***REMOVED***conf
 
 ADD start/ /start/
 WORKDIR "/start"

@@ -2,7 +2,7 @@ version: '3***REMOVED***3'
 services:
   # SERVER
   test_unicloud_server:
-    image: agarbato1/unison-unicloud
+    image: agarbato1/unison-unicloud:ha
     ports:
       - "2222:22"
       - "5000:80"
@@ -13,6 +13,10 @@ services:
       - SERVER_UI_USERNAME=admin
       - SERVER_UI_PASSWORD=abcd12345
       - ROLE=SERVER
+      - HOME_ASSISTANT=True
+      - HOME_ASSISTANT_URL=https://home***REMOVED***donidoni***REMOVED***it
+      - HOME_ASSISTANT_PUSH_INTERVAL=15
+      - HOME_ASSISTANT_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9***REMOVED***eyJpc3MiOiIzMWI4ODRjMzc1M2Q0OWJlOWEzNDUzNzVjZGNjOTY1NiIsImlhdCI6MTYyNzgzNzk3MCwiZXhwIjoxOTQzMTk3OTcwfQ***REMOVED***shBHbGPXda7HvH_BzhGqQ6ABC4BoTqTOZ0Kx7PCl5Fk
     networks:
       unison:
         aliases:
@@ -26,7 +30,7 @@ services:
         target: /shares
   # CLIENT
   test_unicloud_client:
-    image: agarbato1/unison-unicloud
+    image: agarbato1/unison-unicloud:ha
     environment:
       - CLIENT_HOSTNAME=testing-client1
       - ROLE=CLIENT

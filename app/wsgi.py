@@ -1,5 +1,5 @@
 from routes import app
 
 if __name__ == "__main__":
-    app***REMOVED***run(use_reloader=False)
+    app***REMOVED***run(use_reloader=False, debug=True)
 

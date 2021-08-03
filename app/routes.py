@@ -37,10 +37,16 @@ basic_auth = BasicAuth(app)
 
 # SCHEDULER
 
+print(home_assistant)
 scheduler = BackgroundScheduler()
 scheduler***REMOVED***add_job(func=scheduler_tasks_update_sync_status, trigger="interval", seconds=60, args=(app,))
+if home_assistant:
+    scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_clients, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
+    scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_server, trigger="interval", seconds=home_assistant_push_interval, args=(app, startTime))
+    scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_shares, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
 scheduler***REMOVED***add_job(func=scheduler_tasks_share_update_size, trigger="interval", hours=6, args=(app,))
 scheduler***REMOVED***add_job(func=scheduler_tasks_purge_logs, trigger="interval", hours=12, args=(app,))
+
 scheduler***REMOVED***start()
 
 # Shut down the scheduler when exiting the app
@@ -380,7 +386,7 @@ def share_del_process():
 @basic_auth***REMOVED***required
 def share_get_size_process(name):
     share = ShareMgt(name)
-    share***REMOVED***getsize()
+    share***REMOVED***updatesize()
     result = "Refreshing Share %s size" % name
     return render_template("share_mgt_result***REMOVED***html", result=result), 200
 
@@ -435,7 +441,7 @@ def event_id(id):
 ####  SYNC ENDPOINTS ####
 
 
-@app***REMOVED***route("/sync/start/<client>", methods=['PUT','POST'])
+@app***REMOVED***route("/sync/start/<client>", methods=['PUT', 'POST'])
 def sync_start(client):
     share = request***REMOVED***form***REMOVED***get('share')
     start_ts = int(request***REMOVED***form***REMOVED***get('start_ts'))
@@ -449,7 +455,7 @@ def sync_start(client):
       return "Sync Started, record updated with status %s" % status, 200
 
 
-@app***REMOVED***route("/sync/end/<client>", methods=['PUT','POST'])
+@app***REMOVED***route("/sync/end/<client>", methods=['PUT', 'POST'])
 def sync_end(client):
     start_ts = int(request***REMOVED***form***REMOVED***get('start_ts'))
     status = request***REMOVED***form***REMOVED***get('status')
