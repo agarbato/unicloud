@@ -1,7 +1,7 @@
-***REMOVED***DS_Store
-***REMOVED***idea
+.DS_Store
+.idea
 /local_tests/*/*/*
-unicloud***REMOVED***db
-!***REMOVED***git*
-!cleanup***REMOVED***sh
-!client_test***REMOVED***txt
+unicloud.db
+!.git*
+!cleanup.sh
+!client_test.txt

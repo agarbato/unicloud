@@ -1,4 +1,4 @@
-{% extends "layout***REMOVED***html" %}
+{% extends "layout.html" %}
 {% set active_page = "events" %}
 {% block title %}Events{% endblock %}
 {% block content %}
@@ -24,27 +24,27 @@
              <input type="text" name="limit" value="50" maxlength="4" size="4">
              Client:              &nbsp;&nbsp;
              <select name="client" >
-                 <option {% if request***REMOVED***form['client'] == "None" %} selected="selected" {% endif %} value="ALL">ALL</option>
+                 <option {% if request.form['client'] == "None" %} selected="selected" {% endif %} value="ALL">ALL</option>
                  {% for client in clientlist %}
-                     <option {% if request***REMOVED***form['client'] == client[0] %} selected="selected" {% endif %} value="{{ client[0] }}">{{ client[0] }}</option>
+                     <option {% if request.form['client'] == client[0] %} selected="selected" {% endif %} value="{{ client[0] }}">{{ client[0] }}</option>
                  {% endfor %}
              </select>
              Status: &nbsp;&nbsp;
              <select name="status">
-                {% if request***REMOVED***form['status'] == "None" %} <option selected="selected" value="ALL">ALL</option> {% endif %}
-                <option {% if request***REMOVED***form['status'] == "ALL" %} selected="selected" {% endif %} value="ALL">ALL</option>
-                <option {% if request***REMOVED***form['status'] == "OK"  %} selected="selected" {% endif %} value="OK">OK</option>
-                <option {% if request***REMOVED***form['status'] == "WARNING"  %} selected="selected" {% endif %} value="WARNING">WARNING</option>
-                <option {% if request***REMOVED***form['status'] == "KO"  %} selected="selected" {% endif %} value="KO">KO</option>
-                <option {% if request***REMOVED***form['status'] == "SYNCING"  %} selected="selected" {% endif %} value="SYNCING">SYNCING</option>
+                {% if request.form['status'] == "None" %} <option selected="selected" value="ALL">ALL</option> {% endif %}
+                <option {% if request.form['status'] == "ALL" %} selected="selected" {% endif %} value="ALL">ALL</option>
+                <option {% if request.form['status'] == "OK"  %} selected="selected" {% endif %} value="OK">OK</option>
+                <option {% if request.form['status'] == "WARNING"  %} selected="selected" {% endif %} value="WARNING">WARNING</option>
+                <option {% if request.form['status'] == "KO"  %} selected="selected" {% endif %} value="KO">KO</option>
+                <option {% if request.form['status'] == "SYNCING"  %} selected="selected" {% endif %} value="SYNCING">SYNCING</option>
               </select>&nbsp;
             Sync Status:
              <select name="sync_status">
-                {% if request***REMOVED***form['sync_status'] == "None" %} <option selected="selected" value="ALL">ALL</option> {% endif %}
-                <option {% if request***REMOVED***form['sync_status'] == "ALL" %} selected="selected" {% endif %} value="ALL">ALL</option>
-                <option {% if request***REMOVED***form['sync_status'] == "UNCHANGED"  %} selected="selected" {% endif %} value="UNCHANGED">UNCHANGED</option>
-                <option {% if request***REMOVED***form['sync_status'] == "CHANGED"  %} selected="selected" {% endif %} value="CHANGED">CHANGED</option>
-                <option {% if request***REMOVED***form['sync_status'] == "UNKNOWN"  %} selected="selected" {% endif %} value="UNKNOWN">UNKNOWN</option>
+                {% if request.form['sync_status'] == "None" %} <option selected="selected" value="ALL">ALL</option> {% endif %}
+                <option {% if request.form['sync_status'] == "ALL" %} selected="selected" {% endif %} value="ALL">ALL</option>
+                <option {% if request.form['sync_status'] == "UNCHANGED"  %} selected="selected" {% endif %} value="UNCHANGED">UNCHANGED</option>
+                <option {% if request.form['sync_status'] == "CHANGED"  %} selected="selected" {% endif %} value="CHANGED">CHANGED</option>
+                <option {% if request.form['sync_status'] == "UNKNOWN"  %} selected="selected" {% endif %} value="UNKNOWN">UNKNOWN</option>
              </select>&nbsp;
              <input type="submit" value="Filter">
             </form>

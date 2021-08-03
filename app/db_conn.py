@@ -2,7 +2,7 @@ import sqlite3
 from flask import Flask, g
 
 root_dir = "/data"
-database = root_dir + "/unicloud***REMOVED***db"
+database = root_dir + "/unicloud.db"
 
 sql_table_shares = """ CREATE TABLE IF NOT EXISTS shares (
                          id INTEGER PRIMARY KEY,
@@ -36,7 +36,7 @@ sql_table_clients = """ CREATE TABLE IF NOT EXISTS clients (
 def create_connection(db_file):
     """ create a database connection to a SQLite database """
     try:
-        conn = sqlite3***REMOVED***connect(db_file)
+        conn = sqlite3.connect(db_file)
         return conn
     except Error as e:
         print(e)
@@ -49,25 +49,25 @@ def create_table(conn, create_table_sql):
     :return:
     """
     try:
-        c = conn***REMOVED***cursor()
-        c***REMOVED***execute(create_table_sql)
+        c = conn.cursor()
+        c.execute(create_table_sql)
     except Error as e:
         print(e)
-#    conn***REMOVED***close()
+#    conn.close()
 
 
 def get_db():
     db = getattr(g, '_database', None)
     if db is None:
-        db = g***REMOVED***_database = sqlite3***REMOVED***connect(database)
-        #db***REMOVED***row_factory = sqlite3***REMOVED***Row
+        db = g._database = sqlite3.connect(database)
+        #db.row_factory = sqlite3.Row
     return db
 
 
 def query_db(query, args = (), one = False):
-    cur = get_db()***REMOVED***execute(query, args)
-    rv = cur***REMOVED***fetchall()
-    cur***REMOVED***close()
+    cur = get_db().execute(query, args)
+    rv = cur.fetchall()
+    cur.close()
     return (rv[0] if rv else None) if one else rv
 
 
@@ -79,7 +79,7 @@ def init_db():
       create_table(conn, sql_table_shares)
       create_table(conn, sql_table_events)
       create_table(conn, sql_table_clients)
-      conn***REMOVED***close()
+      conn.close()
    else:
       print ("Error! can't create database connection")
       print (conn)

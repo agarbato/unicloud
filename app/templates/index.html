@@ -1,4 +1,4 @@
-{% extends "layout***REMOVED***html" %}
+{% extends "layout.html" %}
 {% set active_page = "home" %}
 {% block title %}Home{% endblock %}
 {% block content %}
@@ -21,7 +21,7 @@
             <tr><td>Unicloud, a smart unison file syncronizer
             </td></tr>
             <tr><td><br>
-              <img align="center" src="/static/images/unibox-home2***REMOVED***png">
+              <img align="center" src="/static/images/unibox-home2.png">
             </td>
             <td>
             <br><strong>&nbsp;&nbsp;System Stats: <br><br></strong>
@@ -93,7 +93,7 @@
           {% endif %}
        {% if unicloud_stats['nshares'] == 0 %}
           <span style='color: {{ red }};'>
-          No shares defined, define one <a title="Share MGT" href="/shares/mgt">here***REMOVED***</a><br>
+          No shares defined, define one <a title="Share MGT" href="/shares/mgt">here.</a><br>
           </span>
        {% endif %}
        {% if unicloud_stats['outsync'] > 0 and unicloud_stats['active'] > 0 %}
@@ -106,11 +106,11 @@
           </span>
        {% elif unicloud_stats['nevents_ok'] > 0 and unicloud_stats['thresholds'] >0 %}
           <span style='color: {{ green }};'>
-          All clients are in sync***REMOVED***<br>
+          All clients are in sync.<br>
           </span>
        {% else %}
           <span style='color: {{ blue }};'>
-          No sync thresholds defined on any client***REMOVED***
+          No sync thresholds defined on any client.
           </span>
        {% endif %}
        </td></tr>

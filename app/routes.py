@@ -9,16 +9,16 @@ from client_mgt import ClientMgt
 from share_mgt import ShareMgt
 from events import Event, event_form
 from homestats import *
-from apscheduler***REMOVED***schedulers***REMOVED***background import BackgroundScheduler
+from apscheduler.schedulers.background import BackgroundScheduler
 from scheduler_tasks import *
 from time import strftime
 from conf import *
 
 time_format = "[%Y:%m:%d %H:%M:%S]"
 root_dir = "/data"
-database = root_dir + "/unicloud***REMOVED***db"
-authkeyfile = root_dir + "/***REMOVED***ssh/unicloud_authorized_keys"
-startTime = time***REMOVED***time()
+database = root_dir + "/unicloud.db"
+authkeyfile = root_dir + "/.ssh/unicloud_authorized_keys"
+startTime = time.time()
 
 init_db()
 app = Flask(__name__, static_url_path='/static')
@@ -27,193 +27,193 @@ api = Api(app)
 
 if server_debug:
     print(f"{strftime(time_format)} - App Debug is active")
-    app***REMOVED***debug = True
-    from werkzeug***REMOVED***debug import DebuggedApplication
-    app***REMOVED***wsgi_app = DebuggedApplication(app***REMOVED***wsgi_app, True)
+    app.debug = True
+    from werkzeug.debug import DebuggedApplication
+    app.wsgi_app = DebuggedApplication(app.wsgi_app, True)
 else:
     print(f"{strftime(time_format)} - App Debug is disabled")
 
-app***REMOVED***config['BASIC_AUTH_USERNAME'] = server_ui_username
-app***REMOVED***config['BASIC_AUTH_PASSWORD'] = server_ui_password
+app.config['BASIC_AUTH_USERNAME'] = server_ui_username
+app.config['BASIC_AUTH_PASSWORD'] = server_ui_password
 basic_auth = BasicAuth(app)
 
 # SCHEDULER
 
 scheduler = BackgroundScheduler()
-scheduler***REMOVED***add_job(func=scheduler_tasks_update_sync_status, trigger="interval", seconds=60, args=(app,))
+scheduler.add_job(func=scheduler_tasks_update_sync_status, trigger="interval", seconds=60, args=(app,))
 if home_assistant:
     print(f"{strftime(time_format)} - Home assistant integration is active")
-    scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_clients, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
-    scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_server, trigger="interval", seconds=home_assistant_push_interval, args=(app, startTime))
-    scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_shares, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
-scheduler***REMOVED***add_job(func=scheduler_tasks_share_update_size, trigger="interval", hours=6, args=(app,))
-scheduler***REMOVED***add_job(func=scheduler_tasks_purge_logs, trigger="interval", hours=12, args=(app,))
+    scheduler.add_job(func=scheduler_tasks_update_home_assistant_clients, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
+    scheduler.add_job(func=scheduler_tasks_update_home_assistant_server, trigger="interval", seconds=home_assistant_push_interval, args=(app, startTime))
+    scheduler.add_job(func=scheduler_tasks_update_home_assistant_shares, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
+scheduler.add_job(func=scheduler_tasks_share_update_size, trigger="interval", hours=6, args=(app,))
+scheduler.add_job(func=scheduler_tasks_purge_logs, trigger="interval", hours=12, args=(app,))
 
-scheduler***REMOVED***start()
+scheduler.start()
 
 # Shut down the scheduler when exiting the app
-atexit***REMOVED***register(lambda: scheduler***REMOVED***shutdown())
+atexit.register(lambda: scheduler.shutdown())
 
 
 ### FILTERS
 
 # helper to close
-@app***REMOVED***teardown_appcontext
+@app.teardown_appcontext
 def close_connection(exception):
     db = getattr(g, '_database', None)
     if db is not None:
-      db***REMOVED***close()
+      db.close()
 
 
-@app***REMOVED***template_filter('dt')
+@app.template_filter('dt')
 def _jinja2_filter_datetime(date, fmt=None):
-    #date = int(time***REMOVED***time())
+    #date = int(time.time())
     if fmt:
-        return time***REMOVED***strftime(fmt, time***REMOVED***localtime(date))
+        return time.strftime(fmt, time.localtime(date))
     if date is not None:
-        return time***REMOVED***strftime("%Y-%m-%d %H:%M:%S", time***REMOVED***localtime(date))
+        return time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(date))
     else:
         return "None"
 
 
-@app***REMOVED***template_filter('inc')
+@app.template_filter('inc')
 def _jinja2_filter_inc(number):
    number += 1
    return number
 
 
-@app***REMOVED***template_filter('dec')
+@app.template_filter('dec')
 def _jinja2_filter_dec(number):
     number -= 1
     return number
 
 
-@app***REMOVED***template_filter('sync_status')
+@app.template_filter('sync_status')
 def _jinja2_filter_sync_status(client):
-    #date = int(time***REMOVED***time())
+    #date = int(time.time())
     cl=ClientMgt(client)
-    sync_status = cl***REMOVED***sync_status()
+    sync_status = cl.sync_status()
     #print ("Checking status for %s, status %s" % (client, sync_status)  )
     return sync_status
 
 # HOME #
 
 
-@app***REMOVED***route("/", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/", methods=['GET'])
+@basic_auth.required
 def home():
     sys_stats = homestats_sys(startTime)
     unicloud_stats = homestats_unicloud()
     runtime_stats = homestats_runtime()
-    return render_template("index***REMOVED***html", sys_stats=sys_stats, unicloud_stats=unicloud_stats, runtime_stats=runtime_stats)
+    return render_template("index.html", sys_stats=sys_stats, unicloud_stats=unicloud_stats, runtime_stats=runtime_stats)
 
 # DOC #
 
 
-@app***REMOVED***route("/doc", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/doc", methods=['GET'])
+@basic_auth.required
 def doc():
-    return render_template("doc***REMOVED***html")
+    return render_template("doc.html")
 
 # ABOUT #
 
 
-@app***REMOVED***route("/about", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/about", methods=['GET'])
+@basic_auth.required
 def about():
-    return render_template("about***REMOVED***html")
+    return render_template("about.html")
 
 
 # FILES
 # Custom indexing
-@app***REMOVED***route('/files/<path:path>', strict_slashes=False)
-@app***REMOVED***route("/files", strict_slashes=False, methods=['GET'])
-@basic_auth***REMOVED***required
-def autoindex(path='***REMOVED***'):
-   return files_index***REMOVED***render_autoindex(path)
+@app.route('/files/<path:path>', strict_slashes=False)
+@app.route("/files", strict_slashes=False, methods=['GET'])
+@basic_auth.required
+def autoindex(path='.'):
+   return files_index.render_autoindex(path)
 
 #### CLIENTS REQUESTS #########
 
 
-@app***REMOVED***route("/status", methods=['GET'])
+@app.route("/status", methods=['GET'])
 def status():
-   return "[OK] Ready to serve sir***REMOVED******REMOVED***\n" , 200
+   return "[OK] Ready to serve sir..\n" , 200
 
 
-@app***REMOVED***route("/clients", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/clients", methods=['GET'])
+@basic_auth.required
 def clients():
     client = ClientMgt("all-clients-page")
-    res = client***REMOVED***list_clients_page()
+    res = client.list_clients_page()
     #print (res)
-    return render_template("clients***REMOVED***html", clients=res)
+    return render_template("clients.html", clients=res)
 
 
-@app***REMOVED***route("/clients/mgt", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/clients/mgt", methods=['GET'])
+@basic_auth.required
 def client_mgt():
     client = ClientMgt("all")
-    clientlist = client***REMOVED***list_clients()
+    clientlist = client.list_clients()
     share = ShareMgt("all")
-    sharelist = share***REMOVED***share_list()
-    return render_template("client_mgt***REMOVED***html", clientlist=clientlist, sharelist=sharelist)
+    sharelist = share.share_list()
+    return render_template("client_mgt.html", clientlist=clientlist, sharelist=sharelist)
 
 
-@app***REMOVED***route("/clients/status/<client>", methods=['GET'])
+@app.route("/clients/status/<client>", methods=['GET'])
 def client_status(client):
     cl = ClientMgt(client)
-    exist = cl***REMOVED***exist()
+    exist = cl.exist()
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status=cl***REMOVED***status()
-      #result="\n"***REMOVED***join(status[0])
+      status=cl.status()
+      #result="\n".join(status[0])
       #print (status)
       if status[0][1] == "OK":
         return "Client %s status: [ %s ]\n" % (status[0][0], status[0][1]), 200
       else:
-        return "Client %s need to be activated***REMOVED*** Activate from server UI!" % status[0][0], 401
+        return "Client %s need to be activated. Activate from server UI!" % status[0][0], 401
       #return jsonify(status)
 
 
-@app***REMOVED***route("/clients/info/<client>", methods=['GET'])
+@app.route("/clients/info/<client>", methods=['GET'])
 def client_info(client):
     cl = ClientMgt(client)
-    exist = cl***REMOVED***exist()
+    exist = cl.exist()
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status = cl***REMOVED***info()
+      status = cl.info()
       return jsonify(status)
 
 
-@app***REMOVED***route("/clients/info/ui/<client>", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/clients/info/ui/<client>", methods=['GET'])
+@basic_auth.required
 def client_info_ui(client):
     cl=ClientMgt(client)
-    exist = cl***REMOVED***exist()
-    status = cl***REMOVED***info()
+    exist = cl.exist()
+    status = cl.info()
     #print (status)
     if status['threshold'] > 0:
-      sync_status = cl***REMOVED***sync_status()
+      sync_status = cl.sync_status()
     else:
       sync_status = 0
     if exist[0] == 0:
       return "Client %s does not exist, register first\n" % client, 404
     else:
-      status = cl***REMOVED***info()
-      return render_template("client_info***REMOVED***html", status=status, client=client, sync_status=sync_status)
+      status = cl.info()
+      return render_template("client_info.html", status=status, client=client, sync_status=sync_status)
 
 
-@app***REMOVED***route("/clients/register", methods=['POST'])
+@app.route("/clients/register", methods=['POST'])
 def client_register():
-    name = request***REMOVED***form***REMOVED***get('name')
-    ssh_key = request***REMOVED***form***REMOVED***get('ssh_key')
-    share = request***REMOVED***form***REMOVED***get('share')
+    name = request.form.get('name')
+    ssh_key = request.form.get('ssh_key')
+    share = request.form.get('share')
     register_type = "join"
     if name is not None and ssh_key is not None:
        client = ClientMgt(name)
-       exist = client***REMOVED***exist()
+       exist = client.exist()
        #print (exist)
        if exist[0] > 0:
            result = "Error Client %s already exist" % name
@@ -221,7 +221,7 @@ def client_register():
        else:
            print(ssh_key)
            print(authkeyfile)
-           client***REMOVED***add(ssh_key, authkeyfile, register_type, share)
+           client.add(ssh_key, authkeyfile, register_type, share)
            result = "Client %s added successfully, Activate it from server UI!" % name
            rc = 200
     else:
@@ -230,90 +230,90 @@ def client_register():
     return jsonify(result), rc
 
 
-@app***REMOVED***route("/clients/add/process", methods=['POST'])
-@basic_auth***REMOVED***required
+@app.route("/clients/add/process", methods=['POST'])
+@basic_auth.required
 def client_process():
-    name = request***REMOVED***form***REMOVED***get('name')
-    ssh_key = request***REMOVED***form***REMOVED***get('ssh_key')
-    share = request***REMOVED***form***REMOVED***get('share')
+    name = request.form.get('name')
+    ssh_key = request.form.get('ssh_key')
+    share = request.form.get('share')
     register_type = "ui"
     if name is not None or ssh_key is not None:
        client = ClientMgt(name)
-       if client***REMOVED***exist()[0] > 0:
+       if client.exist()[0] > 0:
            result = "Error Client %s already exist" % name
            rc = 500
        else:
-           result = "\n"***REMOVED***join(client***REMOVED***add(ssh_key, authkeyfile, register_type, share))
+           result = "\n".join(client.add(ssh_key, authkeyfile, register_type, share))
            rc = 200
-       return render_template("client_mgt_result***REMOVED***html", result=result), rc
+       return render_template("client_mgt_result.html", result=result), rc
 
 
-@app***REMOVED***route("/clients/del/process", methods=['POST'])
-@basic_auth***REMOVED***required
+@app.route("/clients/del/process", methods=['POST'])
+@basic_auth.required
 def del_process():
-    name = request***REMOVED***form***REMOVED***get('del_name')
+    name = request.form.get('del_name')
     if name is not None:
        client = ClientMgt(name)
-       print (client***REMOVED***exist()[0])
-       if client***REMOVED***exist()[0] == 0:
+       print (client.exist()[0])
+       if client.exist()[0] == 0:
            result = "Client %s does not exist" % name
        else:
-           client***REMOVED***remove(authkeyfile)
+           client.remove(authkeyfile)
            result = "Client %s removed successfully" % name
-       return render_template("client_mgt_result***REMOVED***html", result=result), 200
+       return render_template("client_mgt_result.html", result=result), 200
 
 
-@app***REMOVED***route("/clients/activate/process", methods=['POST'])
-@basic_auth***REMOVED***required
+@app.route("/clients/activate/process", methods=['POST'])
+@basic_auth.required
 def activate_process():
-    name = request***REMOVED***form***REMOVED***get('name')
-    ssh_key = request***REMOVED***form***REMOVED***get('ssh_key')
+    name = request.form.get('name')
+    ssh_key = request.form.get('ssh_key')
     if name is not None:
        client = ClientMgt(name)
-       result = "\n"***REMOVED***join(client***REMOVED***activate(ssh_key,authkeyfile))
+       result = "\n".join(client.activate(ssh_key,authkeyfile))
        print (result)
-       return render_template("client_activate_result***REMOVED***html", result=result), 200
+       return render_template("client_activate_result.html", result=result), 200
 
 
-@app***REMOVED***route("/clients/threshold/process", methods=['POST'])
-@basic_auth***REMOVED***required
+@app.route("/clients/threshold/process", methods=['POST'])
+@basic_auth.required
 def set_threshold():
-    name = request***REMOVED***form***REMOVED***get('name')
-    threshold = request***REMOVED***form***REMOVED***get('threshold')
+    name = request.form.get('name')
+    threshold = request.form.get('threshold')
     client = ClientMgt(name)
-    result = client***REMOVED***set_threshold(int(threshold))
+    result = client.set_threshold(int(threshold))
     print (result)
-    return render_template("client_threshold_result***REMOVED***html", result=result, name=name), 200
+    return render_template("client_threshold_result.html", result=result, name=name), 200
 
 #### SHARES REQUESTS ######
 
 
-@app***REMOVED***route("/shares", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/shares", methods=['GET'])
+@basic_auth.required
 def shares():
     shares = ShareMgt("all")
-    res = shares***REMOVED***list_all_info()
-    return render_template("shares***REMOVED***html", shares=res)
+    res = shares.list_all_info()
+    return render_template("shares.html", shares=res)
 
 
-@app***REMOVED***route("/shares/info/ui/<name>", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/shares/info/ui/<name>", methods=['GET'])
+@basic_auth.required
 def shares_info_ui(name):
     info = "all"
     share = ShareMgt(name)
-    result = share***REMOVED***info(info)
+    result = share.info(info)
     if not result:
       result = "Error, %s does not exist\n" % name
       return result, 404
     else:
-      return render_template("share_info***REMOVED***html", share=result)
+      return render_template("share_info.html", share=result)
 
 
-@app***REMOVED***route("/shares/info/<name>")
+@app.route("/shares/info/<name>")
 def share_info(name):
     info = "all"
     share = ShareMgt(name)
-    result = share***REMOVED***info(info)
+    result = share.info(info)
     if not result:
       result = "Error, %s does not exist\n" % name
       return result, 404
@@ -321,11 +321,11 @@ def share_info(name):
       return jsonify(result), 200
 
 
-@app***REMOVED***route("/shares/info/<name>/path")
+@app.route("/shares/info/<name>/path")
 def share_info_path(name):
     info = "path"
     share = ShareMgt(name)
-    result = share***REMOVED***info(info)
+    result = share.info(info)
     if not result:
       result = "Error, %s does not exist\n" % name
       return result, 404
@@ -333,24 +333,24 @@ def share_info_path(name):
       return result + "\n", 200
 
 
-@app***REMOVED***route("/shares/mgt", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/shares/mgt", methods=['GET'])
+@basic_auth.required
 def share_mgt():
     share = ShareMgt("all")
-    sharelist = share***REMOVED***share_list()
-    return render_template("share_mgt***REMOVED***html", shares_path=shares_path, sharelist=sharelist)
+    sharelist = share.share_list()
+    return render_template("share_mgt.html", shares_path=shares_path, sharelist=sharelist)
 
 
-@app***REMOVED***route("/shares/add/process", methods=['POST'])
-@basic_auth***REMOVED***required
+@app.route("/shares/add/process", methods=['POST'])
+@basic_auth.required
 def share_add_process():
-    name = request***REMOVED***form***REMOVED***get('name')
-    path = request***REMOVED***form***REMOVED***get('path')
-    description = request***REMOVED***form***REMOVED***get('description')
-    create = request***REMOVED***form***REMOVED***get('create')
+    name = request.form.get('name')
+    path = request.form.get('path')
+    description = request.form.get('description')
+    create = request.form.get('create')
     if name is not None or path is not None or description is not None:
        share = ShareMgt(name)
-       result = share***REMOVED***add(path, description, create)
+       result = share.add(path, description, create)
        #print (result)
        if result is not True:
            result = "Error, share %s or path %s already exist" % (name, path)
@@ -359,19 +359,19 @@ def share_add_process():
            result = "Share %s added successfully<br>Path: %s" % ( name, path)
            rc = 200
     else:
-       result = "Please Fill all the fields in the form***REMOVED******REMOVED******REMOVED***"
-    return render_template("share_mgt_result***REMOVED***html", result=result), rc
+       result = "Please Fill all the fields in the form..."
+    return render_template("share_mgt_result.html", result=result), rc
 
 
-@app***REMOVED***route("/shares/del/process", methods=['POST'])
-@basic_auth***REMOVED***required
+@app.route("/shares/del/process", methods=['POST'])
+@basic_auth.required
 def share_del_process():
-    name = request***REMOVED***form***REMOVED***get('name')
-    path = request***REMOVED***form***REMOVED***get('path')
-    delete = request***REMOVED***form***REMOVED***get('delete')
+    name = request.form.get('name')
+    path = request.form.get('path')
+    delete = request.form.get('delete')
     if name is not None or path is not None:
        share = ShareMgt(name)
-       result = share***REMOVED***delete(path, description)
+       result = share.delete(path, description)
        print (result)
        if result is not True:
            result = "Error, Path %s does not exist or share not present" % path
@@ -380,25 +380,25 @@ def share_del_process():
            result = "Share %s Removed successfully\n Path: %s" % (name, path)
            rc = 200
     else:
-       result = "Please Fill all the fields in the form***REMOVED******REMOVED******REMOVED***"
-    return render_template("share_mgt_result***REMOVED***html", result=result), rc
+       result = "Please Fill all the fields in the form..."
+    return render_template("share_mgt_result.html", result=result), rc
 
 
-@app***REMOVED***route("/shares/getsize/<name>/process", methods=['POST'])
-@basic_auth***REMOVED***required
+@app.route("/shares/getsize/<name>/process", methods=['POST'])
+@basic_auth.required
 def share_get_size_process(name):
     share = ShareMgt(name)
-    share***REMOVED***updatesize()
+    share.updatesize()
     result = "Refreshing Share %s size" % name
-    return render_template("share_mgt_result***REMOVED***html", result=result), 200
+    return render_template("share_mgt_result.html", result=result), 200
 
 
-@app***REMOVED***route("/shares/exist", methods=['POST'])
+@app.route("/shares/exist", methods=['POST'])
 def shares_exist():
-    path = request***REMOVED***form***REMOVED***get('path')
+    path = request.form.get('path')
     if path is not None:
        share = ShareMgt('', path, '')
-       exist = share***REMOVED***exist()
+       exist = share.exist()
        #print (exist)
        if exist[0] == 0:
            result = "Error, share %s does not exist" % path
@@ -414,65 +414,65 @@ def shares_exist():
 #### EVENTS HTML ##########
 
 
-@app***REMOVED***route("/events", methods=['PUT','POST','GET'])
-@basic_auth***REMOVED***required
+@app.route("/events", methods=['PUT','POST','GET'])
+@basic_auth.required
 def events():
-    client = request***REMOVED***form***REMOVED***get('client')
-    status = request***REMOVED***form***REMOVED***get('status')
-    sync_status = request***REMOVED***form***REMOVED***get('sync_status')
-    limit = request***REMOVED***form***REMOVED***get('limit')
+    client = request.form.get('client')
+    status = request.form.get('status')
+    sync_status = request.form.get('sync_status')
+    limit = request.form.get('limit')
     if limit is None:
       limit = 50
     events_list = event_form(client, status, sync_status, limit)
     client = ClientMgt("all")
-    clientlist = client***REMOVED***list_clients()
-    return render_template("events***REMOVED***html", events=events_list, clientlist=clientlist), 200
+    clientlist = client.list_clients()
+    return render_template("events.html", events=events_list, clientlist=clientlist), 200
 
 
-@app***REMOVED***route("/events/<id>", methods=['GET'])
-@basic_auth***REMOVED***required
+@app.route("/events/<id>", methods=['GET'])
+@basic_auth.required
 def event_id(id):
     event = Event(id)
-    exist = event***REMOVED***exist()
+    exist = event.exist()
     if exist:
-        event_result = event***REMOVED***info()
-        return render_template("event_log***REMOVED***html", event=event_result), 200
+        event_result = event.info()
+        return render_template("event_log.html", event=event_result), 200
     else:
-       return render_template("event_404***REMOVED***html", id=int(id)), 404
+       return render_template("event_404.html", id=int(id)), 404
 
 ####  SYNC ENDPOINTS ####
 
 
-@app***REMOVED***route("/sync/start/<client>", methods=['PUT', 'POST'])
+@app.route("/sync/start/<client>", methods=['PUT', 'POST'])
 def sync_start(client):
-    share = request***REMOVED***form***REMOVED***get('share')
-    start_ts = int(request***REMOVED***form***REMOVED***get('start_ts'))
+    share = request.form.get('share')
+    start_ts = int(request.form.get('start_ts'))
     clientmgt = ClientMgt(client)
     #print("Start Sync")
-    if clientmgt***REMOVED***exist()[0] == 0:
+    if clientmgt.exist()[0] == 0:
       return "Client %s does not exist, register first" % client, 500
     else:
-      clientmgt***REMOVED***check_pending()
-      clientmgt***REMOVED***start_sync(start_ts, share)
+      clientmgt.check_pending()
+      clientmgt.start_sync(start_ts, share)
       return "Sync Started, record updated with status %s" % status, 200
 
 
-@app***REMOVED***route("/sync/end/<client>", methods=['PUT', 'POST'])
+@app.route("/sync/end/<client>", methods=['PUT', 'POST'])
 def sync_end(client):
-    start_ts = int(request***REMOVED***form***REMOVED***get('start_ts'))
-    status = request***REMOVED***form***REMOVED***get('status')
-    sync_status = request***REMOVED***form***REMOVED***get('sync_status')
-    log = request***REMOVED***form***REMOVED***get('log')
-    end_ts = int(request***REMOVED***form***REMOVED***get('end_ts'))
+    start_ts = int(request.form.get('start_ts'))
+    status = request.form.get('status')
+    sync_status = request.form.get('sync_status')
+    log = request.form.get('log')
+    end_ts = int(request.form.get('end_ts'))
     clientmgt = ClientMgt(client)
     #print("End Sync")
     #print("%s : Log Sync Enc Received: %s" % (client, log) )
-    if clientmgt***REMOVED***exist()[0] == 0:
+    if clientmgt.exist()[0] == 0:
       return "Client %s does not exist, register first" % client, 500
     else:
-      clientmgt***REMOVED***end_sync(start_ts, end_ts, status, sync_status, log)
+      clientmgt.end_sync(start_ts, end_ts, status, sync_status, log)
       return "Sync Terminated, record updated with status %s" % status, 201
 
 ############
 
-#app***REMOVED***run(debug=True,port=8080)
+#app.run(debug=True,port=8080)

@@ -1,6 +1,6 @@
 FROM alpine:latest
 
-MAINTAINER andrea***REMOVED***garbato@gmail***REMOVED***com
+MAINTAINER andrea.garbato@gmail.com
 
 # Install packages
 
@@ -26,7 +26,7 @@ RUN apk add --no-cache \
     python3 \
     py3-pip \
     python3-dev \
-    && apk add --no-cache --repository http://dl-cdn***REMOVED***alpinelinux***REMOVED***org/alpine/v3***REMOVED***13/community unison==2***REMOVED***48***REMOVED***15_p4-r1 \
+    && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community unison==2.48.15_p4-r1 \
     && pip3 install flask flask_restful uwsgi requests flask-basicAuth flask-autoindex psutil apscheduler \
     && apk del libc-dev linux-headers gcc python3-dev 
 
@@ -34,8 +34,8 @@ RUN mkdir -p /var/run/sshd /run/nginx /usr/local/unicloud
 ADD app/    /usr/local/unicloud/
 ADD app_client/    /usr/local/unicloud_client/
 ADD conf/sshd/sshd_config_alpine /etc/sshd_config
-RUN mv /etc/nginx/http***REMOVED***d/default***REMOVED***conf /etc/nginx/http***REMOVED***d/default***REMOVED***conf***REMOVED***install
-ADD conf/nginx/default***REMOVED***conf /etc/nginx/http***REMOVED***d/default***REMOVED***conf
+RUN mv /etc/nginx/http.d/default.conf /etc/nginx/http.d/default.conf.install
+ADD conf/nginx/default.conf /etc/nginx/http.d/default.conf
 
 ADD start/ /start/
 WORKDIR "/start"
@@ -45,4 +45,4 @@ EXPOSE 80
 VOLUME ["/data"]
 
 ENTRYPOINT ["/usr/bin/dumb-init", "--"]
-CMD ["python3","-u","start***REMOVED***py"]
+CMD ["python3","-u","start.py"]

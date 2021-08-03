@@ -9,38 +9,38 @@ from time import strftime
 from conf import *
 
 time_format = "[%Y:%m:%d %H:%M:%S]"
-#self***REMOVED***filename***REMOVED***write("\n%s Unicloud Sync Started\n" % strftime(self***REMOVED***format))
+#self.filename.write("\n%s Unicloud Sync Started\n" % strftime(self.format))
 
 def scheduler_tasks_update_sync_status(app):
     print(f"{strftime(time_format)} - Scheduled task: Update Client Sync status on DB")
-    with app***REMOVED***app_context():
+    with app.app_context():
         cl = ClientMgt("all")
-        client_list = cl***REMOVED***list_clients_threshold()
+        client_list = cl.list_clients_threshold()
         if client_list:
-            # print("Found some clients with a threshold defined***REMOVED******REMOVED***")
+            # print("Found some clients with a threshold defined..")
             for c in client_list:
                 # print(c)
                 c_status = ClientMgt(c[0])
-                sync_status = c_status***REMOVED***sync_status(type='real_status')
+                sync_status = c_status.sync_status(type='real_status')
                 # print(sync_status)
-                c_status***REMOVED***update_sync_status(sync_status)
+                c_status.update_sync_status(sync_status)
         # else:
         #  print("No Client with threshold defined")
         # return client_list
 
 
 def scheduler_tasks_home_assistant_post(sensor_name, data):
-    url = f"{home_assistant_url}/api/states/sensor***REMOVED***unicloud_{sensor_name}"
+    url = f"{home_assistant_url}/api/states/sensor.unicloud_{sensor_name}"
     headers = {
         'Authorization': f'Bearer {home_assistant_token}',
         'content-type': 'application/json',
     }
-    post(url, headers=headers, data=json***REMOVED***dumps(data))
+    post(url, headers=headers, data=json.dumps(data))
 
 
 def scheduler_tasks_update_home_assistant_server(app, startTime):
     print(f"{strftime(time_format)} - Scheduled task: Update Home Assistant Server stats")
-    with app***REMOVED***app_context():
+    with app.app_context():
         unicloud_stats = homestats_unicloud()
         runtime_stats = homestats_runtime()
         sys_stats = homestats_sys(startTime)
@@ -58,15 +58,15 @@ def scheduler_tasks_update_home_assistant_server(app, startTime):
 
 def scheduler_tasks_update_home_assistant_clients(app):
     print(f"{strftime(time_format)} - Scheduled task: Update Home Assistant Clients stats")
-    with app***REMOVED***app_context():
+    with app.app_context():
         cl = ClientMgt("all")
-        client_list = cl***REMOVED***list_clients()
+        client_list = cl.list_clients()
         for c in client_list:
-            sensor_name = f"client_{c[0]***REMOVED***replace('-', '_')}"
+            sensor_name = f"client_{c[0].replace('-', '_')}"
             c_data = ClientMgt(c[0])
-            sync_status = c_data***REMOVED***sync_status(type='real_status')
-            client_info = c_data***REMOVED***info()
-            lastseen = time***REMOVED***strftime("%Y-%m-%d %H:%M:%S", time***REMOVED***localtime(client_info['lastseen']))
+            sync_status = c_data.sync_status(type='real_status')
+            client_info = c_data.info()
+            lastseen = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(client_info['lastseen']))
             data = {f"state": sync_status,
                     "attributes": {"Share": client_info['share'], "Last_Seen": lastseen,
                                    "average_sync_duration": client_info['avg_duration'],
@@ -78,13 +78,13 @@ def scheduler_tasks_update_home_assistant_clients(app):
 
 def scheduler_tasks_update_home_assistant_shares(app):
     print(f"{strftime(time_format)} - Scheduled task: Update Home Assistant Share stats")
-    with app***REMOVED***app_context():
+    with app.app_context():
         sh = ShareMgt("all")
-        share_list = sh***REMOVED***share_list()
+        share_list = sh.share_list()
         for s in share_list:
-            sensor_name = f"share_{s[0]***REMOVED***replace('-', '_')}"
+            sensor_name = f"share_{s[0].replace('-', '_')}"
             s_data = ShareMgt(s[0])
-            share_info = s_data***REMOVED***info("all")
+            share_info = s_data.info("all")
             #print(share_info['size'])
             data = {f"state": share_info['size'],
                     "attributes": {"Description": share_info['description'], "Clients": share_info['clients'],
@@ -96,21 +96,21 @@ def scheduler_tasks_update_home_assistant_shares(app):
 
 def scheduler_tasks_share_update_size(app):
     print(f"{strftime(time_format)} - Scheduled task: Update Shares size on db")
-    with app***REMOVED***app_context():
+    with app.app_context():
         share = ShareMgt("all")
-        share_list = share***REMOVED***share_list()
+        share_list = share.share_list()
         if share_list:
             # print("Found some shares")
             for s in share_list:
                 # print (s[0])
                 s_size = ShareMgt(s[0])
-                s_size***REMOVED***updatesize()
+                s_size.updatesize()
                 # print(size)
 
 
 def scheduler_tasks_purge_logs(app):
     print(f"{strftime(time_format)} - Scheduled task: Purge Logs")
-    with app***REMOVED***app_context():
+    with app.app_context():
         query = "select max(id) from events"
         maxid = query_db(query)
         if maxid[0][0] > int(max_log_events):
@@ -120,10 +120,10 @@ def scheduler_tasks_purge_logs(app):
             query = "update events set log='None' where id < %d" % start_id_to_delete[0][0]
             # print(query)
             query_db(query)
-            get_db()***REMOVED***commit()
+            get_db().commit()
             query = "vacuum"
             query_db(query)
-            get_db()***REMOVED***commit()
+            get_db().commit()
         else:
             print("Not reached max log events yet : %d" % int(max_log_events))
 

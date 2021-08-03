@@ -4,17 +4,17 @@ class Event(object):
     eventid = ""
 
     def __init__(self, eventid):
-        self***REMOVED***eventid = int(eventid)
+        self.eventid = int(eventid)
 
     def exist(self):
-        query = "select count(id) from events where id=%d and status is not 'SYNCING'" % self***REMOVED***eventid
+        query = "select count(id) from events where id=%d and status is not 'SYNCING'" % self.eventid
         if query_db(query)[0][0] > 0:
             return True
         else:
             return False
 
     def info(self):
-        query = "select id,client,status,log,start_ts,end_ts,duration,share from events where id=%d" % self***REMOVED***eventid
+        query = "select id,client,status,log,start_ts,end_ts,duration,share from events where id=%d" % self.eventid
         res = query_db(query)
         return res
 

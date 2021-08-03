@@ -5,22 +5,22 @@ class Log(object):
    filename = ""
    format = "%Y/%m/%d %H:%M:%S"
    def __init__(self,logfile):
-     self***REMOVED***logfile = logfile
-     self***REMOVED***filename = open(logfile,"a")
+     self.logfile = logfile
+     self.filename = open(logfile,"a")
    def header(self):
-     self***REMOVED***filename***REMOVED***write("\n======================================================================================")
+     self.filename.write("\n======================================================================================")
    def sync_start(self):
-     self***REMOVED***filename***REMOVED***write("\n%s Unicloud Sync Started\n" % strftime(self***REMOVED***format))
+     self.filename.write("\n%s Unicloud Sync Started\n" % strftime(self.format))
    def sync_end(self,result):
-     self***REMOVED***result = result
-     self***REMOVED***filename***REMOVED***write("\n%s" % result[3])
-     self***REMOVED***filename***REMOVED***write("\n%s Unicloud Sync %s, Pid %d, Exitcode %d" % (strftime(self***REMOVED***format), result[2], int(result[0]), int(result[1])))
+     self.result = result
+     self.filename.write("\n%s" % result[3])
+     self.filename.write("\n%s Unicloud Sync %s, Pid %d, Exitcode %d" % (strftime(self.format), result[2], int(result[0]), int(result[1])))
    def client_error(self,result):
-     self***REMOVED***result = result
-     self***REMOVED***filename***REMOVED***write("\n%s %s" % ( strftime(self***REMOVED***format), result ))
-     self***REMOVED***header()
-     self***REMOVED***close()
+     self.result = result
+     self.filename.write("\n%s %s" % ( strftime(self.format), result ))
+     self.header()
+     self.close()
    def close(self):
-     self***REMOVED***filename***REMOVED***close()
+     self.filename.close()
 
 

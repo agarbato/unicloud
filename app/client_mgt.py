@@ -6,123 +6,123 @@ class ClientMgt(object):
     client = ""
 
     def __init__(self, client):
-        self***REMOVED***client = client
+        self.client = client
 
     def lastseen(self):
-        query = "select end_ts from events where client='%s' order by end_ts limit 1;" % self***REMOVED***client
+        query = "select end_ts from events where client='%s' order by end_ts limit 1;" % self.client
         result = query_db(query)
         return result
 
     def info(self):
         result = {}
-        query = "select count(status) from events where client='%s' and status='OK';" %self***REMOVED***client
+        query = "select count(status) from events where client='%s' and status='OK';" %self.client
         count_ok=query_db(query)[0]
-        query = "select count(status) from events where client='%s' and status='KO';" %self***REMOVED***client
+        query = "select count(status) from events where client='%s' and status='KO';" %self.client
         count_ko = query_db(query)[0]
         #count_total = count_ok + count_ko
-        query = "select end_ts from events where client='%s' order by id desc limit 1;" %self***REMOVED***client
+        query = "select end_ts from events where client='%s' order by id desc limit 1;" %self.client
         lastseen = query_db(query)
-        query = "select joindate from clients where name='%s';" % self***REMOVED***client
+        query = "select joindate from clients where name='%s';" % self.client
         joindate = query_db(query)
-        query = "select status from clients where name='%s';" % self***REMOVED***client
+        query = "select status from clients where name='%s';" % self.client
         status = query_db(query)
-        query = "select ssh_key from clients where name='%s';" % self***REMOVED***client
+        query = "select ssh_key from clients where name='%s';" % self.client
         ssh_key = query_db(query)
-        query = "select share from clients where name='%s';" % self***REMOVED***client
+        query = "select share from clients where name='%s';" % self.client
         share = query_db(query)
-        query = "select threshold from clients where name='%s';" % self***REMOVED***client
+        query = "select threshold from clients where name='%s';" % self.client
         threshold = query_db(query)
         #print ("last seen: %s" % lastseen)
-        query = "select avg(duration) from events where client='%s';" % self***REMOVED***client
+        query = "select avg(duration) from events where client='%s';" % self.client
         avg_duration = query_db(query)
         if lastseen == []:
-            result***REMOVED***update({'share': share[0][0], 'ok': count_ok[0], 'ko': count_ko[0], 'total': count_ok[0]+count_ko[0],
+            result.update({'share': share[0][0], 'ok': count_ok[0], 'ko': count_ko[0], 'total': count_ok[0]+count_ko[0],
                            'lastseen': 'Never', 'joindate': joindate[0][0], 'status': status[0][0], 'ssh_key': ssh_key[0][0],
                            'threshold': threshold[0][0], 'avg_duration': "None" })
         else:
-            result***REMOVED***update({'share': share[0][0], 'ok': count_ok[0], 'ko': count_ko[0], 'total': count_ok[0]+count_ko[0],
+            result.update({'share': share[0][0], 'ok': count_ok[0], 'ko': count_ko[0], 'total': count_ok[0]+count_ko[0],
                            'lastseen': lastseen[0][0], 'joindate': joindate[0][0], 'status': status[0][0], 'ssh_key': ssh_key[0][0],
-                           'threshold': threshold[0][0], 'avg_duration': float("{0:***REMOVED***2f}"***REMOVED***format(avg_duration[0][0]))})
+                           'threshold': threshold[0][0], 'avg_duration': float("{0:.2f}".format(avg_duration[0][0]))})
         return result
 
     def status(self):
-        query = "select name,status from clients where name='%s'" % self***REMOVED***client
+        query = "select name,status from clients where name='%s'" % self.client
         result = query_db(query)
         return result
 
     def exist(self):
-        query = "select count(name) from clients where name='%s'" % self***REMOVED***client
+        query = "select count(name) from clients where name='%s'" % self.client
         result = query_db(query)
         return result[0]
 
     def add(self, ssh_key, authkeyfile, register_type, share):
         result = []
-        self***REMOVED***ssh_key = ssh_key
-        self***REMOVED***authkeyfile = authkeyfile
-        self***REMOVED***register_type = register_type
-        self***REMOVED***share = share
+        self.ssh_key = ssh_key
+        self.authkeyfile = authkeyfile
+        self.register_type = register_type
+        self.share = share
         if register_type == "ui":
-          result***REMOVED***append(self***REMOVED***add_to_db(self***REMOVED***register_type, self***REMOVED***ssh_key, self***REMOVED***share))
-          result***REMOVED***append(self***REMOVED***add_to_keyfile(self***REMOVED***authkeyfile, self***REMOVED***ssh_key))
+          result.append(self.add_to_db(self.register_type, self.ssh_key, self.share))
+          result.append(self.add_to_keyfile(self.authkeyfile, self.ssh_key))
         elif register_type == "join":
-          result***REMOVED***append(self***REMOVED***add_to_db(self***REMOVED***register_type, self***REMOVED***ssh_key, self***REMOVED***share))
+          result.append(self.add_to_db(self.register_type, self.ssh_key, self.share))
         return result
 
     def add_to_db(self, register_type, ssh_key, share):
-        self***REMOVED***ssh_key = ssh_key
-        self***REMOVED***register_type = register_type
-        self***REMOVED***share = share
+        self.ssh_key = ssh_key
+        self.register_type = register_type
+        self.share = share
         if register_type == "ui":
            status = "Active"
         else:
            status = "Registered"
-        query = "insert into clients (name,ssh_key,status,joindate,share,threshold) values ('%s','%s','%s',%d,'%s',0)" % (self***REMOVED***client, ssh_key, status, int(time***REMOVED***time()), share)
+        query = "insert into clients (name,ssh_key,status,joindate,share,threshold) values ('%s','%s','%s',%d,'%s',0)" % (self.client, ssh_key, status, int(time.time()), share)
         #print (query)
         query_db(query)
-        get_db()***REMOVED***commit()
-        return "<br>Client %s added to DB, status %s" % ( self***REMOVED***client, status )
+        get_db().commit()
+        return "<br>Client %s added to DB, status %s" % ( self.client, status )
     
     def add_to_keyfile(self, authkeyfile, ssh_key):
-        self***REMOVED***ssh_key = ssh_key
-        self***REMOVED***authkeyfile = authkeyfile
+        self.ssh_key = ssh_key
+        self.authkeyfile = authkeyfile
         print (ssh_key)
         auth_command = 'command="/usr/bin/unison -server"'
         with open (authkeyfile, 'a') as f:
-          f***REMOVED***write("\n" + auth_command + " " + ssh_key + " CLIENT:%s" % self***REMOVED***client)
-        return "<br>Client %s added to Authorized Keys" % self***REMOVED***client
+          f.write("\n" + auth_command + " " + ssh_key + " CLIENT:%s" % self.client)
+        return "<br>Client %s added to Authorized Keys" % self.client
 
     def activate(self, ssh_key, authkeyfile):
-        self***REMOVED***ssh_key = ssh_key
-        self***REMOVED***authkeyfile = authkeyfile
+        self.ssh_key = ssh_key
+        self.authkeyfile = authkeyfile
         result=[]
-        query = ("update clients set status='Active' where name='%s'") % self***REMOVED***client
+        query = ("update clients set status='Active' where name='%s'") % self.client
         query_db(query)
-        get_db()***REMOVED***commit()
+        get_db().commit()
         result = [ "<br>Client activated on database" ]
-        result***REMOVED***append(self***REMOVED***add_to_keyfile(self***REMOVED***authkeyfile, self***REMOVED***ssh_key))
+        result.append(self.add_to_keyfile(self.authkeyfile, self.ssh_key))
         return result
 
     def set_threshold(self, threshold):
-        self***REMOVED***threshold = threshold
+        self.threshold = threshold
         #print (threshold)
-        query = ("update clients set threshold=%d where name='%s'") % (self***REMOVED***threshold, self***REMOVED***client)
+        query = ("update clients set threshold=%d where name='%s'") % (self.threshold, self.client)
         query_db(query)
-        get_db()***REMOVED***commit()
-        return "<br>Client %s threshold set to %d seconds" % (self***REMOVED***client, int(threshold))
+        get_db().commit()
+        return "<br>Client %s threshold set to %d seconds" % (self.client, int(threshold))
 
     def sync_status(self, type='db'):
-        self***REMOVED***type = type
-        if self***REMOVED***type == "db":
-            query = "select sync_status from clients where name='%s';" % self***REMOVED***client
+        self.type = type
+        if self.type == "db":
+            query = "select sync_status from clients where name='%s';" % self.client
             status = query_db(query)
             return status[0][0]
         else:
-           query = "select threshold from clients where name='%s';" % self***REMOVED***client
+           query = "select threshold from clients where name='%s';" % self.client
            threshold = query_db(query)
-           query = "select max(id),end_ts from events where client='%s' and status='OK';" % self***REMOVED***client
+           query = "select max(id),end_ts from events where client='%s' and status='OK';" % self.client
            lastok = query_db(query)
            if lastok[0][0]:
-              ts = int(time***REMOVED***time())
+              ts = int(time.time())
               delta = ts - lastok[0][1]
               if delta <= threshold[0][0]:
                 return "In Sync"
@@ -135,37 +135,37 @@ class ClientMgt(object):
            #print ("Threshold %d" % threshold[0][0])
 
     def update_sync_status(self, s_status):
-        #print(self***REMOVED***client)
-        self***REMOVED***s_status = s_status
-        current_status = self***REMOVED***sync_status()
+        #print(self.client)
+        self.s_status = s_status
+        current_status = self.sync_status()
         #print(current_status)
         if current_status != s_status:
-           query = ("update clients set sync_status='%s' where name='%s'") % (self***REMOVED***s_status, self***REMOVED***client)
+           query = ("update clients set sync_status='%s' where name='%s'") % (self.s_status, self.client)
            #print(query)
            query_db(query)
-           get_db()***REMOVED***commit()
+           get_db().commit()
 
     def check_pending(self):
-        query="select * from events where client='%s' and status='SYNCING';" % self***REMOVED***client
+        query="select * from events where client='%s' and status='SYNCING';" % self.client
         brokensync=query_db(query)
         #print("Brokensync :%s" % brokensync)
         if brokensync != []:
-           query="update events set status='KO', log='Sync was interrupted' where client='%s' and status='SYNCING';" % self***REMOVED***client
+           query="update events set status='KO', log='Sync was interrupted' where client='%s' and status='SYNCING';" % self.client
            query_db(query)
-           get_db()***REMOVED***commit()
+           get_db().commit()
 
     def remove(self, authkeyfile):
-        self***REMOVED***authkeyfile = authkeyfile
-        query = "delete from clients where name = '%s'" % self***REMOVED***client
+        self.authkeyfile = authkeyfile
+        query = "delete from clients where name = '%s'" % self.client
         query_db(query)
-        get_db()***REMOVED***commit()
+        get_db().commit()
         with open(authkeyfile, "r+") as f:
-            new_f = f***REMOVED***readlines()
-            f***REMOVED***seek(0)
+            new_f = f.readlines()
+            f.seek(0)
             for line in new_f:
-                if "CLIENT:%s" % self***REMOVED***client not in line:
-                    f***REMOVED***write(line)
-            f***REMOVED***truncate()
+                if "CLIENT:%s" % self.client not in line:
+                    f.write(line)
+            f.truncate()
 
     def list_clients(self):
         query = "select name from clients"
@@ -188,49 +188,49 @@ class ClientMgt(object):
             maxid = 0
         if maxid > maxrows:
             #print ("Max")
-            query = """ SELECT clients***REMOVED***name,
-                      clients***REMOVED***status,
-                      clients***REMOVED***joindate,
-                      clients***REMOVED***threshold,
-                      clients***REMOVED***ssh_key,
-                      max(events***REMOVED***end_ts)
+            query = """ SELECT clients.name,
+                      clients.status,
+                      clients.joindate,
+                      clients.threshold,
+                      clients.ssh_key,
+                      max(events.end_ts)
                     FROM clients
-                    LEFT JOIN events on events***REMOVED***client = clients***REMOVED***name
-                    WHERE events***REMOVED***id > '%d' or clients***REMOVED***status == 'Registered'
-                    GROUP BY clients***REMOVED***name
-                    ORDER BY events***REMOVED***end_ts desc """ % (maxid - maxrows)
+                    LEFT JOIN events on events.client = clients.name
+                    WHERE events.id > '%d' or clients.status == 'Registered'
+                    GROUP BY clients.name
+                    ORDER BY events.end_ts desc """ % (maxid - maxrows)
         else:
             #print ("Else")
-            query = """ SELECT clients***REMOVED***name,
-                      clients***REMOVED***status,
-                      clients***REMOVED***joindate,
-                      clients***REMOVED***threshold,
-                      clients***REMOVED***ssh_key,
-                      events***REMOVED***end_ts
+            query = """ SELECT clients.name,
+                      clients.status,
+                      clients.joindate,
+                      clients.threshold,
+                      clients.ssh_key,
+                      events.end_ts
                     FROM clients
-                    LEFT JOIN events on events***REMOVED***client = clients***REMOVED***name
-                    GROUP BY clients***REMOVED***name
-                    ORDER BY events***REMOVED***end_ts desc """
+                    LEFT JOIN events on events.client = clients.name
+                    GROUP BY clients.name
+                    ORDER BY events.end_ts desc """
         #print (query)
         res = query_db(query)
         return res
 
     def start_sync(self, start_ts, share, status="SYNCING"):
-        self***REMOVED***start_ts = start_ts
-        self***REMOVED***share = share
-        self***REMOVED***status = status
-        query = ("insert into events (client,start_ts,share,status) values ('%s',%d,'%s','%s')") % (self***REMOVED***client, start_ts, share, status)
+        self.start_ts = start_ts
+        self.share = share
+        self.status = status
+        query = ("insert into events (client,start_ts,share,status) values ('%s',%d,'%s','%s')") % (self.client, start_ts, share, status)
         #print (query)
         query_db(query)
-        get_db()***REMOVED***commit()
+        get_db().commit()
 
     def end_sync(self, start_ts, end_ts, status, sync_status, log):
-        self***REMOVED***start_ts = start_ts
-        self***REMOVED***end_ts = end_ts
-        self***REMOVED***status = status
-        self***REMOVED***sync_status = sync_status
-        self***REMOVED***log = log
-        duration = self***REMOVED***end_ts - self***REMOVED***start_ts
-        query = ("update events set status='%s', sync_status='%s', end_ts=%d, duration=%d, log='%s' where client='%s' and start_ts=%d") % (status, sync_status, end_ts, duration, log, self***REMOVED***client, start_ts)
+        self.start_ts = start_ts
+        self.end_ts = end_ts
+        self.status = status
+        self.sync_status = sync_status
+        self.log = log
+        duration = self.end_ts - self.start_ts
+        query = ("update events set status='%s', sync_status='%s', end_ts=%d, duration=%d, log='%s' where client='%s' and start_ts=%d") % (status, sync_status, end_ts, duration, log, self.client, start_ts)
         query_db(query)
-        get_db()***REMOVED***commit()
+        get_db().commit()

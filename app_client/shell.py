@@ -7,37 +7,37 @@ class ShellCmd(object):
     rc=0
     pid=0
     def __init__(self,cmd):
-      self***REMOVED***cmd  = cmd
-      out = subprocess***REMOVED***Popen([cmd],
+      self.cmd  = cmd
+      out = subprocess.Popen([cmd],
         shell=True,
-        stdout=subprocess***REMOVED***PIPE,
-        stderr=subprocess***REMOVED***PIPE)
-      stdout,stderr = out***REMOVED***communicate()
-      self***REMOVED***output = stdout***REMOVED***decode()[:-1]
-      self***REMOVED***rc=out***REMOVED***returncode
-      self***REMOVED***pid=out***REMOVED***pid
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE)
+      stdout,stderr = out.communicate()
+      self.output = stdout.decode()[:-1]
+      self.rc=out.returncode
+      self.pid=out.pid
       if stderr is not None:
-        self***REMOVED***output_stderr = stderr***REMOVED***decode()[:-1]
-      #print (self***REMOVED***output)
-      for line in self***REMOVED***output***REMOVED***split('\n'):
-        self***REMOVED***output_lines***REMOVED***append(line)
+        self.output_stderr = stderr.decode()[:-1]
+      #print (self.output)
+      for line in self.output.split('\n'):
+        self.output_lines.append(line)
     def __repr__(self):
-      return self***REMOVED***output
+      return self.output
     def rstderr(self):
-      return self***REMOVED***output_stderr
+      return self.output_stderr
     def getrc(self):
-      return self***REMOVED***rc
+      return self.rc
     def getpid(self):
-      return self***REMOVED***pid
+      return self.pid
     def filter_lines(self,match):
-        self***REMOVED***filter=[]
-        self***REMOVED***match=match
+        self.filter=[]
+        self.match=match
         i=1
-        while i != len(self***REMOVED***output_lines):
-            if any(x in str(self***REMOVED***output_lines[i]) for x in self***REMOVED***match):
-                self***REMOVED***filter***REMOVED***append(self***REMOVED***output_lines[i])
+        while i != len(self.output_lines):
+            if any(x in str(self.output_lines[i]) for x in self.match):
+                self.filter.append(self.output_lines[i])
             i += 1
-        return self***REMOVED***filter
+        return self.filter
 
 
 

@@ -1,15 +1,15 @@
 import time
 import requests
 from conf import *
-from apscheduler***REMOVED***schedulers***REMOVED***background import BlockingScheduler
+from apscheduler.schedulers.background import BlockingScheduler
 from datetime import datetime
 from shell import ShellCmd
 from log import Log
 
 root_dir = "/data"
 log_dir = root_dir + "/log"
-logfile = log_dir + "/client***REMOVED***log"
-lockfile = log_dir + "/client***REMOVED***lock"
+logfile = log_dir + "/client.log"
+lockfile = log_dir + "/client.lock"
 command = "unison unicloud"
 
 start_sync_url = server_api_protocol + "://" +  server_hostname + ":" + server_api_port + "/sync/start/" + client_hostname
@@ -18,58 +18,58 @@ share_exist_url = server_api_protocol + "://" +  server_hostname + ":" + server_
 
 
 def get_ts():
-  ts = int(time***REMOVED***time())
+  ts = int(time.time())
   return ts
 
 
 def start_sync(log, start_ts):
   #result[0]pid result[1]rc result[2]status result[3]log result[4]sync_status
-  log***REMOVED***header()
-  log***REMOVED***sync_start()
+  log.header()
+  log.sync_start()
   result = []
   #match = ['BGN', 'END', 'Nothing', 'Complete']
   data = {'share': server_share, 'start_ts': start_ts}
   try:
-    r = requests***REMOVED***post(url=start_sync_url, data=data)
-  except requests***REMOVED***ConnectionError:
+    r = requests.post(url=start_sync_url, data=data)
+  except requests.ConnectionError:
     return 6
   else:
-    if r***REMOVED***status_code == 200:
+    if r.status_code == 200:
       run = ShellCmd(command)
-      result***REMOVED***insert(0, run***REMOVED***getpid())
-      result***REMOVED***insert(1, run***REMOVED***getrc())
+      result.insert(0, run.getpid())
+      result.insert(1, run.getrc())
       #print (run)
-      if run***REMOVED***getrc() == 0:
-        result***REMOVED***insert(2, 'OK')
-      elif run***REMOVED***getrc() == 1 or run***REMOVED***getrc() == 2:
-        result***REMOVED***insert(2, 'WARNING')
+      if run.getrc() == 0:
+        result.insert(2, 'OK')
+      elif run.getrc() == 1 or run.getrc() == 2:
+        result.insert(2, 'WARNING')
       else:
-        result***REMOVED***insert(2, 'KO')
-      unisonstderr = run***REMOVED***rstderr()
-      result***REMOVED***insert(3, unisonstderr)
+        result.insert(2, 'KO')
+      unisonstderr = run.rstderr()
+      result.insert(3, unisonstderr)
       if "Nothing to do" in unisonstderr:
-        result***REMOVED***insert(4, "UNCHANGED")
+        result.insert(4, "UNCHANGED")
       elif "Synchronization complete" in unisonstderr:
-        result***REMOVED***insert(4, "CHANGED")
+        result.insert(4, "CHANGED")
       elif "Synchronization incomplete" in unisonstderr:
-        result***REMOVED***insert(4, "WARNING")
+        result.insert(4, "WARNING")
       else:
-        result***REMOVED***insert(4, "UNKNOWN")
+        result.insert(4, "UNKNOWN")
     else:
-      result***REMOVED***insert(0, 0)
-      result***REMOVED***insert(1, 0)
-      result***REMOVED***insert(2, "ERROR")
-      result***REMOVED***insert(3, "Connection Error")
-      result***REMOVED***insert(4, "UNKNOWN")
+      result.insert(0, 0)
+      result.insert(1, 0)
+      result.insert(2, "ERROR")
+      result.insert(3, "Connection Error")
+      result.insert(4, "UNKNOWN")
   return result
 
 
 def end_sync(result, start_ts, log):
-  data = {'share': server_share, 'start_ts': start_ts, 'end_ts': int(time***REMOVED***time()), 'status': result[2], 'log': result[3], 'sync_status': result[4] }
-  requests***REMOVED***post(url=end_sync_url, data=data)
-  #log***REMOVED***client_error("Log received : %s" % result[3])
-  log***REMOVED***sync_end(result)
-  log***REMOVED***header()
+  data = {'share': server_share, 'start_ts': start_ts, 'end_ts': int(time.time()), 'status': result[2], 'log': result[3], 'sync_status': result[4] }
+  requests.post(url=end_sync_url, data=data)
+  #log.client_error("Log received : %s" % result[3])
+  log.sync_end(result)
+  log.header()
 
 def scheduler_sync():
   log = Log(logfile)
@@ -77,19 +77,19 @@ def scheduler_sync():
   result = start_sync(log, start_ts)
   #print (result)
   if result == 6 or result == 503:
-    log***REMOVED***client_error("Client %s can't contact API Server [ %s ]" % (client_hostname, start_sync_url) )
+    log.client_error("Client %s can't contact API Server [ %s ]" % (client_hostname, start_sync_url) )
   elif result == 500:
-    log***REMOVED***client_error("Client %s is not enabled, enable it from server UI" % client_hostname)
+    log.client_error("Client %s is not enabled, enable it from server UI" % client_hostname)
   else:
     end_sync(result, start_ts, log)
-  log***REMOVED***close()
+  log.close()
 
 # THE SCHEDULER
 
 
 scheduler = BlockingScheduler()
-scheduler***REMOVED***add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval), next_run_time=datetime***REMOVED***now())
-scheduler***REMOVED***start()
+scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval), next_run_time=datetime.now())
+scheduler.start()
 
 
 

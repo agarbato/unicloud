@@ -1,18 +1,18 @@
-#	$OpenBSD: sshd_config,v 1***REMOVED***102 2018/02/16 02:32:40 djm Exp $
+#	$OpenBSD: sshd_config,v 1.102 2018/02/16 02:32:40 djm Exp $
 
-# This is the sshd server system-wide configuration file***REMOVED***  See
-# sshd_config(5) for more information***REMOVED***
+# This is the sshd server system-wide configuration file.  See
+# sshd_config(5) for more information.
 
 # This sshd was compiled with PATH=/bin:/usr/bin:/sbin:/usr/sbin
 
 # The strategy used for options in the default sshd_config shipped with
 # OpenSSH is to specify options with their default value where
-# possible, but leave them commented***REMOVED***  Uncommented options override the
-# default value***REMOVED***
+# possible, but leave them commented.  Uncommented options override the
+# default value.
 
 #Port 22
 #AddressFamily any
-#ListenAddress 0***REMOVED***0***REMOVED***0***REMOVED***0
+#ListenAddress 0.0.0.0
 #ListenAddress ::
 
 HostKey /data/ssh/ssh_host_rsa_key
@@ -36,9 +36,9 @@ HostKey /data/ssh/ssh_host_ed25519_key
 
 #PubkeyAuthentication yes
 
-# The default is to check both ***REMOVED***ssh/authorized_keys and ***REMOVED***ssh/authorized_keys2
-# but this is overridden so installations will only check ***REMOVED***ssh/authorized_keys
-AuthorizedKeysFile /data/***REMOVED***ssh/unicloud_authorized_keys
+# The default is to check both .ssh/authorized_keys and .ssh/authorized_keys2
+# but this is overridden so installations will only check .ssh/authorized_keys
+AuthorizedKeysFile /data/.ssh/unicloud_authorized_keys
 
 #AuthorizedPrincipalsFile none
 
@@ -47,10 +47,10 @@ AuthorizedKeysFile /data/***REMOVED***ssh/unicloud_authorized_keys
 
 # For this to work you will also need host keys in /etc/ssh/ssh_known_hosts
 #HostbasedAuthentication no
-# Change to yes if you don't trust ~/***REMOVED***ssh/known_hosts for
+# Change to yes if you don't trust ~/.ssh/known_hosts for
 # HostbasedAuthentication
 #IgnoreUserKnownHosts no
-# Don't read the user's ~/***REMOVED***rhosts and ~/***REMOVED***shosts files
+# Don't read the user's ~/.rhosts and ~/.shosts files
 #IgnoreRhosts yes
 
 # To disable tunneled clear text passwords, change to no here!
@@ -71,14 +71,14 @@ AuthorizedKeysFile /data/***REMOVED***ssh/unicloud_authorized_keys
 #GSSAPICleanupCredentials yes
 
 # Set this to 'yes' to enable PAM authentication, account processing,
-# and session processing***REMOVED*** If this is enabled, PAM authentication will
+# and session processing. If this is enabled, PAM authentication will
 # be allowed through the ChallengeResponseAuthentication and
-# PasswordAuthentication***REMOVED***  Depending on your PAM configuration,
+# PasswordAuthentication.  Depending on your PAM configuration,
 # PAM authentication via ChallengeResponseAuthentication may bypass
-# the setting of "PermitRootLogin without-password"***REMOVED***
+# the setting of "PermitRootLogin without-password".
 # If you just want the PAM account and session checks to run without
 # PAM authentication, then enable this but set PasswordAuthentication
-# and ChallengeResponseAuthentication to 'no'***REMOVED***
+# and ChallengeResponseAuthentication to 'no'.
 #UsePAM no
 
 #AllowAgentForwarding yes
@@ -97,7 +97,7 @@ AuthorizedKeysFile /data/***REMOVED***ssh/unicloud_authorized_keys
 #ClientAliveInterval 0
 #ClientAliveCountMax 3
 #UseDNS no
-#PidFile /run/sshd***REMOVED***pid
+#PidFile /run/sshd.pid
 #MaxStartups 10:30:100
 #PermitTunnel no
 #ChrootDirectory none
