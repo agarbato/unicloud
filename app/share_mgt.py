@@ -107,8 +107,8 @@ class ShareMgt(object):
         path = shareinfo['path']
         size = shareinfo['size']
         realsize = subprocess***REMOVED***check_output(['du', '-hs', path])***REMOVED***split()[0]***REMOVED***decode('utf-8')
-        print ("Size %s" % size)
-        print ("Realsize %s" % realsize)
+        #print ("Size %s" % size)
+        #print ("Realsize %s" % realsize)
         for r in realsize, size:
             result***REMOVED***append(r)
         return result
@@ -118,8 +118,8 @@ class ShareMgt(object):
         size = self***REMOVED***getsize()
         size_on_db = size[1]
         size_on_fs = size[0]
-        print("Realsize %s" % size_on_fs)
-        print("Size %s " % size_on_db)
+        #print("Realsize %s" % size_on_fs)
+        #print("Size %s " % size_on_db)
         if size_on_fs != size_on_db:
             query = "update shares set size='%s' where name='%s'" % (size_on_fs, self***REMOVED***name)
             #print (query)

@@ -1,5 +1,6 @@
 from routes import app
+#from conf import server_debug
 
 if __name__ == "__main__":
-    app***REMOVED***run(use_reloader=False, debug=True)
+    app***REMOVED***run(use_reloader=False)
 

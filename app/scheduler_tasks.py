@@ -5,10 +5,14 @@ from client_mgt import ClientMgt
 from share_mgt import ShareMgt
 from db_conn import get_db, query_db
 from requests import post
+from time import strftime
 from conf import *
 
+time_format = "[%Y:%m:%d %H:%M:%S]"
+#self***REMOVED***filename***REMOVED***write("\n%s Unicloud Sync Started\n" % strftime(self***REMOVED***format))
 
 def scheduler_tasks_update_sync_status(app):
+    print(f"{strftime(time_format)} - Scheduled task: Update Client Sync status on DB")
     with app***REMOVED***app_context():
         cl = ClientMgt("all")
         client_list = cl***REMOVED***list_clients_threshold()
@@ -35,8 +39,8 @@ def scheduler_tasks_home_assistant_post(sensor_name, data):
 
 
 def scheduler_tasks_update_home_assistant_server(app, startTime):
+    print(f"{strftime(time_format)} - Scheduled task: Update Home Assistant Server stats")
     with app***REMOVED***app_context():
-        print("Sever stats")
         unicloud_stats = homestats_unicloud()
         runtime_stats = homestats_runtime()
         sys_stats = homestats_sys(startTime)
@@ -48,16 +52,12 @@ def scheduler_tasks_update_home_assistant_server(app, startTime):
                                "Clients Total": unicloud_stats['nclients'], "Clients to Register": unicloud_stats['toregister'],
                                "Clients Out of Sync:": unicloud_stats['outsync'], "Python_Version": runtime_stats['python_version'],
                                "Unison Version": runtime_stats['unison_version'], "Flask Version": runtime_stats['flask_version']}}
-        print(data)
+        #print(data)
         scheduler_tasks_home_assistant_post(sensor_name, data)
-
-#result***REMOVED***update({'python_version': python_version, 'unison_version': unison_version, 'flask_version': flask_version })
-#result***REMOVED***update({'nevents': nevents[0][0], 'nevents_ok': nevents_ok[0][0], 'nevents_ko': nevents_ko[0][0], 'thresholds': thresholds[0][0],
-#            'nclients': nclients[0][0], 'nshares': nshares[0][0], 'toregister': toregister[0][0], 'outsync': outsync[0][0], 'active': active[0][0]})
-# for f in uptime_days, uptime_hours, uptime_minutes, uptime_seconds:
 
 
 def scheduler_tasks_update_home_assistant_clients(app):
+    print(f"{strftime(time_format)} - Scheduled task: Update Home Assistant Clients stats")
     with app***REMOVED***app_context():
         cl = ClientMgt("all")
         client_list = cl***REMOVED***list_clients()
@@ -77,7 +77,7 @@ def scheduler_tasks_update_home_assistant_clients(app):
 
 
 def scheduler_tasks_update_home_assistant_shares(app):
-    print("share task")
+    print(f"{strftime(time_format)} - Scheduled task: Update Home Assistant Share stats")
     with app***REMOVED***app_context():
         sh = ShareMgt("all")
         share_list = sh***REMOVED***share_list()
@@ -85,7 +85,7 @@ def scheduler_tasks_update_home_assistant_shares(app):
             sensor_name = f"share_{s[0]***REMOVED***replace('-', '_')}"
             s_data = ShareMgt(s[0])
             share_info = s_data***REMOVED***info("all")
-            print(share_info['size'])
+            #print(share_info['size'])
             data = {f"state": share_info['size'],
                     "attributes": {"Description": share_info['description'], "Clients": share_info['clients'],
                                    "Clients_Count": share_info['clients_count']}}
@@ -95,6 +95,7 @@ def scheduler_tasks_update_home_assistant_shares(app):
 
 
 def scheduler_tasks_share_update_size(app):
+    print(f"{strftime(time_format)} - Scheduled task: Update Shares size on db")
     with app***REMOVED***app_context():
         share = ShareMgt("all")
         share_list = share***REMOVED***share_list()
@@ -107,10 +108,8 @@ def scheduler_tasks_share_update_size(app):
                 # print(size)
 
 
-# result***REMOVED***update({'name': q[0][0], 'path': q[0][1], 'description': q[0][2], 'size': q[0][3], 'clients': client_list_final, 'clients_count': q3[0][0] })
-
-
 def scheduler_tasks_purge_logs(app):
+    print(f"{strftime(time_format)} - Scheduled task: Purge Logs")
     with app***REMOVED***app_context():
         query = "select max(id) from events"
         maxid = query_db(query)
@@ -128,7 +127,3 @@ def scheduler_tasks_purge_logs(app):
         else:
             print("Not reached max log events yet : %d" % int(max_log_events))
 
-# import sqlite3
-# conn = sqlite3***REMOVED***connect('my_test***REMOVED***db', isolation_level=None)
-# conn***REMOVED***execute("VACUUM")
-# conn***REMOVED***close()

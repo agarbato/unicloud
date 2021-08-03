@@ -12,6 +12,7 @@ services:
       - SERVER_HOSTNAME=unicloud_testing_server
       - SERVER_UI_USERNAME=admin
       - SERVER_UI_PASSWORD=abcd12345
+      - SERVER_DEBUG=True
       - ROLE=SERVER
       - HOME_ASSISTANT=True
       - HOME_ASSISTANT_URL=https://home***REMOVED***donidoni***REMOVED***it

@@ -11,8 +11,10 @@ from events import Event, event_form
 from homestats import *
 from apscheduler***REMOVED***schedulers***REMOVED***background import BackgroundScheduler
 from scheduler_tasks import *
+from time import strftime
 from conf import *
 
+time_format = "[%Y:%m:%d %H:%M:%S]"
 root_dir = "/data"
 database = root_dir + "/unicloud***REMOVED***db"
 authkeyfile = root_dir + "/***REMOVED***ssh/unicloud_authorized_keys"
@@ -24,12 +26,12 @@ files_index = AutoIndex(app, shares_path, add_url_rules=False)
 api = Api(app)
 
 if server_debug:
-    print ("Debug is active***REMOVED******REMOVED***")
+    print(f"{strftime(time_format)} - App Debug is active")
     app***REMOVED***debug = True
     from werkzeug***REMOVED***debug import DebuggedApplication
     app***REMOVED***wsgi_app = DebuggedApplication(app***REMOVED***wsgi_app, True)
 else:
-    print("Debug is disabled***REMOVED******REMOVED***")
+    print(f"{strftime(time_format)} - App Debug is disabled")
 
 app***REMOVED***config['BASIC_AUTH_USERNAME'] = server_ui_username
 app***REMOVED***config['BASIC_AUTH_PASSWORD'] = server_ui_password
@@ -37,10 +39,10 @@ basic_auth = BasicAuth(app)
 
 # SCHEDULER
 
-print(home_assistant)
 scheduler = BackgroundScheduler()
 scheduler***REMOVED***add_job(func=scheduler_tasks_update_sync_status, trigger="interval", seconds=60, args=(app,))
 if home_assistant:
+    print(f"{strftime(time_format)} - Home assistant integration is active")
     scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_clients, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
     scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_server, trigger="interval", seconds=home_assistant_push_interval, args=(app, startTime))
     scheduler***REMOVED***add_job(func=scheduler_tasks_update_home_assistant_shares, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
