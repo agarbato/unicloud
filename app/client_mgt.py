@@ -196,7 +196,7 @@ class ClientMgt(object):
                       max(events***REMOVED***end_ts)
                     FROM clients
                     LEFT JOIN events on events***REMOVED***client = clients***REMOVED***name
-                    WHERE events***REMOVED***id > '%d'
+                    WHERE events***REMOVED***id > '%d' or clients***REMOVED***status == 'Registered'
                     GROUP BY clients***REMOVED***name
                     ORDER BY events***REMOVED***end_ts desc """ % (maxid - maxrows)
         else:
