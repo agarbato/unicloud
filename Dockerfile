@@ -13,7 +13,6 @@ RUN apk add --no-cache \
     ssmtp \
     supervisor \
     mutt \
-    unison \
     shadow \
     sqlite \ 
     pwgen \
@@ -27,6 +26,7 @@ RUN apk add --no-cache \
     python3 \
     py3-pip \
     python3-dev \
+    && apk add --no-cache --repository http://dl-cdn***REMOVED***alpinelinux***REMOVED***org/alpine/v3***REMOVED***13/community unison==2***REMOVED***48***REMOVED***15_p4-r1 \
     && pip3 install flask flask_restful uwsgi requests flask-basicAuth flask-autoindex psutil apscheduler \
     && apk del libc-dev linux-headers gcc python3-dev 
 

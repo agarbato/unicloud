@@ -14,10 +14,6 @@ services:
       - SERVER_UI_PASSWORD=abcd12345
       - SERVER_DEBUG=True
       - ROLE=SERVER
-      - HOME_ASSISTANT=True
-      - HOME_ASSISTANT_URL=https://home***REMOVED***donidoni***REMOVED***it
-      - HOME_ASSISTANT_PUSH_INTERVAL=15
-      - HOME_ASSISTANT_TOKEN=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9***REMOVED***eyJpc3MiOiIzMWI4ODRjMzc1M2Q0OWJlOWEzNDUzNzVjZGNjOTY1NiIsImlhdCI6MTYyNzgzNzk3MCwiZXhwIjoxOTQzMTk3OTcwfQ***REMOVED***shBHbGPXda7HvH_BzhGqQ6ABC4BoTqTOZ0Kx7PCl5Fk
     networks:
       unison:
         aliases:
