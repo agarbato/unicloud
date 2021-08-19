@@ -66,6 +66,10 @@ If you want to start again fresh, simple run :
 | SERVER_UI_PASSWORD |None  |Server|Ui Basic Auth Password
 | SHARES_PATH |/shares  |Server|Server Shares volume
 | MAX_LOG_EVENTS |1000  |Server|Max Sync Logs to keep
+| HOME_ASSISTANT|False|Server|Enable Home assistant integration
+| HOME_ASSISTANT_URL|None|Server|Home Assistant URL
+| HOME_ASSISTANT_PUSH_INTERVAL|60|Server|Home Assistant Push Interval
+| HOME_ASSISTANT_TOKEN|None|Server|Home assistant Long Live token
 | CLIENT_HOSTNAME |$HOSTNAME  |Client|Client Hostname (see notes below)
 | CLIENT_DEST |/data/share  |Client|Path of synced folder
 | SERVER_HOSTNAME |None  |Client|Server Hostname
@@ -146,6 +150,31 @@ You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var, 
 <br>
 <img src="./docs/screenshots/event-detail.jpg" width="70%" height="70%" />   
 <br>
+
+### Home Assistant Integration
+
+Why? Just because it's cool :-)   
+I use home assistant for a lot of stuff so I wanted to have unicloud as entities on HA.   
+I didn't have time so far to create a real integration, maybe I will consider it for the future if useful.   
+As for now client/server/shares infos are published at a custom interval (HOME_ASSITANT_PUSH_INTERVAL).   
+Configuration is simple, make sure you have a token and  fillup all 4 HOME_ASSISTANT_* ENV VARS.   
+
+
+This is the result on home assistant.
+
+<br>
+<img src="./docs/screenshots/ha-server.jpg"  />
+<br>
+
+<br>
+<img src="./docs/screenshots/ha-client.jpg"  />
+<br>
+
+<br>
+<img src="./docs/screenshots/ha-share.jpg"  />
+<br>
+
+
 
 ### Thresholds
 
