@@ -8,7 +8,7 @@ from db_conn import get_db, query_db
 
 
 def homestats_sys(startTime):
-    result={}
+    result = {}
     av1, av2, av3 = os.getloadavg()
     av1 = round(av1, 2)
     av2 = round(av2, 2)
@@ -24,6 +24,7 @@ def homestats_sys(startTime):
                    'boot_uptime_days': boot_uptime[0], 'boot_uptime_hours': boot_uptime[1], 'boot_uptime_minutes': boot_uptime[2], 'boot_uptime_seconds': boot_uptime[3]
                    })
     return result
+
 
 def homestats_unicloud():
     result = {}
@@ -49,6 +50,7 @@ def homestats_unicloud():
                   'nclients': nclients[0][0], 'nshares': nshares[0][0], 'toregister': toregister[0][0], 'outsync': outsync[0][0], 'active': active[0][0]})
     return result
 
+
 def homestats_runtime():
     result = {}
     python_version = str(sys.version_info.major)+'.'+str(sys.version_info.minor)
@@ -56,6 +58,7 @@ def homestats_runtime():
     flask_version = flask.__version__
     result.update({'python_version': python_version, 'unison_version': unison_version, 'flask_version': flask_version })
     return result
+
 
 def homestats_uptime(seconds):
     result = []

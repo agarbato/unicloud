@@ -9,7 +9,7 @@ from time import strftime
 from conf import *
 
 time_format = "[%Y:%m:%d %H:%M:%S]"
-#self.filename.write("\n%s Unicloud Sync Started\n" % strftime(self.format))
+
 
 def scheduler_tasks_update_sync_status(app):
     print(f"{strftime(time_format)} - Scheduled task: Update Client Sync status on DB")
@@ -38,6 +38,7 @@ def scheduler_tasks_home_assistant_post(sensor_name, data):
     post(url, headers=headers, data=json.dumps(data))
 
 
+
 def scheduler_tasks_update_home_assistant_server(app, startTime):
     print(f"{strftime(time_format)} - Scheduled task: Update Home Assistant Server stats")
     with app.app_context():
@@ -45,8 +46,8 @@ def scheduler_tasks_update_home_assistant_server(app, startTime):
         runtime_stats = homestats_runtime()
         sys_stats = homestats_sys(startTime)
         sensor_name = "server"
-        data = {"state": f"Uptime {sys_stats['boot_uptime_days']}d, {sys_stats['boot_uptime_hours']}h, "
-                         f"{sys_stats['boot_uptime_minutes']}m, {sys_stats['boot_uptime_seconds']}s",
+        data = {"state": f"Uptime {sys_stats['uptime_days']}d, {sys_stats['uptime_hours']}h, "
+                         f"{sys_stats['uptime_minutes']}m, {sys_stats['uptime_seconds']}s",
                 "attributes": {"Total Events": unicloud_stats['nevents'], "OK Events": unicloud_stats['nevents_ok'],
                                "KO Events": unicloud_stats['nevents_ko'], "Number of Shares": unicloud_stats['nshares'],
                                "Clients Total": unicloud_stats['nclients'], "Clients to Register": unicloud_stats['toregister'],

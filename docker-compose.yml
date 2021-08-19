@@ -2,7 +2,7 @@ version: '3.3'
 services:
   # SERVER
   test_unicloud_server:
-    image: agarbato1/unison-unicloud:ha
+    image: agarbato1/unison-unicloud
     ports:
       - "2222:22"
       - "5000:80"
@@ -27,7 +27,7 @@ services:
         target: /shares
   # CLIENT
   test_unicloud_client:
-    image: agarbato1/unison-unicloud:ha
+    image: agarbato1/unison-unicloud
     environment:
       - CLIENT_HOSTNAME=testing-client1
       - ROLE=CLIENT
