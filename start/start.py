@@ -35,17 +35,19 @@ share_info_url = api_url + "/shares/info/%s/path" % server_share
 role = role.lower()
 nl = "\n"
 
+
 def config_exist():
   if not os.path.exists(donefile):
      return False
   else:
      return True
 
+
 def api_check():
   maxretry = 3
   delay = 5
   count = 1
-  print ("Checking Server API Status")
+  print("Checking Server API Status")
   while count <= maxretry:
      try:
          response = urlopen(status_url)
@@ -61,6 +63,7 @@ def api_check():
      else:
          return("API OK..")
 
+
 def create_dirs():
   dirs = [etc_dir, log_dir, unison_dir, ssh_dir]
   for dir in dirs:
@@ -68,12 +71,14 @@ def create_dirs():
          os.makedirs(dir)
          print ("Creating Dir %s" % dir)
 
+
 def add_user():
   print ("Adding Unicloud user")
   ShellCmd("groupadd -g %s %s" % ( user_uid, user ))
   ShellCmd("useradd -u %s -g %s -s /bin/bash -c 'unison sync user' -d /data %s" % (user_uid, user_uid, user))
   ShellCmd("chown -R %s:%s %s %s %s %s" % (user, user, ssh_dir, etc_dir, unison_dir, log_dir ))
   ShellCmd("sed -i s/%s:!/%s:*/g /etc/shadow" % (user, user))
+
 
 def gen_key():
   print ("Generating %s ssh keys" % role)
@@ -89,7 +94,7 @@ def gen_key():
 
 
 def conf_supervisord():
-  print ("Creating Supervise Config")
+  print("Creating Supervise Config")
   ## COMMON CONFIG
   with open(supervise_cfg, 'w') as svcfg:
     svcfg.write("[unix_http_server]" + nl)
@@ -130,11 +135,13 @@ def conf_supervisord():
        svcfg.write("stderr_logfile_backups=5" + nl)
        svcfg.write("environment=HOME='/data',USER='%s'" % user + nl)
 
+
 def start_supervisord():
     #print ("Starting Supervisord")
     cmd=ShellCmd("/usr/bin/supervisord --configuration %s --logfile %s" % (supervise_cfg, supervise_log))
     print (cmd.getrc())
     print (cmd)
+
 
 def test_connection():
     #print ("Checking SSH Connection")
@@ -149,8 +156,9 @@ def test_connection():
         #print (cmd)
         return False
 
+
 def client_conf():
-    print ("Exporting environment variables to client app..")
+    print("Exporting environment variables to client app..")
     with open(client_app_cfg, 'w') as cfg:
       cfg.write("client_hostname='%s'" % client_hostname + nl)
       cfg.write("role='%s'" % role + nl)
@@ -163,7 +171,7 @@ def client_conf():
       cfg.write("sync_interval='%s'" % sync_interval + nl)
       cfg.write("server_api_port='%s'" % server_api_port + nl)
       cfg.write("server_api_protocol='%s'" % server_api_protocol + nl)
-    print ("Creating unison profile")
+    print("Creating unison profile")
     share_path = get_share_path()
     with open(unison_prf, 'w') as cfg:
       cfg.write("root=ssh://%s@%s:%s/%s" % (user, server_hostname, server_port, share_path) + nl)
@@ -179,22 +187,25 @@ def client_conf():
       for item in share_ignore.split("|"):
         cfg.write("ignore = Name {%s}" % item + nl)
 
+
 def client_register():
   ssh_keyfile = ssh_dir + "/id_rsa.pub"
   ssh_key = ShellCmd("cat %s" % ssh_keyfile)
   #print (ssh_key)
-  print ("Registering client with API, [ %s ]" % client_register_url)
+  print("Registering client with API, [ %s ]" % client_register_url)
   data = {'name': client_hostname, 'ssh_key': ssh_key, 'share': server_share }
   r = requests.post(url=client_register_url, data=data)
 
+
 def get_share_path():
-   print ("Checking if server share %s exist" % server_share)
+   print("Checking if server share %s exist" % server_share)
    r = requests.get(url=share_info_url)
    if r.status_code == 404:
      exit_screen("share_404")
    else:
      print ("OK %s is defined on server" % server_share)
      return r.text
+
 
 def server_conf():
      print ("Creating uwsgi app ini..")
@@ -221,9 +232,13 @@ def server_conf():
        cfg.write("server_debug=%s" % server_debug + nl)
        cfg.write("shares_path='%s'" % shares_path + nl)
        cfg.write("max_log_events='%s'" % max_log_events + nl)
-     print ("Set App Permission..")
+       cfg.write("home_assistant=%s" % home_assistant + nl)
+       cfg.write("home_assistant_url='%s'" % home_assistant_url + nl)
+       cfg.write("home_assistant_token='%s'" % home_assistant_token + nl)
+       cfg.write("home_assistant_push_interval=%d" % int(home_assistant_push_interval) + nl)
+     print("Set App Permission..")
      ShellCmd("chown -R %s:%s %s" % (user, user, server_app_dir))
-     print ("Configure nginx with %s user.." % user)
+     print("Configure nginx with %s user.." % user)
      ShellCmd("sed -i 's/user nginx;/user %s;/g' /etc/nginx/nginx.conf" % user)
      ShellCmd("sed -i 's/\/var\/log\/nginx\/access.log/\/data\/log\/access.log/g' /etc/nginx/nginx.conf")
 
@@ -278,27 +293,27 @@ config_status=config_exist()
 #print (config_status)
 
 if config_status == False:
-  print ("Config not found, first run? Initializing..")
+  print("Config not found, first run? Initializing..")
   create_dirs()
   add_user()
   gen_key()
   conf_supervisord()
   ShellCmd("touch %s" % donefile)
   if role == "client":
-    print (api_check())
+    print(api_check())
     #print (get_share_path())
     client_register()
 else:
-  print ("Persistent config found..")
-  print ("Initializing environment..")
+  print("Persistent config found..")
+  print("Initializing environment..")
   add_user()
-  conf_supervisord()   # Temporary while understand what's the best supervise option
+  conf_supervisord()
 if role == "client":
-  print (api_check())
+  print(api_check())
   #get_share_path()
   #client_register()
   conn = test_connection()
-  if conn == True:
+  if conn:
      client_conf()
      exit_screen("client_ok")
   else:

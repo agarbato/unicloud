@@ -1,5 +1,6 @@
 .DS_Store
 .idea
+docker-compose-local.yml
 /local_tests/*/*/*
 unicloud.db
 !.git*

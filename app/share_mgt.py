@@ -118,8 +118,8 @@ class ShareMgt(object):
         size = self.getsize()
         size_on_db = size[1]
         size_on_fs = size[0]
-        #print ("Realsize %s" % realsize)
-        #print ("Size %s " % size)
+        #print("Realsize %s" % size_on_fs)
+        #print("Size %s " % size_on_db)
         if size_on_fs != size_on_db:
             query = "update shares set size='%s' where name='%s'" % (size_on_fs, self.name)
             #print (query)
