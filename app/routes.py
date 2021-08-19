@@ -11,8 +11,10 @@ from events import Event, event_form
 from homestats import *
 from apscheduler.schedulers.background import BackgroundScheduler
 from scheduler_tasks import *
+from time import strftime
 from conf import *
 
+time_format = "[%Y:%m:%d %H:%M:%S]"
 root_dir = "/data"
 database = root_dir + "/unicloud.db"
 authkeyfile = root_dir + "/.ssh/unicloud_authorized_keys"
@@ -24,12 +26,12 @@ files_index = AutoIndex(app, shares_path, add_url_rules=False)
 api = Api(app)
 
 if server_debug:
-    print ("Debug is active..")
+    print(f"{strftime(time_format)} - App Debug is active")
     app.debug = True
     from werkzeug.debug import DebuggedApplication
     app.wsgi_app = DebuggedApplication(app.wsgi_app, True)
 else:
-    print("Debug is disabled..")
+    print(f"{strftime(time_format)} - App Debug is disabled")
 
 app.config['BASIC_AUTH_USERNAME'] = server_ui_username
 app.config['BASIC_AUTH_PASSWORD'] = server_ui_password
@@ -39,8 +41,14 @@ basic_auth = BasicAuth(app)
 
 scheduler = BackgroundScheduler()
 scheduler.add_job(func=scheduler_tasks_update_sync_status, trigger="interval", seconds=60, args=(app,))
+if home_assistant:
+    print(f"{strftime(time_format)} - Home assistant integration is active")
+    scheduler.add_job(func=scheduler_tasks_update_home_assistant_clients, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
+    scheduler.add_job(func=scheduler_tasks_update_home_assistant_server, trigger="interval", seconds=home_assistant_push_interval, args=(app, startTime))
+    scheduler.add_job(func=scheduler_tasks_update_home_assistant_shares, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
 scheduler.add_job(func=scheduler_tasks_share_update_size, trigger="interval", hours=6, args=(app,))
 scheduler.add_job(func=scheduler_tasks_purge_logs, trigger="interval", hours=12, args=(app,))
+
 scheduler.start()
 
 # Shut down the scheduler when exiting the app
@@ -380,7 +388,7 @@ def share_del_process():
 @basic_auth.required
 def share_get_size_process(name):
     share = ShareMgt(name)
-    share.getsize()
+    share.updatesize()
     result = "Refreshing Share %s size" % name
     return render_template("share_mgt_result.html", result=result), 200
 
@@ -435,7 +443,7 @@ def event_id(id):
 ####  SYNC ENDPOINTS ####
 
 
-@app.route("/sync/start/<client>", methods=['PUT','POST'])
+@app.route("/sync/start/<client>", methods=['PUT', 'POST'])
 def sync_start(client):
     share = request.form.get('share')
     start_ts = int(request.form.get('start_ts'))
@@ -449,7 +457,7 @@ def sync_start(client):
       return "Sync Started, record updated with status %s" % status, 200
 
 
-@app.route("/sync/end/<client>", methods=['PUT','POST'])
+@app.route("/sync/end/<client>", methods=['PUT', 'POST'])
 def sync_end(client):
     start_ts = int(request.form.get('start_ts'))
     status = request.form.get('status')

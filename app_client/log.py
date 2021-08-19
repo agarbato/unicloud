@@ -1,9 +1,9 @@
-from time import sleep,strftime
+from time import sleep, strftime
 from conf import *
 
 class Log(object):
    filename = ""
-   format="%Y/%m/%d %H:%M:%S"
+   format = "%Y/%m/%d %H:%M:%S"
    def __init__(self,logfile):
      self.logfile = logfile
      self.filename = open(logfile,"a")
