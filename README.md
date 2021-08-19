@@ -23,6 +23,7 @@ I'm planning to integrate bootstrap in the project as soon as I will have some f
  - Simple file Manager for shares
  - Sync Threshold warning
  - Small memory usage and image footprint, thanks to [Alpine Linux](https://alpinelinux.org/)
+ - Home Assistant Integration
 
 <br>
 
@@ -163,15 +164,15 @@ Configuration is simple, make sure you have a token and  fillup all 4 HOME_ASSIS
 This is the result on home assistant.
 
 <br>
-<img src="./docs/screenshots/ha-server.jpg"  />
+<img src="./docs/screenshots/ha_server.jpg"  />
 <br>
 
 <br>
-<img src="./docs/screenshots/ha-client.jpg"  />
+<img src="./docs/screenshots/ha_client.jpg"  />
 <br>
 
 <br>
-<img src="./docs/screenshots/ha-share.jpg"  />
+<img src="./docs/screenshots/ha_share.jpg"  />
 <br>
 
 
