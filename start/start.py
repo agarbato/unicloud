@@ -32,6 +32,8 @@ status_url = api_url + "/status"
 client_register_url = api_url + "/clients/register"
 share_info_url = api_url + "/shares/info/%s/path" % server_share
 
+user_uid = int(user_uid)
+
 role = role.lower()
 nl = "\n"
 
@@ -73,15 +75,19 @@ def create_dirs():
 
 
 def add_user():
-  print ("Adding Unicloud user")
-  ShellCmd("groupadd -g %s %s" % ( user_uid, user ))
+  print("Adding Unicloud user")
+  ShellCmd("groupadd -g %s %s" % (user_uid, user))
   ShellCmd("useradd -u %s -g %s -s /bin/bash -c 'unison sync user' -d /data %s" % (user_uid, user_uid, user))
-  ShellCmd("chown -R %s:%s %s %s %s %s" % (user, user, ssh_dir, etc_dir, unison_dir, log_dir ))
+  ShellCmd("chown -R %s:%s %s %s %s %s" % (user, user, ssh_dir, etc_dir, unison_dir, log_dir))
   ShellCmd("sed -i s/%s:!/%s:*/g /etc/shadow" % (user, user))
+  if user_gids:
+    print("Adding user to groups %s" % user_gids)
+    cmd = ShellCmd("usermod -a -G %s %s" % (user_gids, user))
+    print(cmd)
 
 
 def gen_key():
-  print ("Generating %s ssh keys" % role)
+  print("Generating %s ssh keys" % role)
   if role == "server":
     ShellCmd("ssh-keygen -A ; mv /etc/ssh /data/")
     # fix possible wrong permission on home folder that prevents ssh to work properly
@@ -208,7 +214,7 @@ def get_share_path():
 
 
 def server_conf():
-     print ("Creating uwsgi app ini..")
+     print("Creating uwsgi app ini..")
      with open(uwsgi_ini, 'w') as cfg:
        cfg.write("[uwsgi]" + nl)
        cfg.write("module = wsgi:app" + nl)
@@ -225,7 +231,7 @@ def server_conf():
        cfg.write("log-date = [%%Y:%%m:%%d %%H:%%M:%%S]" + nl)
        cfg.write("req-logger = file:/data/log/reqlog" + nl)
        cfg.write("logger = file:/data/log/errlog" + nl)
-     print("Exporting environemnt variable to server app")
+     print("Exporting environment variable to server app")
      with open(server_app_cfg, 'w') as cfg:
        cfg.write("server_ui_username='%s'" % server_ui_username + nl)
        cfg.write("server_ui_password='%s'" % server_ui_password + nl)

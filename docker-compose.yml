@@ -8,7 +8,8 @@ services:
       - "5000:80"
     environment:
       - USER=unison
-      - USERID=1000
+      - USER_UID=1000
+     # - USER_GIDS=33,14
       - SERVER_HOSTNAME=unicloud_testing_server
       - SERVER_UI_USERNAME=admin
       - SERVER_UI_PASSWORD=abcd12345
@@ -32,7 +33,7 @@ services:
       - CLIENT_HOSTNAME=testing-client1
       - ROLE=CLIENT
       - USER=unison
-      - USERID=1000
+      - USER_UID=1000
       - SERVER_HOSTNAME=unicloud_server
       - SERVER_PORT=22
       - SERVER_SHARE=share1
