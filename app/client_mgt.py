@@ -16,7 +16,7 @@ class ClientMgt(object):
     def info(self):
         result = {}
         query = "select count(status) from events where client='%s' and status='OK';" %self.client
-        count_ok=query_db(query)[0]
+        count_ok = query_db(query)[0]
         query = "select count(status) from events where client='%s' and status='KO';" %self.client
         count_ko = query_db(query)[0]
         #count_total = count_ok + count_ko
@@ -38,7 +38,7 @@ class ClientMgt(object):
         if lastseen == []:
             result.update({'share': share[0][0], 'ok': count_ok[0], 'ko': count_ko[0], 'total': count_ok[0]+count_ko[0],
                            'lastseen': 'Never', 'joindate': joindate[0][0], 'status': status[0][0], 'ssh_key': ssh_key[0][0],
-                           'threshold': threshold[0][0], 'avg_duration': "None" })
+                           'threshold': threshold[0][0], 'avg_duration': "None"})
         else:
             result.update({'share': share[0][0], 'ok': count_ok[0], 'ko': count_ko[0], 'total': count_ok[0]+count_ko[0],
                            'lastseen': lastseen[0][0], 'joindate': joindate[0][0], 'status': status[0][0], 'ssh_key': ssh_key[0][0],
@@ -80,12 +80,12 @@ class ClientMgt(object):
         #print (query)
         query_db(query)
         get_db().commit()
-        return "<br>Client %s added to DB, status %s" % ( self.client, status )
+        return "<br>Client %s added to DB, status %s" % (self.client, status)
     
     def add_to_keyfile(self, authkeyfile, ssh_key):
         self.ssh_key = ssh_key
         self.authkeyfile = authkeyfile
-        print (ssh_key)
+        print(ssh_key)
         auth_command = 'command="/usr/bin/unison -server"'
         with open (authkeyfile, 'a') as f:
           f.write("\n" + auth_command + " " + ssh_key + " CLIENT:%s" % self.client)
@@ -94,7 +94,7 @@ class ClientMgt(object):
     def activate(self, ssh_key, authkeyfile):
         self.ssh_key = ssh_key
         self.authkeyfile = authkeyfile
-        result=[]
+        result = []
         query = ("update clients set status='Active' where name='%s'") % self.client
         query_db(query)
         get_db().commit()
@@ -146,11 +146,11 @@ class ClientMgt(object):
            get_db().commit()
 
     def check_pending(self):
-        query="select * from events where client='%s' and status='SYNCING';" % self.client
+        query = "select * from events where client='%s' and status='SYNCING';" % self.client
         brokensync=query_db(query)
         #print("Brokensync :%s" % brokensync)
         if brokensync != []:
-           query="update events set status='KO', log='Sync was interrupted' where client='%s' and status='SYNCING';" % self.client
+           query = "update events set status='KO', log='Sync was interrupted' where client='%s' and status='SYNCING';" % self.client
            query_db(query)
            get_db().commit()
 
@@ -172,12 +172,19 @@ class ClientMgt(object):
         clientlist = query_db(query)
         return clientlist
 
+    def list_clists_to_register(self):
+        query = "select count(id) from clients where status='Registered'"
+        toregister = query_db(query)
+        return toregister[0][0]
+
     def list_clients_threshold(self):
         query = "select name from clients where threshold !=0"
         clientlist = query_db(query)
         return clientlist
 
     def list_clients_page(self):
+        toregister = self.list_clists_to_register()
+        #print(f"Client to register {toregister}")
         maxrows = 50000
         query = "select max(id) from events"
         maxid = query_db(query)
@@ -187,20 +194,31 @@ class ClientMgt(object):
         else:
             maxid = 0
         if maxid > maxrows:
-            #print ("Max")
-            query = """ SELECT clients.name,
-                      clients.status,
-                      clients.joindate,
-                      clients.threshold,
-                      clients.ssh_key,
-                      max(events.end_ts)
-                    FROM clients
-                    LEFT JOIN events on events.client = clients.name
-                    WHERE events.id > '%d' or clients.status == 'Registered'
-                    GROUP BY clients.name
-                    ORDER BY events.end_ts desc """ % (maxid - maxrows)
+            if toregister > 0:
+                query = """ SELECT clients.name,
+                          clients.status,
+                          clients.joindate,
+                          clients.threshold,
+                          clients.ssh_key,
+                          max(events.end_ts)
+                        FROM clients
+                        LEFT JOIN events on events.client = clients.name
+                        WHERE events.id > '%d' or clients.status == 'Registered'
+                        GROUP BY clients.name
+                        ORDER BY events.end_ts desc """ % (maxid - maxrows)
+            else:
+                query = """ SELECT clients.name,
+                          clients.status,
+                          clients.joindate,
+                          clients.threshold,
+                          clients.ssh_key,
+                          max(events.end_ts)
+                        FROM clients
+                        LEFT JOIN events on events.client = clients.name
+                        WHERE events.id > '%d'
+                        GROUP BY clients.name
+                        ORDER BY events.end_ts desc """ % (maxid - maxrows)
         else:
-            #print ("Else")
             query = """ SELECT clients.name,
                       clients.status,
                       clients.joindate,
