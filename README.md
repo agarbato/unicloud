@@ -1,4 +1,4 @@
-# Unicloud, a smart web unison file syncronizer
+# Unicloud, a unison ui web interface and a smart file syncronizer :-)
 
 <img src="./docs/screenshots/homepage.jpg" width="90%" height="90%"/>
 
