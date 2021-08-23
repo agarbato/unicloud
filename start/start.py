@@ -1,6 +1,7 @@
 import os
 import sys
 import requests
+import socket
 from time import sleep
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
@@ -147,6 +148,12 @@ def start_supervisord():
     cmd=ShellCmd("/usr/bin/supervisord --configuration %s --logfile %s" % (supervise_cfg, supervise_log))
     print (cmd.getrc())
     print (cmd)
+
+
+def cache_api_hostname():
+    ip_address = socket.gethostbyname(server_hostname)
+    with open("/etc/hosts", 'a') as etc_hosts:
+        etc_hosts.write(f"{ip_address}   {server_hostname}\n")
 
 
 def test_connection():
@@ -298,7 +305,7 @@ def exit_screen(status, error="None"):
 config_status=config_exist()
 #print (config_status)
 
-if config_status == False:
+if not config_status:
   print("Config not found, first run? Initializing..")
   create_dirs()
   add_user()
@@ -315,6 +322,7 @@ else:
   add_user()
   conf_supervisord()
 if role == "client":
+  cache_api_hostname()
   print(api_check())
   #get_share_path()
   #client_register()

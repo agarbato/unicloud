@@ -7,14 +7,14 @@ from shell import ShellCmd
 from log import Log
 
 root_dir = "/data"
-log_dir = root_dir + "/log"
-logfile = log_dir + "/client.log"
-lockfile = log_dir + "/client.lock"
+log_dir = f"{root_dir}/log"
+logfile = f"{log_dir}/client.log"
+lockfile = f"{log_dir}/client.lock"
 command = "unison unicloud"
 
-start_sync_url = server_api_protocol + "://" +  server_hostname + ":" + server_api_port + "/sync/start/" + client_hostname
-end_sync_url = server_api_protocol + "://" +  server_hostname + ":" + server_api_port + "/sync/end/" + client_hostname
-share_exist_url = server_api_protocol + "://" +  server_hostname + ":" + server_api_port + "/shares/exist"
+start_sync_url = f"{server_api_protocol}://{server_hostname}:{server_api_port}/sync/start/{client_hostname}"
+end_sync_url = f"{server_api_protocol}://{server_hostname}:{server_api_port}/sync/end/{client_hostname}"
+share_exist_url = f"{server_api_protocol}://{server_hostname}:{server_api_port}/shares/exist"
 
 
 def get_ts():
@@ -71,15 +71,16 @@ def end_sync(result, start_ts, log):
   log.sync_end(result)
   log.header()
 
+
 def scheduler_sync():
   log = Log(logfile)
   start_ts = get_ts()
   result = start_sync(log, start_ts)
   #print (result)
   if result == 6 or result == 503:
-    log.client_error("Client %s can't contact API Server [ %s ]" % (client_hostname, start_sync_url) )
+    log.client_error(f"Client {client_hostname} can't contact API Server [ {start_sync_url} ]")
   elif result == 500:
-    log.client_error("Client %s is not enabled, enable it from server UI" % client_hostname)
+    log.client_error(f"Client {client_hostname} is not enabled, enable it from server UI")
   else:
     end_sync(result, start_ts, log)
   log.close()
