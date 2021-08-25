@@ -11,32 +11,31 @@ from shell_cmd import ShellCmd
 ## LOCAL SETTINGS
 
 root_dir = "/data"
-etc_dir = root_dir + "/etc"
-log_dir = root_dir + "/log"
-ssh_dir = root_dir + "/.ssh"
+etc_dir = f"{root_dir}/etc"
+log_dir = f"{root_dir}/log"
+ssh_dir = f"{root_dir}/.ssh"
 bin_dir = "/usr/local/bin"
-donefile = etc_dir + "/config_done"
-authkeyfile = root_dir + "/.ssh/unicloud_authorized_keys"
-supervise_cfg = etc_dir + "/supervised.conf"
-supervise_log = log_dir + "/supervisord.log"
-unison_dir = root_dir + "/.unison"
-unison_prf = unison_dir + "/unicloud.prf"
-unison_log = log_dir + "/unicloud.log"
+donefile = f"{etc_dir}/config_done"
+authkeyfile = f"{root_dir}/.ssh/unicloud_authorized_keys"
+supervise_cfg = f"{etc_dir}/supervised.conf"
+supervise_log = f"{log_dir}/supervisord.log"
+unison_dir = f"{root_dir}/.unison"
+unison_prf = f"{unison_dir}/unicloud.prf"
+unison_log = f"{log_dir}/unicloud.log"
 server_app_dir = "/usr/local/unicloud"
 client_app_dir = "/usr/local/unicloud_client"
-client_app_cfg = client_app_dir + "/conf.py"
-server_app_cfg = server_app_dir + "/conf.py"
-uwsgi_ini = server_app_dir + "/unicloud.ini"
+client_app_cfg = f"{client_app_dir}/conf.py"
+server_app_cfg = f"{server_app_dir}/conf.py"
+uwsgi_ini = f"{server_app_dir}/unicloud.ini"
 
-api_url = "%s://%s:%s" % (server_api_protocol, server_hostname, server_api_port)
-status_url = api_url + "/status"
-client_register_url = api_url + "/clients/register"
-share_info_url = api_url + "/shares/info/%s/path" % server_share
+api_url = f"{server_api_protocol}://{server_hostname}:{server_api_port}"
+status_url = f"{api_url}/status"
+client_register_url = f"{api_url}/clients/register"
+share_info_url = f"{api_url}/shares/info/{server_share}/path"
 
 user_uid = int(user_uid)
 
 role = role.lower()
-nl = "\n"
 
 
 def config_exist():
@@ -53,18 +52,18 @@ def api_check():
   print("Checking Server API Status")
   while count <= maxretry:
      try:
-         response = urlopen(status_url)
+         urlopen(status_url)
      except HTTPError as e:
          exit_screen("api_error", e.code)
      except URLError as e:
          if count == maxretry:
            exit_screen("api_error", e.reason)
          else:
-           print("[Retry %d] Fail.. " % count)
+           print(f"[Retry {count}] Fail.. ")
            sleep(delay)
-           count+=1
+           count += 1
      else:
-         return("API OK..")
+         return "API OK.."
 
 
 def create_dirs():
@@ -72,82 +71,82 @@ def create_dirs():
   for dir in dirs:
      if not os.path.exists(dir):
          os.makedirs(dir)
-         print ("Creating Dir %s" % dir)
+         print(f"Creating Dir {dir}")
 
 
 def add_user():
   print("Adding Unicloud user")
-  ShellCmd("groupadd -g %s %s" % (user_uid, user))
-  ShellCmd("useradd -u %s -g %s -s /bin/bash -c 'unison sync user' -d /data %s" % (user_uid, user_uid, user))
-  ShellCmd("chown -R %s:%s %s %s %s %s" % (user, user, ssh_dir, etc_dir, unison_dir, log_dir))
-  ShellCmd("sed -i s/%s:!/%s:*/g /etc/shadow" % (user, user))
+  ShellCmd(f"groupadd -g {user_uid} {user}")
+  ShellCmd(f"useradd -u {user_uid} -g {user_uid} -s /bin/bash -c 'unison sync user' -d /data {user}")
+  ShellCmd(f"chown -R {user}:{user} {ssh_dir} {etc_dir} {unison_dir} {log_dir}")
+  ShellCmd(f"sed -i s/{user}:!/{user}:*/g /etc/shadow")
   if user_gids:
-    print("Adding user to groups %s" % user_gids)
-    cmd = ShellCmd("usermod -a -G %s %s" % (user_gids, user))
+    print(f"Adding user to groups {user_gids}")
+    cmd = ShellCmd(f"usermod -a -G {user_gids} {user}")
     print(cmd)
 
 
 def gen_key():
-  print("Generating %s ssh keys" % role)
+  print(f"Generating {role} ssh keys")
   if role == "server":
     ShellCmd("ssh-keygen -A ; mv /etc/ssh /data/")
     # fix possible wrong permission on home folder that prevents ssh to work properly
     ShellCmd("chmod g-w /data")
   else:
-    #print (ShellCmd("ls -al /data/"))
-    cmd = ShellCmd("su -c \"ssh-keygen -f /data/.ssh/id_rsa -t rsa -N '' \" %s" % user)
-    print (cmd)
-    ShellCmd("chown -R %s:%s %s" % (user, user, ssh_dir))
+    cmd = ShellCmd(f"su -c \"ssh-keygen -f /data/.ssh/id_rsa -t rsa -N '' \" {user}")
+    print(cmd)
+    ShellCmd(f"chown -R {user}:{user} {ssh_dir}")
 
 
 def conf_supervisord():
   print("Creating Supervise Config")
   ## COMMON CONFIG
   with open(supervise_cfg, 'w') as svcfg:
-    svcfg.write("[unix_http_server]" + nl)
-    svcfg.write("file=/run/supervisord.sock" + nl)
-    svcfg.write("[supervisord]" + nl)
-    svcfg.write("user=root" + nl)
-    svcfg.write("nodaemon=true" + nl)
-    svcfg.write("[supervisorctl]" + nl)
-    svcfg.write("serverurl=unix:///run/supervisord.sock" + nl)
-    svcfg.write("[rpcinterface:supervisor]" + nl)
-    svcfg.write("supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface" + nl)
+    svcfg.write("[unix_http_server]\n")
+    svcfg.write("file=/run/supervisord.sock\n")
+    svcfg.write("[supervisord]\n")
+    svcfg.write("user=root\n")
+    svcfg.write("nodaemon=true\n")
+    svcfg.write("[supervisorctl]\n")
+    svcfg.write("serverurl=unix:///run/supervisord.sock\n")
+    svcfg.write("[rpcinterface:supervisor]\n")
+    svcfg.write("supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface\n")
   if role == "server":
      # SERVER CONFIG
      with open(supervise_cfg, 'a') as svcfg:
-       svcfg.write("[program:sshd]" + nl)
+       svcfg.write("[program:sshd]\n")
+       #SSH DEBUG
        #svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config -E /data/log/sshlog" + nl)
-       svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config" + nl)
-       svcfg.write("redirect_stderr=true" + nl)
-       svcfg.write("[program:nginx]" + nl)
-       svcfg.write("command=/usr/sbin/nginx -g 'daemon off';" + nl)
-       svcfg.write("[program:unicloud_app]" + nl)
-       svcfg.write("user=%s" % user + nl)
-       svcfg.write("directory=/usr/local/unicloud" + nl)
-       svcfg.write("command=/usr/bin/uwsgi --ini %s" % uwsgi_ini + nl)
+       svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config\n")
+       svcfg.write("redirect_stderr=true\n")
+       svcfg.write("[program:nginx]\n")
+       svcfg.write("command=/usr/sbin/nginx -g 'daemon off';\n")
+       svcfg.write("[program:unicloud_app]\n")
+       svcfg.write(f"user={user}\n")
+       svcfg.write("directory=/usr/local/unicloud\n")
+       svcfg.write(f"command=/usr/bin/uwsgi --ini {uwsgi_ini}\n")
   else:
      # CLIENT CONFIG
      with open(supervise_cfg, 'a') as svcfg:
-       svcfg.write("[program:unicloud]" + nl)
-       svcfg.write("user=%s" % user + nl)
-       svcfg.write("autorestart=true" + nl)
-       svcfg.write("startsec=0" + nl)
-       svcfg.write("directory=%s" % client_app_dir + nl)
-       svcfg.write("command = python3 main.py" + nl)
-       svcfg.write("stdout_logfile = %s/unicloud-supervise-std.log" % log_dir + nl)
-       svcfg.write("stdout_logfile_maxbytes=10MB" + nl)
-       svcfg.write("stdout_logfile_backups=5" + nl)
-       svcfg.write("stderr_logfile = %s/unicloud-supervise-err.log" % log_dir + nl)
-       svcfg.write("stderr_logfile_backups=5" + nl)
-       svcfg.write("environment=HOME='/data',USER='%s'" % user + nl)
+       svcfg.write("[program:unicloud]\n")
+       svcfg.write(f"user={user}\n")
+       svcfg.write("autorestart=true\n")
+       svcfg.write("startsec=0\n")
+       svcfg.write(f"directory={client_app_dir}\n")
+       svcfg.write("command = python3 main.py\n")
+       svcfg.write(f"stdout_logfile = {log_dir}/unicloud-supervise-std.log\n")
+       svcfg.write("stdout_logfile_maxbytes=10MB\n")
+       svcfg.write("stdout_logfile_backups=5\n")
+       svcfg.write(f"stderr_logfile = {log_dir}/unicloud-supervise-err.log\n")
+       svcfg.write("stderr_logfile_backups=5\n")
+       svcfg.write(f"environment=HOME='/data',USER='{user}'\n")
 
 
 def start_supervisord():
     #print ("Starting Supervisord")
-    cmd=ShellCmd("/usr/bin/supervisord --configuration %s --logfile %s" % (supervise_cfg, supervise_log))
-    print (cmd.getrc())
-    print (cmd)
+    cmd = ShellCmd(f"/usr/bin/supervisord --configuration {supervise_cfg} --logfile {supervise_log}")
+    print(cmd.getrc())
+    print(cmd)
 
 
 def cache_api_hostname():
@@ -158,102 +157,99 @@ def cache_api_hostname():
 
 def test_connection():
     #print ("Checking SSH Connection")
-    command="su -c \"ssh -p %s -o \"StrictHostKeyChecking=no\" -o \"BatchMode=yes\" -o \"ConnectTimeout=3\" %s@%s \"echo 2>&1\"\" %s" % (server_port, user, server_hostname, user)
+    command = f"su -c \"ssh -p {server_port} -o \"StrictHostKeyChecking=no\" -o \"BatchMode=yes\" -o \"ConnectTimeout=3\" {user}@{server_hostname} \"echo 2>&1\"\" {user}"
     cmd = ShellCmd(command)
     if cmd.getrc() == 0:
-        print ("SSH Connection OK")
+        print("SSH Connection OK")
         return True
     else:
-        print ("SSH Connection KO, exit code %d" % cmd.getrc())
-        #print (command)
-        #print (cmd)
+        print(f"SSH Connection KO, exit code {cmd.getrc()}")
         return False
 
 
 def client_conf():
     print("Exporting environment variables to client app..")
     with open(client_app_cfg, 'w') as cfg:
-      cfg.write("client_hostname='%s'" % client_hostname + nl)
-      cfg.write("role='%s'" % role + nl)
-      cfg.write("user='%s'" % user + nl)
-      cfg.write("user_uid='%s'" % user_uid + nl)
-      cfg.write("server_hostname='%s'" % server_hostname + nl)
-      cfg.write("server_share='%s'" % server_share + nl)
-      cfg.write("share_ignore='%s'" % share_ignore + nl)
-      cfg.write("unison_params='%s'" % unison_params + nl)
-      cfg.write("sync_interval='%s'" % sync_interval + nl)
-      cfg.write("server_api_port='%s'" % server_api_port + nl)
-      cfg.write("server_api_protocol='%s'" % server_api_protocol + nl)
+      cfg.write(f"client_hostname='{client_hostname}'\n")
+      cfg.write(f"role='{role}'\n")
+      cfg.write(f"user='{user}'\n")
+      cfg.write(f"user_uid='{user_uid}'\n")
+      cfg.write(f"server_hostname='{server_hostname}'\n")
+      cfg.write(f"server_share='{server_share}'\n")
+      cfg.write(f"share_ignore='{share_ignore}'\n")
+      cfg.write(f"unison_params='{unison_params}'\n")
+      cfg.write(f"sync_interval='{sync_interval}'\n")
+      cfg.write(f"server_api_port='{server_api_port}'\n")
+      cfg.write(f"server_api_protocol='{server_api_protocol}'\n")
     print("Creating unison profile")
     share_path = get_share_path()
-    with open(unison_prf, 'w') as cfg:
-      cfg.write("root=ssh://%s@%s:%s/%s" % (user, server_hostname, server_port, share_path) + nl)
-      cfg.write("root=%s" % client_dest + nl)
-      cfg.write("clientHostName=%s" % client_hostname + nl)
-      cfg.write("batch = true" + nl)
-      cfg.write("auto = true" + nl)
-      cfg.write("prefer = newer" + nl)
-      cfg.write("log = true" + nl)
-      cfg.write("logfile = %s" % unison_log + nl)
+    with open(unison_prf, 'w') as cfg
+      cfg.write(f"root=ssh://{user}@{server_hostname}:{server_port}/{share_path}\n")
+      cfg.write(f"root={client_dest}\n")
+      cfg.write(f"clientHostName={client_hostname}\n")
+      cfg.write("batch = true\n")
+      cfg.write("auto = true\n")
+      cfg.write("prefer = newer\n")
+      cfg.write("log = true\n")
+      cfg.write(f"logfile = {unison_log}\n")
       for item in unison_params.split("|"):
-          cfg.write("%s" % item + nl)
+          cfg.write(f"{item}\n")
       for item in share_ignore.split("|"):
-        cfg.write("ignore = Name {%s}" % item + nl)
+        cfg.write(f"ignore = Name {item}\n")
 
 
 def client_register():
-  ssh_keyfile = ssh_dir + "/id_rsa.pub"
-  ssh_key = ShellCmd("cat %s" % ssh_keyfile)
-  #print (ssh_key)
-  print("Registering client with API, [ %s ]" % client_register_url)
+  ssh_keyfile = f"{ssh_dir}/id_rsa.pub"
+  ssh_key = ShellCmd(f"cat {ssh_keyfile}")
+  print(f"Registering client with API, [ {client_register_url} ]")
   data = {'name': client_hostname, 'ssh_key': ssh_key, 'share': server_share }
-  r = requests.post(url=client_register_url, data=data)
+  requests.post(url=client_register_url, data=data)
 
 
 def get_share_path():
-   print("Checking if server share %s exist" % server_share)
+   print(f"Checking if server share {server_share} exist")
    r = requests.get(url=share_info_url)
    if r.status_code == 404:
      exit_screen("share_404")
    else:
-     print ("OK %s is defined on server" % server_share)
+     print(f"OK {server_share} is defined on server")
      return r.text
 
 
 def server_conf():
      print("Creating uwsgi app ini..")
      with open(uwsgi_ini, 'w') as cfg:
-       cfg.write("[uwsgi]" + nl)
-       cfg.write("module = wsgi:app" + nl)
-       cfg.write("master = true" + nl)
-       cfg.write("processes = 5" + nl)
-       cfg.write("enable-threads = true" + nl)
-       cfg.write("socket = unicloud.sock" + nl)
-       cfg.write("chmod-socket = 664" + nl)
-       cfg.write("uid = %d" % user_uid + nl)
-       cfg.write("gid = %d" % user_uid + nl)
-       cfg.write("vacuum = true" + nl)
-       cfg.write("die-on-term = true" + nl)
-       cfg.write("log-reopen = true" + nl)
-       cfg.write("log-date = [%%Y:%%m:%%d %%H:%%M:%%S]" + nl)
-       cfg.write("req-logger = file:/data/log/reqlog" + nl)
-       cfg.write("logger = file:/data/log/errlog" + nl)
+       cfg.write("[uwsgi]\n")
+       cfg.write("module = wsgi:app\n")
+       cfg.write("master = true\n")
+       cfg.write("processes = 5\n")
+       cfg.write("enable-threads = true\n")
+       cfg.write("socket = unicloud.sock\n")
+       cfg.write("chmod-socket = 664\n")
+       cfg.write(f"uid = {user_uid}\n")
+       cfg.write(f"gid = {user_uid}\n")
+       cfg.write("vacuum = true\n")
+       cfg.write("die-on-term = true\n")
+       cfg.write("log-reopen = true\n")
+       cfg.write("log-date = [%%Y:%%m:%%d %%H:%%M:%%S]\n")
+       cfg.write("req-logger = file:/data/log/reqlog\n")
+       cfg.write("logger = file:/data/log/errlog\n")
      print("Exporting environment variable to server app")
      with open(server_app_cfg, 'w') as cfg:
-       cfg.write("server_ui_username='%s'" % server_ui_username + nl)
-       cfg.write("server_ui_password='%s'" % server_ui_password + nl)
-       cfg.write("server_debug=%s" % server_debug + nl)
-       cfg.write("shares_path='%s'" % shares_path + nl)
-       cfg.write("max_log_events='%s'" % max_log_events + nl)
-       cfg.write("home_assistant=%s" % home_assistant + nl)
-       cfg.write("home_assistant_url='%s'" % home_assistant_url + nl)
-       cfg.write("home_assistant_token='%s'" % home_assistant_token + nl)
-       cfg.write("home_assistant_push_interval=%d" % int(home_assistant_push_interval) + nl)
+       cfg.write(f"server_ui_username='{server_ui_username}'\n")
+       cfg.write(f"server_ui_password='{server_ui_password}'\n")
+       cfg.write(f"server_debug={server_debug}\n")
+       cfg.write(f"shares_path='{shares_path}'\n")
+       cfg.write(f"max_log_events='{max_log_events}'\n")
+       cfg.write(f"home_assistant={home_assistant}\n")
+       cfg.write(f"home_assistant_url='{home_assistant_url}'\n")
+       cfg.write(f"home_assistant_token='{home_assistant_token}'\n")
+       cfg.write(f"home_assistant_push_interval={int(home_assistant_push_interval)}")
      print("Set App Permission..")
-     ShellCmd("chown -R %s:%s %s" % (user, user, server_app_dir))
-     print("Configure nginx with %s user.." % user)
-     ShellCmd("sed -i 's/user nginx;/user %s;/g' /etc/nginx/nginx.conf" % user)
-     ShellCmd("sed -i 's/\/var\/log\/nginx\/access.log/\/data\/log\/access.log/g' /etc/nginx/nginx.conf")
+     ShellCmd(f"chown -R {user}:{user} {server_app_dir}")
+     print(f"Configure nginx with {user} user..")
+     ShellCmd(f"sed -i 's/user nginx;/user {user};/g' /etc/nginx/nginx.conf")
+     ShellCmd(f"sed -i 's/\/var\/log\/nginx\/access.log/\/data\/log\/access.log/g' /etc/nginx/nginx.conf")
 
 
 def exit_screen(status, error="None"):
@@ -262,17 +258,17 @@ def exit_screen(status, error="None"):
       print("========================================================================")
       print("-=(: UniCloud Client started: Enjoy :)=-")
       print("")
-      print("User: %s" % user)
-      print("Sync server: %s" % server_hostname )
-      print("Source: %s" % server_share )
-      print("Destination: %s" % client_dest )
+      print(f"User: {user}")
+      print(f"Sync server: {server_hostname}")
+      print(f"Source: {server_share}")
+      print(f"Destination: {client_dest}")
       print("========================================================================")
     elif status == "client_ko":
       print("========================================================================")
-      print("Connection to Master server %s is not working" % server_hostname )
+      print(f"Connection to Master server {server_hostname} is not working")
       print("If this is a new client ACTIVATE first on server UI:")
-      print("UI URL : %s" % api_url + "/clients")
-      print("%s://%s:%s" % (server_api_protocol, server_hostname, server_api_port))
+      print(f"UI URL : {api_url}/clients")
+      print(f"{server_api_protocol}://{server_hostname}:{server_api_port}")
       print("Exit container now..")
       print("========================================================================")
       sys.exit(255)
@@ -282,19 +278,19 @@ def exit_screen(status, error="None"):
       print("")
       print("SSH : On")
       print("API : On")
-      print("Port: %s" % server_port)
-      print("User: %s" % user )
+      print(f"Port: {server_port}")
+      print(f"User: {user}")
       print("========================================================================")
     elif status == "api_error":
       print("========================================================================")
-      print("Error contacting API at %s" % status_url)
-      print("Error : %s" % error)
+      print(f"Error contacting API at {status_url}")
+      print(f"Error : {error}")
       print("Exit container now..")
       print("========================================================================")
       sys.exit(500)
     elif status == "share_404":
       print("========================================================================")
-      print("Share %s is not defined on server" % server_share)
+      print(f"Share {server_share} is not defined on server")
       print("Plase define a valid share name")
       print("Exit container now..")
       print("========================================================================")
@@ -302,8 +298,9 @@ def exit_screen(status, error="None"):
 
 ############## START ##############
 
-config_status=config_exist()
-#print (config_status)
+
+config_status = config_exist()
+
 
 if not config_status:
   print("Config not found, first run? Initializing..")
@@ -311,7 +308,7 @@ if not config_status:
   add_user()
   gen_key()
   conf_supervisord()
-  ShellCmd("touch %s" % donefile)
+  ShellCmd(f"touch {donefile}")
   if role == "client":
     print(api_check())
     #print (get_share_path())
