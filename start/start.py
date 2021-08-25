@@ -183,7 +183,7 @@ def client_conf():
       cfg.write(f"server_api_protocol='{server_api_protocol}'\n")
     print("Creating unison profile")
     share_path = get_share_path()
-    with open(unison_prf, 'w') as cfg
+    with open(unison_prf, 'w') as cfg:
       cfg.write(f"root=ssh://{user}@{server_hostname}:{server_port}/{share_path}\n")
       cfg.write(f"root={client_dest}\n")
       cfg.write(f"clientHostName={client_hostname}\n")
