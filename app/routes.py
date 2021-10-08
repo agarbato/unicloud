@@ -91,13 +91,20 @@ def _jinja2_filter_dec(number):
 @app.template_filter('sync_status')
 def _jinja2_filter_sync_status(client):
     #date = int(time.time())
-    cl=ClientMgt(client)
+    cl = ClientMgt(client)
     sync_status = cl.sync_status()
     #print ("Checking status for %s, status %s" % (client, sync_status)  )
     return sync_status
 
-# HOME #
 
+@app.template_filter('get_share_path')
+def _jinja2_filter_get_share_path(share):
+    s = ShareMgt(share)
+    share_path = s.info(info="path")
+    return share_path
+
+
+# HOME #
 
 @app.route("/", methods=['GET'])
 @basic_auth.required
@@ -338,6 +345,7 @@ def share_info_path(name):
 def share_mgt():
     share = ShareMgt("all")
     sharelist = share.share_list()
+    print(sharelist)
     return render_template("share_mgt.html", shares_path=shares_path, sharelist=sharelist)
 
 
@@ -367,20 +375,19 @@ def share_add_process():
 @basic_auth.required
 def share_del_process():
     name = request.form.get('name')
-    path = request.form.get('path')
-    delete = request.form.get('delete')
-    if name is not None or path is not None:
-       share = ShareMgt(name)
-       result = share.delete(path, description)
-       print (result)
-       if result is not True:
-           result = "Error, Path %s does not exist or share not present" % path
-           rc = 500
-       else:
-           result = "Share %s Removed successfully\n Path: %s" % (name, path)
-           rc = 200
+    s = ShareMgt(name)
+    path = s.info(info="path")
+    delete_folder = request.form.get('delete_folder')
+    result = s.delete(path, delete_folder)
+    if result is not True:
+       result = f"Error, Path {path} does not exist or share not present"
+       rc = 500
     else:
-       result = "Please Fill all the fields in the form..."
+       if delete_folder != "Yes":
+          result = f"Share {name} Removed successfully<br>Existing Files on Path: {path} were not removed"
+       else:
+          result = f"Share {name} Removed successfully<br>All Files on Path: {path} removed"
+       rc = 200
     return render_template("share_mgt_result.html", result=result), rc
 
 

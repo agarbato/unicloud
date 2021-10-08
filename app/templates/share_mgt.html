@@ -27,12 +27,11 @@
          {% for s in sharelist %}
              <option value="{{ s[0] }}">{{ s[0] }}</option>
          {% endfor %}
-     </select></td></tr>
-    <tr><td>Path</TD><TD><input type="text" name="path" size=25 value="">
+     </select>
     &nbsp;&nbsp; Delete Folder &nbsp;
-    <input type="radio" name="delete" value="Yes">Yes
-    <input type="radio" name="delete" value="No" checked="checked">No
-    </td></tr>  
+    <input type="radio" name="delete_folder" value="Yes">Yes
+    <input type="radio" name="delete_folder" value="No" checked="checked">No
+    </tr></td>
  </table>
 </p>
 {% endblock %}

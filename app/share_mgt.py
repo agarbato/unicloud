@@ -30,17 +30,16 @@ class ShareMgt(object):
               return False                                         
 
     def share_list(self):
-        query = "select name from shares"
+        query = "select name, path from shares"
         result = query_db(query)
         return result
-
 
     def info(self, info):
       self.info = info
       #print ("Info arrived: %s" % self.info)
       exist = self.exist()
       if exist[0] == 0:
-         print ("exist %s" % exist)
+         print("exist %s" % exist)
          result = False
       else:
         if self.info == "all":
@@ -78,15 +77,20 @@ class ShareMgt(object):
       query_db(query)
       get_db().commit()
 
-    def delete(self, path):
+    def delete(self, path, delete_folder):
       self.path = path
+      self.delete_folder = delete_folder
       #dirpath = os.path.join('./shares', self.path)
-      if os.path.exists(self.path) and os.path.isdir(self.path):
-          shutil.rmtree(self.path)
-          self.delete_from_db()
+      if delete_folder != "Yes":
+          self.delete_from_db(self.path)
           return True
       else:
-          return False
+          self.delete_from_db(self.path)
+          if os.path.exists(self.path) and os.path.isdir(self.path):
+            shutil.rmtree(self.path)
+            return True
+          else:
+            return False
 
     def delete_from_db(self, path):
         self.path = path
