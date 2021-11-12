@@ -87,9 +87,14 @@ def scheduler_sync():
 
 # THE SCHEDULER
 
+scheduler = BlockingScheduler({
+  'apscheduler.jobstores.default': {
+    'type': 'sqlalchemy',
+    'url': f'sqlite:////{root_dir}/jobs.sqlite'
+  }
+})
 
-scheduler = BlockingScheduler()
-scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval), next_run_time=datetime.now())
+scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval), next_run_time=datetime.now(), replace_existing=True)
 scheduler.start()
 
 

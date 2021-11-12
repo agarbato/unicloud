@@ -24,12 +24,13 @@ RUN apk add --no-cache \
     linux-headers \
     dumb-init \
     python3 \
+    g++ \
     py3-pip \
     unison \
     python3-dev \
     #&& apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community unison==2.48.15_p4-r1 \
-    && pip3 install flask flask_restful uwsgi requests flask-basicAuth flask-autoindex psutil apscheduler \
-    && apk del libc-dev linux-headers gcc python3-dev 
+    && pip3 install flask flask_restful uwsgi requests  flask-basicAuth flask-autoindex psutil apscheduler sqlalchemy \
+    && apk del libc-dev linux-headers gcc g++ python3-dev
 
 RUN mkdir -p /var/run/sshd /run/nginx /usr/local/unicloud
 ADD app/    /usr/local/unicloud/
