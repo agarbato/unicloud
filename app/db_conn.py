@@ -30,6 +30,7 @@ sql_table_clients = """ CREATE TABLE IF NOT EXISTS clients (
                          share TEXT NOT NULL,
                          threshold INTEGER NOT NULL,
                          sync_status TEXT,
+                         lastseen DATETIME,
                          joindate DATETIME); """
 
 

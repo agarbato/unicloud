@@ -20,7 +20,7 @@ class ClientMgt(object):
         query = "select count(status) from events where client='%s' and status='KO';" %self.client
         count_ko = query_db(query)[0]
         #count_total = count_ok + count_ko
-        query = "select end_ts from events where client='%s' order by id desc limit 1;" %self.client
+        query = "select lastseen from clients where name='%s';" %self.client
         lastseen = query_db(query)
         query = "select joindate from clients where name='%s';" % self.client
         joindate = query_db(query)
@@ -182,7 +182,7 @@ class ClientMgt(object):
         clientlist = query_db(query)
         return clientlist
 
-    def list_clients_page(self):
+    def list_clients_page_old(self):
         toregister = self.list_clists_to_register()
         #print(f"Client to register {toregister}")
         maxrows = 50000
@@ -233,6 +233,11 @@ class ClientMgt(object):
         res = query_db(query)
         return res
 
+    def list_clients_page(self):
+        query = ("SELECT name,status,joindate,threshold,ssh_key,lastseen from clients;")
+        res = query_db(query)
+        return res
+
     def start_sync(self, start_ts, share, status="SYNCING"):
         self.start_ts = start_ts
         self.share = share
@@ -250,5 +255,8 @@ class ClientMgt(object):
         self.log = log
         duration = self.end_ts - self.start_ts
         query = ("update events set status='%s', sync_status='%s', end_ts=%d, duration=%d, log='%s' where client='%s' and start_ts=%d") % (status, sync_status, end_ts, duration, log, self.client, start_ts)
+        query_db(query)
+        get_db().commit()
+        query = ("update clients set lastseen='%s' where name='%s'") % (end_ts, self.client)
         query_db(query)
         get_db().commit()
