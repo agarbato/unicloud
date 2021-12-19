@@ -94,7 +94,7 @@ scheduler = BlockingScheduler({
   }
 })
 
-scheduler.add_job(func=scheduler_sync, trigger="interval", seconds=int(sync_interval), next_run_time=datetime.now(), replace_existing=True)
+scheduler.add_job(func=scheduler_sync, id="unison_sync_job", trigger="interval", seconds=int(sync_interval), next_run_time=datetime.now(), replace_existing=True)
 scheduler.start()
 
 
