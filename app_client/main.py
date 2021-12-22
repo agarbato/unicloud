@@ -24,7 +24,6 @@ def get_ts():
 
 def start_sync(log, start_ts):
   #result[0]pid result[1]rc result[2]status result[3]log result[4]sync_status
-  log.header()
   log.sync_start()
   result = []
   #match = ['BGN', 'END', 'Nothing', 'Complete']
