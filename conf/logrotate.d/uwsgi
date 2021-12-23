@@ -1,0 +1,10 @@
+/data/log/reqlog /data/log/errlog {
+        daily
+        missingok
+        rotate 14
+        compress
+        delaycompress
+        notifempty
+        copytruncate
+        sharedscripts
+}

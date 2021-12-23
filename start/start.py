@@ -119,6 +119,8 @@ def conf_supervisord():
        #svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config -E /data/log/sshlog" + nl)
        svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config\n")
        svcfg.write("redirect_stderr=true\n")
+       svcfg.write("[program:crond]\n")
+       svcfg.write(f"command=/usr/sbin/crond -f -L {log_dir}/crond.log\n")
        svcfg.write("[program:nginx]\n")
        svcfg.write("command=/usr/sbin/nginx -g 'daemon off';\n")
        svcfg.write("[program:unicloud_app]\n")

@@ -26,6 +26,7 @@ RUN apk add --no-cache \
     python3 \
     g++ \
     py3-pip \
+    logrotate \
     unison \
     python3-dev \
     #&& apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community unison==2.48.15_p4-r1 \
@@ -37,8 +38,9 @@ ADD app/    /usr/local/unicloud/
 ADD app_client/    /usr/local/unicloud_client/
 ADD conf/sshd/sshd_config_alpine /etc/sshd_config
 RUN mv /etc/nginx/http.d/default.conf /etc/nginx/http.d/default.conf.install
+RUN rm -f /etc/logrotate.d/*
 ADD conf/nginx/default.conf /etc/nginx/http.d/default.conf
-
+ADD conf/logrotate.d/ /etc/logrotate.d/
 ADD start/ /start/
 WORKDIR "/start"
 
