@@ -119,6 +119,8 @@ def conf_supervisord():
        #svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config -E /data/log/sshlog" + nl)
        svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config\n")
        svcfg.write("redirect_stderr=true\n")
+       svcfg.write("[program:crond]\n")
+       svcfg.write(f"command=/usr/sbin/crond -f -L {log_dir}/crond.log\n")
        svcfg.write("[program:nginx]\n")
        svcfg.write("command=/usr/sbin/nginx -g 'daemon off';\n")
        svcfg.write("[program:unicloud_app]\n")
@@ -190,8 +192,8 @@ def client_conf():
       cfg.write("batch = true\n")
       cfg.write("auto = true\n")
       cfg.write("prefer = newer\n")
-      cfg.write("log = true\n")
-      cfg.write(f"logfile = {unison_log}\n")
+      cfg.write("log = false\n")
+      #cfg.write(f"logfile = {unison_log}\n")
       for item in unison_params.split("|"):
           cfg.write(f"{item}\n")
       for item in share_ignore.split("|"):
