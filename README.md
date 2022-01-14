@@ -36,14 +36,14 @@ Simply run :
     docker-compose up -d
 
 Docker will pull the image from the docker hub and start the project.   
-Open your browser [here](http://127.0.0.1:5000/) passing credentials specified on the docker-compose file.
+Open your browser [here](http://127.0.0.1:5001/) passing credentials specified on the docker-compose file.
 
 Wait a few seconds and the app should be up and running.   
 On the homepage you will see that there are no registered clients and no shares defined.   
 Before you can start to sync, two steps are required:       
   
- - Activate the client from the [clients](http://127.0.0.1:5000/clients) page.
- - Create your first share and name it `share1` from the [shares](http://127.0.0.1:5000/shares/mgt) management page    
+ - Activate the client from the [clients](http://127.0.0.1:5001/clients) page.
+ - Create your first share and name it `share1` from the [shares](http://127.0.0.1:5001/shares/mgt) management page    
 
 **The share name must match the one defined on the docker-compose by the `SERVER_SHARE` env variable.**   
 The client will keep restarting until registration is completed and the share is defined, check docker-compose logs for troubleshooting.       
@@ -66,6 +66,7 @@ If you want to start again fresh, simple run :
 | SERVER_UI_USERNAME |admin  |Server|Ui Basic Auth Username
 | SERVER_UI_PASSWORD |None  |Server|Ui Basic Auth Password
 | SHARES_PATH |/shares  |Server|Server Shares volume
+| FILEMANAGER_ROOT |/shares  |Server|Root Folder for File Manager
 | MAX_LOG_EVENTS |1000  |Server|Max Sync Logs to keep
 | HOME_ASSISTANT|False|Server|Enable Home assistant integration
 | HOME_ASSISTANT_URL|None|Server|Home Assistant URL
@@ -123,6 +124,12 @@ Nothing prevents you to mount additional volumes on the server and configure the
 Shares root is also used by the file manager as root folder so if you mount on a different location you won't be able to browse files.   
 
 <br>
+
+## System Backup
+
+As of relase 1.4 a new share is created automatically called unicloud_backup  
+A daily job will create a tar.gz file with all files needed in case you want to migrate the installation to a new system.  
+7 backup are kept on the folder and rotated automatically.  
 
 ## SSH Security
 
