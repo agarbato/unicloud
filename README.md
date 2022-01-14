@@ -130,7 +130,7 @@ Shares root is also used by the file manager as root folder so if you mount on a
 As of relase 1.4 a new share is created automatically called unicloud_backup  
 A daily job will create a tar.gz file with all files needed in case you want to migrate the installation to a new system.  
 7 backup are kept on the folder and rotated automatically.  
-**Connect at least one client to this share to save backup on a remote system**
+**Connect at least one client to this share to save backup on a remote system or download manually using file manager**
 
 ## SSH Security
 
