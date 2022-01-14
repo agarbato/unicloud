@@ -1,15 +1,17 @@
 import sqlite3
 from flask import Flask, g
+from conf import shares_path
 
 root_dir = "/data"
 database = root_dir + "/unicloud.db"
 
-sql_table_shares = """ CREATE TABLE IF NOT EXISTS shares (
+sql_table_shares = f""" CREATE TABLE IF NOT EXISTS shares (
                          id INTEGER PRIMARY KEY,
                          size TEXT NOT NULL,
                          name TEXT NOT NULL,
                          description TEXT NOT NULL,
-                         path TEXT NOT NULL); """
+                         path TEXT NOT NULL);
+                         """
 
 sql_table_events = """ CREATE TABLE IF NOT EXISTS events (
                          id INTEGER PRIMARY KEY,
@@ -32,6 +34,10 @@ sql_table_clients = """ CREATE TABLE IF NOT EXISTS clients (
                          sync_status TEXT,
                          lastseen DATETIME,
                          joindate DATETIME); """
+
+backup_share = f""" INSERT OR IGNORE INTO shares 
+                    (id,name,path,description,size) 
+                    values ('0','unicloud_backup','{shares_path}/unicloud-backup','Unicloud Backup','None');"""
 
 
 def create_connection(db_file):
@@ -65,7 +71,7 @@ def get_db():
     return db
 
 
-def query_db(query, args = (), one = False):
+def query_db(query, args=(), one=False):
     cur = get_db().execute(query, args)
     rv = cur.fetchall()
     cur.close()
@@ -77,10 +83,13 @@ def query_db(query, args = (), one = False):
 def init_db():
    conn = create_connection(database)
    if conn is not None:
+      print("Create Database Schema")
       create_table(conn, sql_table_shares)
       create_table(conn, sql_table_events)
       create_table(conn, sql_table_clients)
+      create_table(conn, backup_share)
+      conn.commit()
       conn.close()
    else:
-      print ("Error! can't create database connection")
-      print (conn)
+      print("Error! can't create database connection")
+      #print(conn)

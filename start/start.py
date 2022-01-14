@@ -1,4 +1,5 @@
 import os
+import stat
 import sys
 import requests
 import socket
@@ -14,6 +15,8 @@ root_dir = "/data"
 etc_dir = f"{root_dir}/etc"
 log_dir = f"{root_dir}/log"
 ssh_dir = f"{root_dir}/.ssh"
+backup_dir = f"{root_dir}/{shares_path}/unicloud-backup"
+backup_cron_file = "/etc/periodic/daily/unicloud-backup"
 bin_dir = "/usr/local/bin"
 donefile = f"{etc_dir}/config_done"
 authkeyfile = f"{root_dir}/.ssh/unicloud_authorized_keys"
@@ -67,7 +70,7 @@ def api_check():
 
 
 def create_dirs():
-  dirs = [etc_dir, log_dir, unison_dir, ssh_dir]
+  dirs = [etc_dir, log_dir, unison_dir, ssh_dir, shares_path, backup_dir]
   for dir in dirs:
      if not os.path.exists(dir):
          os.makedirs(dir)
@@ -247,6 +250,15 @@ def server_conf():
        cfg.write(f"home_assistant_url='{home_assistant_url}'\n")
        cfg.write(f"home_assistant_token='{home_assistant_token}'\n")
        cfg.write(f"home_assistant_push_interval={int(home_assistant_push_interval)}")
+     print("Configure Autobackup Cron..")
+     with open(backup_cron_file, 'w') as cfg:
+         cfg.write("#!/bin/bash\n")
+         cfg.write(f"dest_file={shares_path}/unicloud-backup/unicloud-backup-$(date +%Y%d%m).tgz\n")
+         cfg.write("tar czvf $dest_file /data/etc /data/ssh /data/unicloud.db /data/.ssh /data/.unison\n")
+         cfg.write(f"cd {shares_path}/unicloud-backup\n")
+         cfg.write(f"rm -f `ls -t | awk 'NR>7'`\n")
+     st = os.stat(backup_cron_file)
+     os.chmod(backup_cron_file, st.st_mode | stat.S_IEXEC)
      print("Set App Permission..")
      ShellCmd(f"chown -R {user}:{user} {server_app_dir}")
      print(f"Configure nginx with {user} user..")
