@@ -32,10 +32,10 @@ class ClientMgt(object):
         share = query_db(query)
         query = "select threshold from clients where name='%s';" % self.client
         threshold = query_db(query)
-        #print ("last seen: %s" % lastseen)
         query = "select avg(duration) from events where client='%s';" % self.client
         avg_duration = query_db(query)
-        if lastseen == []:
+        print(f"last seen: {lastseen}, avg_sync: {avg_duration}")
+        if not lastseen[0][0] or not avg_duration[0][0]:
             result.update({'share': share[0][0], 'ok': count_ok[0], 'ko': count_ko[0], 'total': count_ok[0]+count_ko[0],
                            'lastseen': 'Never', 'joindate': joindate[0][0], 'status': status[0][0], 'ssh_key': ssh_key[0][0],
                            'threshold': threshold[0][0], 'avg_duration': "None"})

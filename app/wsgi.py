@@ -1,6 +1,6 @@
 from routes import app
-#from conf import server_debug
+from conf import server_debug
 
 if __name__ == "__main__":
-    app.run(use_reloader=False)
+    app.run(use_reloader=False, debug=server_debug)
 
