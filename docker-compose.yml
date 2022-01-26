@@ -40,7 +40,7 @@ services:
       - SHARE_IGNORE=.git*|.idea|.unison|.DS_Store
       - API_PROTOCOL=http
       - API_PORT=80
-      - SYNC_INTERVAL=15
+      - SYNC_INTERVAL=120
     restart: on-failure
     volumes:
       - type: bind
