@@ -20,30 +20,31 @@ class Event(object):
 
 
 def event_form(client, status, sync_status, limit=50):
+    #select client, start_ts, end_ts, status, duration, share, id, sync_status from events where id > (select max(id-50) from events) order by start_ts desc;
     # ALL RESULTS
     if client == "ALL" and status == "ALL" and sync_status== "ALL" or client is None and status is None and sync_status is None: # ALL RESULTS
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events order by start_ts desc limit %d" % int(limit)
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where id > (select max(id-{limit}) from events) order by start_ts desc"
     # SPECIFIC CLIENT AND ALL STATUS AND ALL SYNC_STATUS
     elif client != "ALL" and status == "ALL" and sync_status == "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client = '%s' order by start_ts desc limit %d" % (client,int(limit))
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client='{client}' order by start_ts desc limit {limit}"
     # SPECIFIC CLIENT AND SPECIFIC STATUS AND ALL SYNC_STATUS
     elif client != "ALL" and status != "ALL" and sync_status == "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client = '%s' and status = '%s' order by start_ts desc limit %d" % (client, status, int(limit))
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client='{client}' and status = '{status}' order by start_ts desc"
     # SPECIFIC CLIENT AND SPECIFIC SYNC_STATUS AND ALL STATUS
     elif client != "ALL" and sync_status != "ALL" and status == "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client = '%s' and sync_status = '%s' order by start_ts desc limit %d" % (client, sync_status, int(limit))
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client='{client}' and sync_status='{sync_status}' order by start_ts desc limit {limit}"
     # SPECIFIC CLIENT AND SPECIFIC STATUS AND SPECIFIC SYNC_STATUS
     elif client != "ALL" and status != "ALL" and sync_status != "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client = '%s' and status = '%s' and sync_status = '%s' order by start_ts desc limit %d" % (client, status, sync_status, int(limit))
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client='{client}' and status='{status}' and sync_status='{sync_status}' order by start_ts desc limit {limit}"
     # SPECIFIC STATUS AND ALL CLIENTS
     elif status != "ALL" and client == "ALL" and sync_status == "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where status = '%s' order by start_ts desc limit %d" % (status, int(limit))
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where status='{status}' order by start_ts desc limit {limit}"
     # SPECIFIC SYNC_STATUS AND ALL CLIENTS
     elif sync_status != "ALL" and client == "ALL" and status == "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where sync_status = '%s' order by start_ts desc limit %d" % (sync_status, int(limit))
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where sync_status='{sync_status}' order by start_ts desc limit {limit}"
     # SPECIFIC SYNC_STATUS AND SPECIFIC STATUS
     elif sync_status != "ALL" and client == "ALL" and status != "ALL":
-        query = "select client, start_ts, end_ts, status, duration, share, id, sync_status from events where sync_status = '%s' and status ='%s' order by start_ts desc limit %d" % (sync_status, status, int(limit))
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where sync_status='{sync_status}' and status='{status}' order by start_ts desc limit {limit}"
     #print ("Query %s" % query)
     res = query_db(query)
     return res
