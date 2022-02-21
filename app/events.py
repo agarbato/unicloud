@@ -7,14 +7,14 @@ class Event(object):
         self.eventid = int(eventid)
 
     def exist(self):
-        query = "select count(id) from events where id=%d and status is not 'SYNCING'" % self.eventid
+        query = f"select count(id) from events where id={self.eventid} and status is not 'SYNCING'"
         if query_db(query)[0][0] > 0:
             return True
         else:
             return False
 
     def info(self):
-        query = "select id,client,status,log,start_ts,end_ts,duration,share from events where id=%d" % self.eventid
+        query = f"select id,client,status,log,start_ts,end_ts,duration,share from events where id={self.eventid}"
         res = query_db(query)
         return res
 
@@ -22,7 +22,7 @@ class Event(object):
 def event_form(client, status, sync_status, limit=50):
     #select client, start_ts, end_ts, status, duration, share, id, sync_status from events where id > (select max(id-50) from events) order by start_ts desc;
     # ALL RESULTS
-    if client == "ALL" and status == "ALL" and sync_status== "ALL" or client is None and status is None and sync_status is None: # ALL RESULTS
+    if client == "ALL" and status == "ALL" and sync_status == "ALL" or client is None and status is None and sync_status is None: # ALL RESULTS
         query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where id > (select max(id-{limit}) from events) order by start_ts desc"
     # SPECIFIC CLIENT AND ALL STATUS AND ALL SYNC_STATUS
     elif client != "ALL" and status == "ALL" and sync_status == "ALL":
