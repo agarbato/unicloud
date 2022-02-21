@@ -182,57 +182,6 @@ class ClientMgt(object):
         clientlist = query_db(query)
         return clientlist
 
-    def list_clients_page_old(self):
-        toregister = self.list_clists_to_register()
-        #print(f"Client to register {toregister}")
-        maxrows = 50000
-        query = "select max(id) from events"
-        maxid = query_db(query)
-        #print (maxid)
-        if maxid[0][0]:
-            maxid = int(maxid[0][0])
-        else:
-            maxid = 0
-        if maxid > maxrows:
-            if toregister > 0:
-                query = """ SELECT clients.name,
-                          clients.status,
-                          clients.joindate,
-                          clients.threshold,
-                          clients.ssh_key,
-                          max(events.end_ts)
-                        FROM clients
-                        LEFT JOIN events on events.client = clients.name
-                        WHERE events.id > '%d' or clients.status == 'Registered'
-                        GROUP BY clients.name
-                        ORDER BY events.end_ts desc """ % (maxid - maxrows)
-            else:
-                query = """ SELECT clients.name,
-                          clients.status,
-                          clients.joindate,
-                          clients.threshold,
-                          clients.ssh_key,
-                          max(events.end_ts)
-                        FROM clients
-                        LEFT JOIN events on events.client = clients.name
-                        WHERE events.id > '%d'
-                        GROUP BY clients.name
-                        ORDER BY events.end_ts desc """ % (maxid - maxrows)
-        else:
-            query = """ SELECT clients.name,
-                      clients.status,
-                      clients.joindate,
-                      clients.threshold,
-                      clients.ssh_key,
-                      events.end_ts
-                    FROM clients
-                    LEFT JOIN events on events.client = clients.name
-                    GROUP BY clients.name
-                    ORDER BY events.end_ts desc """
-        #print (query)
-        res = query_db(query)
-        return res
-
     def list_clients_page(self):
         query = ("SELECT name,status,joindate,threshold,ssh_key,lastseen from clients;")
         res = query_db(query)
