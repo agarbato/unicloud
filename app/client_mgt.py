@@ -9,30 +9,30 @@ class ClientMgt(object):
         self.client = client
 
     def lastseen(self):
-        query = "select end_ts from events where client='%s' order by end_ts limit 1;" % self.client
+        query = f"select end_ts from events where client='{self.client}' order by end_ts limit 1;"
         result = query_db(query)
         return result
 
     def info(self):
         result = {}
-        query = "select count(status) from events where client='%s' and status='OK';" %self.client
+        query = f"select count(status) from events where client='{self.client}' and status='OK';"
         count_ok = query_db(query)[0]
-        query = "select count(status) from events where client='%s' and status='KO';" %self.client
+        query = f"select count(status) from events where client='{self.client}' and status='KO';"
         count_ko = query_db(query)[0]
         #count_total = count_ok + count_ko
-        query = "select lastseen from clients where name='%s';" %self.client
+        query = f"select lastseen from clients where name='{self.client}';"
         lastseen = query_db(query)
-        query = "select joindate from clients where name='%s';" % self.client
+        query = f"select joindate from clients where name='{self.client}';"
         joindate = query_db(query)
-        query = "select status from clients where name='%s';" % self.client
+        query = f"select status from clients where name='{self.client}';"
         status = query_db(query)
-        query = "select ssh_key from clients where name='%s';" % self.client
+        query = f"select ssh_key from clients where name='{self.client}';"
         ssh_key = query_db(query)
-        query = "select share from clients where name='%s';" % self.client
+        query = f"select share from clients where name='{self.client}';"
         share = query_db(query)
-        query = "select threshold from clients where name='%s';" % self.client
+        query = f"select threshold from clients where name='{self.client}';"
         threshold = query_db(query)
-        query = "select avg(duration) from events where client='%s';" % self.client
+        query = f"select avg(duration) from events where client='{self.client}';"
         avg_duration = query_db(query)
         #print(f"last seen: {lastseen}, avg_sync: {avg_duration}")
         if not lastseen[0][0] or not avg_duration[0][0]:
@@ -46,12 +46,12 @@ class ClientMgt(object):
         return result
 
     def status(self):
-        query = "select name,status from clients where name='%s'" % self.client
+        query = f"select name,status from clients where name='{self.client}'"
         result = query_db(query)
         return result
 
     def exist(self):
-        query = "select count(name) from clients where name='%s'" % self.client
+        query = f"select count(name) from clients where name='{self.client}'"
         result = query_db(query)
         return result[0]
 
@@ -76,11 +76,11 @@ class ClientMgt(object):
            status = "Active"
         else:
            status = "Registered"
-        query = "insert into clients (name,ssh_key,status,joindate,share,threshold) values ('%s','%s','%s',%d,'%s',0)" % (self.client, ssh_key, status, int(time.time()), share)
+        query = f"insert into clients (name,ssh_key,status,joindate,share,threshold) values ('{self.client}','{ssh_key}','{status}',{int(time.time())},'{share}',0)"
         #print (query)
         query_db(query)
         get_db().commit()
-        return "<br>Client %s added to DB, status %s" % (self.client, status)
+        return f"<br>Client {self.client} added to DB, status {status}"
     
     def add_to_keyfile(self, authkeyfile, ssh_key):
         self.ssh_key = ssh_key
@@ -88,14 +88,14 @@ class ClientMgt(object):
         print(ssh_key)
         auth_command = 'command="/usr/bin/unison -server"'
         with open (authkeyfile, 'a') as f:
-          f.write("\n" + auth_command + " " + ssh_key + " CLIENT:%s" % self.client)
-        return "<br>Client %s added to Authorized Keys" % self.client
+          f.write(f"\n{auth_command} {ssh_key} CLIENT:{self.client}")
+        return f"<br>Client {self.client} added to Authorized Keys"
 
     def activate(self, ssh_key, authkeyfile):
         self.ssh_key = ssh_key
         self.authkeyfile = authkeyfile
         result = []
-        query = ("update clients set status='Active' where name='%s'") % self.client
+        query = (f"update clients set status='Active' where name='{self.client}'")
         query_db(query)
         get_db().commit()
         result = [ "<br>Client activated on database" ]
@@ -105,21 +105,21 @@ class ClientMgt(object):
     def set_threshold(self, threshold):
         self.threshold = threshold
         #print (threshold)
-        query = ("update clients set threshold=%d where name='%s'") % (self.threshold, self.client)
+        query = (f"update clients set threshold={self.threshold} where name='{self.client}'")
         query_db(query)
         get_db().commit()
-        return "<br>Client %s threshold set to %d seconds" % (self.client, int(threshold))
+        return f"<br>Client {self.client} threshold set to {int(threshold)} seconds"
 
     def sync_status(self, type='db'):
         self.type = type
         if self.type == "db":
-            query = "select sync_status from clients where name='%s';" % self.client
+            query = f"select sync_status from clients where name='{self.client}';"
             status = query_db(query)
             return status[0][0]
         else:
-           query = "select threshold from clients where name='%s';" % self.client
+           query = f"select threshold from clients where name='{self.client}';"
            threshold = query_db(query)
-           query = "select max(id),end_ts from events where client='%s' and status='OK';" % self.client
+           query = f"select max(id),end_ts from events where client='{self.client}' and status='OK';"
            lastok = query_db(query)
            if lastok[0][0]:
               ts = int(time.time())
@@ -140,30 +140,30 @@ class ClientMgt(object):
         current_status = self.sync_status()
         #print(current_status)
         if current_status != s_status:
-           query = ("update clients set sync_status='%s' where name='%s'") % (self.s_status, self.client)
+           query = (f"update clients set sync_status='{self.s_status}' where name='{self.client}'")
            #print(query)
            query_db(query)
            get_db().commit()
 
     def check_pending(self):
-        query = "select * from events where client='%s' and status='SYNCING';" % self.client
+        query = f"select * from events where client='{self.client}' and status='SYNCING';"
         brokensync=query_db(query)
         #print("Brokensync :%s" % brokensync)
         if brokensync != []:
-           query = "update events set status='KO', log='Sync was interrupted' where client='%s' and status='SYNCING';" % self.client
+           query = f"update events set status='KO', log='Sync was interrupted' where client='{self.client}' and status='SYNCING';"
            query_db(query)
            get_db().commit()
 
     def remove(self, authkeyfile):
         self.authkeyfile = authkeyfile
-        query = "delete from clients where name = '%s'" % self.client
+        query = f"delete from clients where name = '{self.client}'"
         query_db(query)
         get_db().commit()
         with open(authkeyfile, "r+") as f:
             new_f = f.readlines()
             f.seek(0)
             for line in new_f:
-                if "CLIENT:%s" % self.client not in line:
+                if f"CLIENT:{self.client}" not in line:
                     f.write(line)
             f.truncate()
 
@@ -182,57 +182,6 @@ class ClientMgt(object):
         clientlist = query_db(query)
         return clientlist
 
-    def list_clients_page_old(self):
-        toregister = self.list_clists_to_register()
-        #print(f"Client to register {toregister}")
-        maxrows = 50000
-        query = "select max(id) from events"
-        maxid = query_db(query)
-        #print (maxid)
-        if maxid[0][0]:
-            maxid = int(maxid[0][0])
-        else:
-            maxid = 0
-        if maxid > maxrows:
-            if toregister > 0:
-                query = """ SELECT clients.name,
-                          clients.status,
-                          clients.joindate,
-                          clients.threshold,
-                          clients.ssh_key,
-                          max(events.end_ts)
-                        FROM clients
-                        LEFT JOIN events on events.client = clients.name
-                        WHERE events.id > '%d' or clients.status == 'Registered'
-                        GROUP BY clients.name
-                        ORDER BY events.end_ts desc """ % (maxid - maxrows)
-            else:
-                query = """ SELECT clients.name,
-                          clients.status,
-                          clients.joindate,
-                          clients.threshold,
-                          clients.ssh_key,
-                          max(events.end_ts)
-                        FROM clients
-                        LEFT JOIN events on events.client = clients.name
-                        WHERE events.id > '%d'
-                        GROUP BY clients.name
-                        ORDER BY events.end_ts desc """ % (maxid - maxrows)
-        else:
-            query = """ SELECT clients.name,
-                      clients.status,
-                      clients.joindate,
-                      clients.threshold,
-                      clients.ssh_key,
-                      events.end_ts
-                    FROM clients
-                    LEFT JOIN events on events.client = clients.name
-                    GROUP BY clients.name
-                    ORDER BY events.end_ts desc """
-        #print (query)
-        res = query_db(query)
-        return res
-
     def list_clients_page(self):
         query = ("SELECT name,status,joindate,threshold,ssh_key,lastseen from clients;")
         res = query_db(query)
@@ -242,7 +191,7 @@ class ClientMgt(object):
         self.start_ts = start_ts
         self.share = share
         self.status = status
-        query = ("insert into events (client,start_ts,share,status) values ('%s',%d,'%s','%s')") % (self.client, start_ts, share, status)
+        query = (f"insert into events (client,start_ts,share,status) values ('{self.client}',{start_ts},'{share}','{status}')")
         #print (query)
         query_db(query)
         get_db().commit()
@@ -254,9 +203,9 @@ class ClientMgt(object):
         self.sync_status = sync_status
         self.log = log
         duration = self.end_ts - self.start_ts
-        query = ("update events set status='%s', sync_status='%s', end_ts=%d, duration=%d, log='%s' where client='%s' and start_ts=%d") % (status, sync_status, end_ts, duration, log, self.client, start_ts)
+        query = (f"update events set status='{status}', sync_status='{sync_status}', end_ts={end_ts}, duration={duration}, log='{log}' where client='{self.client}' and start_ts={start_ts}")
         query_db(query)
         get_db().commit()
-        query = ("update clients set lastseen='%s' where name='%s'") % (end_ts, self.client)
+        query = (f"update clients set lastseen='{end_ts}' where name='{self.client}'")
         query_db(query)
         get_db().commit()
