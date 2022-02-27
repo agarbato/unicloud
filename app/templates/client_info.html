@@ -40,11 +40,11 @@
           <td>{{ status['lastseen']|dt}}</td></tr>
           {% endif %}
           <tr><th>OK</th>
-          <td><a title="Show OK Events" href="/events/{{ client }}?status=OK">{{ status['ok'] }}</a></td></tr>
+          <td><a title="Show OK Events" href="/events/client/{{ client }}?status=OK">{{ status['ok'] }}</a></td></tr>
           <tr><th>KO</th>
-          <td><a title="Show KO Events" href="/events/{{ client }}?status=KO">{{ status['ko'] }}</a></td></tr>
+          <td><a title="Show KO Events" href="/events/client/{{ client }}?status=KO">{{ status['ko'] }}</a></td></tr>
           <tr><th>Total</th>
-          <td><a title="Show ALL Events" href="/events/{{ client }}?status=ALL">{{ status['total'] }}</a></td></tr>
+          <td><a title="Show ALL Events" href="/events/client/{{ client }}?status=ALL">{{ status['total'] }}</a></td></tr>
           <tr><th>Average Sync Duration</th>
           <td>{{ status['avg_duration']}}s</td></tr>
           <tr><th>Threshold (seconds)</th>

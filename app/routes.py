@@ -436,7 +436,7 @@ def events():
     return render_template("events.html", events=events_list, clientlist=clientlist), 200
 
 
-@app.route("/events/<client>", methods=['GET'])
+@app.route("/events/client/<client>", methods=['GET'])
 @basic_auth.required
 def events_client(client):
     status = request.args.get('status', default="ALL")
