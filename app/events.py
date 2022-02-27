@@ -29,7 +29,7 @@ def event_form(client, status, sync_status, limit=50):
         query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client='{client}' order by start_ts desc limit {limit}"
     # SPECIFIC CLIENT AND SPECIFIC STATUS AND ALL SYNC_STATUS
     elif client != "ALL" and status != "ALL" and sync_status == "ALL":
-        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client='{client}' and status = '{status}' order by start_ts desc"
+        query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client='{client}' and status = '{status}' order by start_ts desc limit {limit}"
     # SPECIFIC CLIENT AND SPECIFIC SYNC_STATUS AND ALL STATUS
     elif client != "ALL" and sync_status != "ALL" and status == "ALL":
         query = f"select client, start_ts, end_ts, status, duration, share, id, sync_status from events where client='{client}' and sync_status='{sync_status}' order by start_ts desc limit {limit}"
