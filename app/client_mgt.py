@@ -168,7 +168,7 @@ class ClientMgt(object):
             f.truncate()
 
     def list_clients(self):
-        query = "select name from clients"
+        query = "select name from clients order by name"
         clientlist = query_db(query)
         return clientlist
 

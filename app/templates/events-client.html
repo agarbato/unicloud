@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% set active_page = "events" %}
+{% block title %}Events{% endblock %}
+{% block content %}
+        <p></p>
+        <table id="rowtable">
+            <tr>
+                <th>Client</th>
+                <th>Share</th>
+                <th>Status</th>
+                <th>Sync Status</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Duration</th>
+                <th>Id</th>
+            </tr>
+            {% set red   = "#ff0000" %}		
+            {% set green = "#008000" %}		
+            {% set blue  = "#0000ff" %}
+            {% set orange = "#ffa833" %}
+            {% for event in events %}
+                <tr>
+                    <td><a title="Info" href="/clients/info/ui/{{ event[0] }}">{{ event[0] }}</a></td>
+		    <td><a title="Info" href="/shares/info/ui/{{ event[5] }}">{{ event[5] }}</a></td>
+		            {% if event[3] == "OK": %}
+                       <td><span style='color: {{ green }};'>{{ event[3] }}</td></span>
+                    {% elif event[3] == "KO": %}
+                       <td><span style='color: {{ red }};'>{{ event[3] }}</td></span>
+                    {% elif event[3] == "SYNCING": %}
+                       <td><span style='color: {{ blue }};'>{{ event[3] }}</td></span>
+                    {% elif event[3] == "WARNING": %}
+                        <td><span style='color: {{ orange }};'>{{ event[3] }}</td></span>
+                    {% endif %}
+                    {% if event[7] == "UNCHANGED": %}
+                        <td><span style='color: {{ green }};'>{{ event[7] }}</td></span>
+                    {% elif event[7] == "UNKNOWN": %}
+                        <td><span style='color: {{ red }};'>{{ event[7] }}</td></span>
+                    {% elif event[7] == "CHANGED": %}
+                        <td><span style='color: {{ blue }};'>{{ event[7] }}</td></span>
+                    {% elif event[7] == "WARNING": %}
+                        <td><span style='color: {{ orange }};'>{{ event[7] }}</td></span>
+                    {% else %}
+                        <td>{{ event[7] }}</td>
+                    {% endif %}
+                    <td>{{ event[1]|dt }}</td>
+                    <td>{{ event[2]|dt }}</td>
+                    <td>{{ event[4] }}s</td>
+                    {% if event[3] == "SYNCING": %}
+                       <td>{{ event[6] }}</td>
+                    {% else %}
+                       <td><a title="EventInfo" href="/events/{{ event[6] }}">{{ event[6] }}</a></td>
+                    {% endif %}
+                </tr>
+            {% endfor %}
+        </table>
+{% endblock %}
