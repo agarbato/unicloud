@@ -4,6 +4,7 @@ import sys
 import requests
 import socket
 from time import sleep
+from jinja2 import Environment, FileSystemLoader
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 from start_env import *
@@ -37,8 +38,8 @@ client_register_url = f"{api_url}/clients/register"
 share_info_url = f"{api_url}/shares/info/{server_share}/path"
 
 user_uid = int(user_uid)
-
 role = role.lower()
+env = Environment(loader=FileSystemLoader('templates'), trim_blocks=True, lstrip_blocks=True)
 
 
 def config_exist():
@@ -46,6 +47,10 @@ def config_exist():
      return False
   else:
      return True
+
+
+def render_template(template_filename, context):
+    return env.get_template(template_filename).render(context)
 
 
 def api_check():
@@ -103,48 +108,16 @@ def gen_key():
 
 def conf_supervisord():
   print("Creating Supervise Config")
-  ## COMMON CONFIG
-  with open(supervise_cfg, 'w') as svcfg:
-    svcfg.write("[unix_http_server]\n")
-    svcfg.write("file=/run/supervisord.sock\n")
-    svcfg.write("[supervisord]\n")
-    svcfg.write("user=root\n")
-    svcfg.write("nodaemon=true\n")
-    svcfg.write("[supervisorctl]\n")
-    svcfg.write("serverurl=unix:///run/supervisord.sock\n")
-    svcfg.write("[rpcinterface:supervisor]\n")
-    svcfg.write("supervisor.rpcinterface_factory = supervisor.rpcinterface:make_main_rpcinterface\n")
-  if role == "server":
-     # SERVER CONFIG
-     with open(supervise_cfg, 'a') as svcfg:
-       svcfg.write("[program:sshd]\n")
-       #SSH DEBUG
-       #svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config -E /data/log/sshlog" + nl)
-       svcfg.write("command = /usr/sbin/sshd -D -f /etc/sshd_config\n")
-       svcfg.write("redirect_stderr=true\n")
-       svcfg.write("[program:crond]\n")
-       svcfg.write(f"command=/usr/sbin/crond -f -L {log_dir}/crond.log\n")
-       svcfg.write("[program:nginx]\n")
-       svcfg.write("command=/usr/sbin/nginx -g 'daemon off';\n")
-       svcfg.write("[program:unicloud_app]\n")
-       svcfg.write(f"user={user}\n")
-       svcfg.write("directory=/usr/local/unicloud\n")
-       svcfg.write(f"command=/usr/bin/uwsgi --ini {uwsgi_ini}\n")
-  else:
-     # CLIENT CONFIG
-     with open(supervise_cfg, 'a') as svcfg:
-       svcfg.write("[program:unicloud]\n")
-       svcfg.write(f"user={user}\n")
-       svcfg.write("autorestart=true\n")
-       svcfg.write("startsec=0\n")
-       svcfg.write(f"directory={client_app_dir}\n")
-       svcfg.write("command = python3 main.py\n")
-       svcfg.write(f"stdout_logfile = {log_dir}/unicloud-supervise-std.log\n")
-       svcfg.write("stdout_logfile_maxbytes=10MB\n")
-       svcfg.write("stdout_logfile_backups=5\n")
-       svcfg.write(f"stderr_logfile = {log_dir}/unicloud-supervise-err.log\n")
-       svcfg.write("stderr_logfile_backups=5\n")
-       svcfg.write(f"environment=HOME='/data',USER='{user}'\n")
+  context = {
+      'role': role,
+      'log_dir': log_dir,
+      'uwsgi_ini': uwsgi_ini,
+      'user': user,
+      'client_app_dir': client_app_dir
+  }  
+  with open(supervise_cfg, "w") as f:
+    file = render_template('supervised.tpl.conf', context)
+    f.write(file)
 
 
 def start_supervisord():
@@ -174,33 +147,37 @@ def test_connection():
 
 def client_conf():
     print("Exporting environment variables to client app..")
-    with open(client_app_cfg, 'w') as cfg:
-      cfg.write(f"client_hostname='{client_hostname}'\n")
-      cfg.write(f"role='{role}'\n")
-      cfg.write(f"user='{user}'\n")
-      cfg.write(f"user_uid='{user_uid}'\n")
-      cfg.write(f"server_hostname='{server_hostname}'\n")
-      cfg.write(f"server_share='{server_share}'\n")
-      cfg.write(f"share_ignore='{share_ignore}'\n")
-      cfg.write(f"unison_params='{unison_params}'\n")
-      cfg.write(f"sync_interval='{sync_interval}'\n")
-      cfg.write(f"server_api_port='{server_api_port}'\n")
-      cfg.write(f"server_api_protocol='{server_api_protocol}'\n")
+    context = {
+        'client_hostname' : client_hostname,
+        'role': role,
+        'user': user,
+        'user_uid': user_uid,
+        'server_hostname': server_hostname,
+        'server_share': server_share,
+        'share_ignore': share_ignore,
+        'unison_params': unison_params,
+        'sync_interval': sync_interval,
+        'server_api_port': server_api_port,
+        'server_api_protocol': server_api_protocol
+    }
+    with open(client_app_cfg, 'w') as f:
+      file = render_template('clientconf.tpl.py', context)
+      f.write(file)
     print("Creating unison profile")
     share_path = get_share_path()
-    with open(unison_prf, 'w') as cfg:
-      cfg.write(f"root=ssh://{user}@{server_hostname}:{server_port}/{share_path}\n")
-      cfg.write(f"root={client_dest}\n")
-      cfg.write(f"clientHostName={client_hostname}\n")
-      cfg.write("batch = true\n")
-      cfg.write("auto = true\n")
-      cfg.write("prefer = newer\n")
-      cfg.write("log = false\n")
-      #cfg.write(f"logfile = {unison_log}\n")
-      for item in unison_params.split("|"):
-          cfg.write(f"{item}\n")
-      for item in share_ignore.split("|"):
-        cfg.write(f"ignore = Name {item}\n")
+    context = {
+        'user': user,
+        'server_hostname': server_hostname,
+        'server_port': server_port,
+        'share_path': share_path,
+        'client_hostname': client_hostname,
+        'client_dest': client_dest,
+        'unison_params': unison_params,
+        'share_ignore': share_ignore,
+    }
+    with open(unison_prf, 'w') as f:
+      file = render_template('unicloud.tpl.prf', context)
+      f.write(file)
 
 
 def client_register():
@@ -223,40 +200,33 @@ def get_share_path():
 
 def server_conf():
      print("Creating uwsgi app ini..")
-     with open(uwsgi_ini, 'w') as cfg:
-       cfg.write("[uwsgi]\n")
-       cfg.write("module = wsgi:app\n")
-       cfg.write("master = true\n")
-       cfg.write("processes = 5\n")
-       cfg.write("enable-threads = true\n")
-       cfg.write("socket = unicloud.sock\n")
-       cfg.write("chmod-socket = 664\n")
-       cfg.write(f"uid = {user_uid}\n")
-       cfg.write(f"gid = {user_uid}\n")
-       cfg.write("vacuum = true\n")
-       cfg.write("die-on-term = true\n")
-       cfg.write("log-reopen = true\n")
-       cfg.write("log-date = [%%Y:%%m:%%d %%H:%%M:%%S]\n")
-       cfg.write("req-logger = file:/data/log/reqlog\n")
-       cfg.write("logger = file:/data/log/errlog\n")
+     context = {'user_uid': user_uid}
+     with open(uwsgi_ini, 'w') as f:
+       file = render_template('unicloud.tpl.ini', context)
+       f.write(file)
+
      print("Exporting environment variable to server app")
-     with open(server_app_cfg, 'w') as cfg:
-       cfg.write(f"server_ui_username='{server_ui_username}'\n")
-       cfg.write(f"server_ui_password='{server_ui_password}'\n")
-       cfg.write(f"server_debug={server_debug}\n")
-       cfg.write(f"shares_path='{shares_path}'\n")
-       cfg.write(f"max_log_events='{max_log_events}'\n")
-       cfg.write(f"home_assistant={home_assistant}\n")
-       cfg.write(f"home_assistant_url='{home_assistant_url}'\n")
-       cfg.write(f"home_assistant_token='{home_assistant_token}'\n")
-       cfg.write(f"home_assistant_push_interval={int(home_assistant_push_interval)}")
+     context = {
+         'server_ui_username': server_ui_username,
+         'server_ui_password': server_ui_password,
+         'server_debug': server_debug,
+         'shares_path': shares_path,
+         'max_log_events': max_log_events,
+         'home_assistant': home_assistant,
+         'home_assistant_url': home_assistant_url,
+         'home_assistant_token': home_assistant_token,
+         'home_assistant_push_interval': int(home_assistant_push_interval)
+     }
+     with open(server_app_cfg, 'w') as f:
+       file = render_template('serverconf.tpl.py', context)
+       f.write(file)
+
      print("Configure Autobackup Cron..")
-     with open(backup_cron_file, 'w') as cfg:
-         cfg.write("#!/bin/bash\n")
-         cfg.write(f"dest_file={shares_path}/unicloud-backup/unicloud-backup-$(date +%Y%d%m).tgz\n")
-         cfg.write("tar czvf $dest_file /data/etc /data/ssh /data/unicloud.db /data/.ssh /data/.unison\n")
-         cfg.write(f"cd {shares_path}/unicloud-backup\n")
-         cfg.write(f"rm -f `ls -t | awk 'NR>7'`\n")
+     context = {'shares_path': shares_path}
+     with open(backup_cron_file, 'w') as f:
+         file = render_template('unicloud-backup.tpl', context)
+         f.write(file)
+
      st = os.stat(backup_cron_file)
      os.chmod(backup_cron_file, st.st_mode | stat.S_IEXEC)
      print("Set App Permission..")

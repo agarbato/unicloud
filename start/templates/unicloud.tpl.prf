@@ -1,0 +1,16 @@
+root=ssh://{{ user }}@{{ server_hostname }}:{{ server_port }}/{{ share_path }}
+root={{ client_dest }}
+clientHostName={{ client_hostname }}
+batch = true
+auto = true
+prefer = newer
+log = false
+{% set params_list = unison_params.split('|') %}
+{% for item in params_list %}
+{{ item }}
+{% endfor %}
+{% set ignore_list = share_ignore.split('|') %}
+{% for item in ignore_list %}
+ignore = Name {{ item }}
+{% endfor %}
+
