@@ -39,7 +39,7 @@ share_info_url = f"{api_url}/shares/info/{server_share}/path"
 
 user_uid = int(user_uid)
 role = role.lower()
-env = Environment(loader=FileSystemLoader('templates'))
+env = Environment(loader=FileSystemLoader('templates'), trim_blocks=True, lstrip_blocks=True)
 
 
 def config_exist():
@@ -48,8 +48,10 @@ def config_exist():
   else:
      return True
 
+
 def render_template(template_filename, context):
     return env.get_template(template_filename).render(context)
+
 
 def api_check():
   maxretry = 3
@@ -169,6 +171,7 @@ def client_conf():
         'server_port': server_port,
         'share_path': share_path,
         'client_hostname': client_hostname,
+        'client_dest': client_dest,
         'unison_params': unison_params,
         'share_ignore': share_ignore,
     }
@@ -223,6 +226,7 @@ def server_conf():
      with open(backup_cron_file, 'w') as f:
          file = render_template('unicloud-backup.tpl', context)
          f.write(file)
+
      st = os.stat(backup_cron_file)
      os.chmod(backup_cron_file, st.st_mode | stat.S_IEXEC)
      print("Set App Permission..")

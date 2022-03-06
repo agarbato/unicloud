@@ -13,3 +13,4 @@ log = false
 {% for item in ignore_list %}
 ignore = Name {{ item }}
 {% endfor %}
+

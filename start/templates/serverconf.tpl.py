@@ -7,3 +7,4 @@ home_assistant = {{ home_assistant }}
 home_assistant_url = '{{ home_assistant_url }}'
 home_assistant_token = '{{ home_assistant_token }}'
 home_assistant_push_interval = {{ home_assistant_push_interval }}
+
