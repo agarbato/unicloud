@@ -27,33 +27,7 @@ services:
       - type: bind
         source: ./local_tests/server/shares
         target: /shares
-  # CLIENT
-  test_unicloud_client:
-    image: agarbato1/unison-unicloud
-    environment:
-      - CLIENT_HOSTNAME=testing-client1
-      - ROLE=CLIENT
-      - USER=unison
-      - USER_UID=1000
-      - SERVER_HOSTNAME=unicloud_replica_server
-      - SERVER_PORT=22
-      - SERVER_SHARE=share1
-      - SHARE_IGNORE=.git*|.idea|.unison|.DS_Store
-      - API_HOSTNAME=api_server
-      - API_PROTOCOL=http
-      - API_PORT=80
-      - SYNC_INTERVAL=15
-    restart: on-failure
-    volumes:
-      - type: bind
-        source: ./local_tests/client
-        target: /data
-      - type: bind
-        source: ./local_tests/client/share
-        target: /data/share
-    networks:
-      unison:
-  # CLIENT
+  # REPLICA_SERVER
   test_unicloud_replica_server:
     image: agarbato1/unison-unicloud
     environment:
@@ -80,6 +54,51 @@ services:
       unison:
         aliases:
           - unicloud_replica_server
+  # CLIENT
+  test_unicloud_client:
+    image: agarbato1/unison-unicloud
+    environment:
+      - CLIENT_HOSTNAME=testing-client1
+      - ROLE=CLIENT
+      - USER=unison
+      - USER_UID=1000
+      - SERVER_HOSTNAME=unicloud_server
+      - SERVER_PORT=22
+      - SERVER_SHARE=share1
+      - SHARE_IGNORE=.git*|.idea|.unison|.DS_Store
+      - API_PROTOCOL=http
+      - API_PORT=80
+      - SYNC_INTERVAL=15
+    restart: on-failure
+    networks:
+      unison:
+  # CLIENT-TO-REPLICA-SERVER
+  test_unicloud_client_replica:
+    image: agarbato1/unison-unicloud
+    environment:
+      - CLIENT_HOSTNAME=testing-client1-2replica
+      - ROLE=CLIENT
+      - USER=unison
+      - USER_UID=1000
+      - SERVER_HOSTNAME=unicloud_replica_server
+      - SERVER_PORT=22
+      - SERVER_SHARE=share1
+      - SHARE_IGNORE=.git*|.idea|.unison|.DS_Store
+      - API_HOSTNAME=api_server
+      - API_PROTOCOL=http
+      - API_PORT=80
+      - SYNC_INTERVAL=15
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ./local_tests/client
+        target: /data
+      - type: bind
+        source: ./local_tests/client/share
+        target: /data/share
+    networks:
+      unison:
+
 networks:
   unison:
     driver: bridge

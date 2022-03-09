@@ -251,11 +251,16 @@ def server_conf():
      ShellCmd(f"sed -i 's/\/var\/log\/nginx\/access.log/\/data\/log\/access.log/g' /etc/nginx/nginx.conf")
 
 
-def exit_screen(status, error="None"):
+def exit_screen(status, error="None", role="None"):
     pass
     if status == "client_ok":
       print("========================================================================")
-      print("-=(: UniCloud Client started: Enjoy :)=-")
+      if role == "client":
+        print("-=(: UniCloud Client started: Enjoy :)=-")
+      elif role == "replica_server":
+        print("-=(: UniCloud Client [REPLICA SERVER] started: Enjoy :)=-")
+        print("")
+        print("SSH : On")
       print("")
       print(f"User: {user}")
       print(f"Sync server: {server_hostname}")
@@ -325,7 +330,7 @@ if role == "client" or role == "replica_server":
   conn = test_connection()
   if conn:
      client_conf(role)
-     exit_screen("client_ok")
+     exit_screen("client_ok", "None", role)
   else:
      exit_screen("client_ko")
 else:
