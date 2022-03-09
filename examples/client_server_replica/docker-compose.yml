@@ -22,10 +22,10 @@ services:
           - api_server
     volumes:
       - type: bind
-        source: ./local_tests/server
+        source: ./server
         target: /data
       - type: bind
-        source: ./local_tests/server/shares
+        source: ./server/shares
         target: /shares
   # REPLICA_SERVER
   test_unicloud_replica_server:
@@ -45,10 +45,10 @@ services:
     restart: on-failure
     volumes:
       - type: bind
-        source: ./local_tests/replica_server
+        source: ./replica_server
         target: /data
       - type: bind
-        source: ./local_tests/replica_server/share
+        source: ./replica_server/share
         target: /data/share
     networks:
       unison:
@@ -72,10 +72,10 @@ services:
     restart: on-failure
     volumes:
       - type: bind
-        source: ./local_tests/client
+        source: ./client
         target: /data
       - type: bind
-        source: ./local_tests/client/share
+        source: ./client/share
         target: /data/share
     networks:
       unison:
@@ -98,10 +98,10 @@ services:
     restart: on-failure
     volumes:
       - type: bind
-        source: ./local_tests/client_replica
+        source: ./client_replica
         target: /data
       - type: bind
-        source: ./local_tests/client_replica/share
+        source: ./client_replica/share
         target: /data/share
     networks:
       unison:
