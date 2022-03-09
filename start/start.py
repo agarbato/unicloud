@@ -25,6 +25,7 @@ supervise_cfg = f"{etc_dir}/supervised.conf"
 supervise_log = f"{log_dir}/supervisord.log"
 unison_dir = f"{root_dir}/.unison"
 unison_prf = f"{unison_dir}/unicloud.prf"
+unison_replica_ssh_prf = f"{unison_dir}/unicloud_replica_ssh_keys.prf"
 unison_log = f"{log_dir}/unicloud.log"
 server_app_dir = "/usr/local/unicloud"
 client_app_dir = "/usr/local/unicloud_client"
@@ -32,7 +33,7 @@ client_app_cfg = f"{client_app_dir}/conf.py"
 server_app_cfg = f"{server_app_dir}/conf.py"
 uwsgi_ini = f"{server_app_dir}/unicloud.ini"
 
-api_url = f"{server_api_protocol}://{server_hostname}:{server_api_port}"
+api_url = f"{server_api_protocol}://{server_api_hostname}:{server_api_port}"
 status_url = f"{api_url}/status"
 client_register_url = f"{api_url}/clients/register"
 share_info_url = f"{api_url}/shares/info/{server_share}/path"
@@ -96,11 +97,11 @@ def add_user():
 
 def gen_key():
   print(f"Generating {role} ssh keys")
-  if role == "server":
+  if role == "server" or role == "replica_server":
     ShellCmd("ssh-keygen -A ; mv /etc/ssh /data/")
     # fix possible wrong permission on home folder that prevents ssh to work properly
     ShellCmd("chmod g-w /data")
-  else:
+  if role == "client" or role == "replica_server":
     cmd = ShellCmd(f"su -c \"ssh-keygen -f /data/.ssh/id_rsa -t rsa -N '' \" {user}")
     print(cmd)
     ShellCmd(f"chown -R {user}:{user} {ssh_dir}")
@@ -145,10 +146,10 @@ def test_connection():
         return False
 
 
-def client_conf():
+def client_conf(role):
     print("Exporting environment variables to client app..")
     context = {
-        'client_hostname' : client_hostname,
+        'client_hostname': client_hostname,
         'role': role,
         'user': user,
         'user_uid': user_uid,
@@ -157,6 +158,7 @@ def client_conf():
         'share_ignore': share_ignore,
         'unison_params': unison_params,
         'sync_interval': sync_interval,
+        'server_api_hostname': server_api_hostname,
         'server_api_port': server_api_port,
         'server_api_protocol': server_api_protocol
     }
@@ -178,6 +180,16 @@ def client_conf():
     with open(unison_prf, 'w') as f:
       file = render_template('unicloud.tpl.prf', context)
       f.write(file)
+    if role == "replica_server":
+        context = {
+            'user': user,
+            'server_hostname': server_hostname,
+            'server_port': server_port,
+            'client_hostname': client_hostname
+        }
+        with open(unison_replica_ssh_prf, 'w') as f:
+            file = render_template('unicloud-authkey.tpl.prf', context)
+            f.write(file)
 
 
 def client_register():
@@ -195,7 +207,10 @@ def get_share_path():
      exit_screen("share_404")
    else:
      print(f"OK {server_share} is defined on server")
-     return r.text
+     if server_api_hostname != server_hostname:
+        return replica_server_source
+     else:
+        return r.text
 
 
 def server_conf():
@@ -252,7 +267,7 @@ def exit_screen(status, error="None"):
       print(f"Connection to Master server {server_hostname} is not working")
       print("If this is a new client ACTIVATE first on server UI:")
       print(f"UI URL : {api_url}/clients")
-      print(f"{server_api_protocol}://{server_hostname}:{server_api_port}")
+      print(f"{server_api_protocol}://{server_api_hostname}:{server_api_port}")
       print("Exit container now..")
       print("========================================================================")
       sys.exit(255)
@@ -293,7 +308,7 @@ if not config_status:
   gen_key()
   conf_supervisord()
   ShellCmd(f"touch {donefile}")
-  if role == "client":
+  if role == "client" or role == "replica_server":
     print(api_check())
     #print (get_share_path())
     client_register()
@@ -302,14 +317,14 @@ else:
   print("Initializing environment..")
   add_user()
   conf_supervisord()
-if role == "client":
+if role == "client" or role == "replica_server":
   cache_api_hostname()
   print(api_check())
   #get_share_path()
   #client_register()
   conn = test_connection()
   if conn:
-     client_conf()
+     client_conf(role)
      exit_screen("client_ok")
   else:
      exit_screen("client_ko")
