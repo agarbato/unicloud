@@ -93,32 +93,32 @@ This is very convenient especially if you have to sync a large amount of data.
 
 |Name  |Default  |Scope  | Description
 |--|--|--|--|
-| TZ |Europe/Rome  |Client/Server|Timezone
-| SERVER_UI_USERNAME |admin  |Server|Ui Basic Auth Username
-| SERVER_UI_PASSWORD |None  |Server|Ui Basic Auth Password
-| SHARES_PATH |/shares  |Server|Server Shares volume
-| FILEMANAGER_ROOT |/shares  |Server|Root Folder for File Manager
-| MAX_LOG_EVENTS |1000  |Server|Max Sync Logs to keep
-| HOME_ASSISTANT|False|Server|Enable Home assistant integration
-| HOME_ASSISTANT_URL|None|Server|Home Assistant URL
-| HOME_ASSISTANT_PUSH_INTERVAL|60|Server|Home Assistant Push Interval
-| HOME_ASSISTANT_TOKEN|None|Server|Home assistant Long Live token
+| TZ |Europe/Rome  |[Client][Replica_Server][Server]|Timezone
+| SERVER_UI_USERNAME |admin  |[Server]|Ui Basic Auth Username
+| SERVER_UI_PASSWORD |None  |[Server]|Ui Basic Auth Password
+| SHARES_PATH |/shares  |[Server]|Server Shares volume
+| FILEMANAGER_ROOT |/shares  |[Server]|Root Folder for File Manager
+| MAX_LOG_EVENTS |1000  |[Server]|Max Sync Logs to keep
+| HOME_ASSISTANT|False|[Server]|Enable Home assistant integration
+| HOME_ASSISTANT_URL|None|[Server]|Home Assistant URL
+| HOME_ASSISTANT_PUSH_INTERVAL|60|[Server]|Home Assistant Push Interval
+| HOME_ASSISTANT_TOKEN|None|[Server]|Home assistant Long Live token
 | CLIENT_HOSTNAME |$HOSTNAME  |[Client][Replica_Server]|Client Hostname (see notes below)
 | CLIENT_DEST |/data/share  |[Client][Replica_Server]|Path of synced folder
 | SERVER_HOSTNAME |None  |[Client][Replica_Server]|Server Hostname
 | SERVER_PORT |22  |[Client][Replica_Server]|Server SSH Port to connect
 | SERVER_SHARE |None  |[Client][Replica_Server]|Server Share Name (not path!!)
 | REPLICA_SERVER_SOURCE|/data/share|[Client]|Server share Path (used only by a client connected to a replica server)
-| API_HOSTNAME |SERVER_HOSTNAME|Client/Replica_Server|Api Hostname, Default to Server Hostname
-| API_PROTOCOL |http  |Client/Replica_Server|Api protocol: [http\|https]
-| API_PORT |80  |Client/Replica_Server|Api port
-| SHARE_IGNORE |.unison  |Client/Replica_Server|Ignore files from share, eg : .git\|.idea\|.DS_Store
-| UNISON_PARAMS |None  |Client/Replica_Server|Additional unison profile params eg : owner=false\|perms=0\|dontchmod=true
-| SYNC_INTERVAL |300  |Client/Replica_Server|Sync Interval seconds
-| ROLE |client  |Client/Replica_Server/Server|Sync Role: [client\|server\|replica_server]
-| USER |unicloud  |Client/Replica_Server/Server|Username for running app
-| USER_UID |1000  |Client/Replica_Server/Server|Userid for running app
-| USER_GIDS |None |Client/Replica_Server/Server|Additional group ids for user, comma separated (eg: 33,14) 
+| API_HOSTNAME |SERVER_HOSTNAME|[Client][Replica_Server]|Api Hostname, Default to Server Hostname
+| API_PROTOCOL |http  |[Client][Replica_Server]|Api protocol: [http\|https]
+| API_PORT |80  |[Client][Replica_Server]|Api port
+| SHARE_IGNORE |.unison  |[Client][Replica_Server]|Ignore files from share, eg : .git\|.idea\|.DS_Store
+| UNISON_PARAMS |None  |[Client][Replica_Server]|Additional unison profile params eg : owner=false\|perms=0\|dontchmod=true
+| SYNC_INTERVAL |300  |[Client][Replica_Server]|Sync Interval seconds
+| ROLE |client  |[Client][Replica_Server][Server]|Sync Role: [client\|server\|replica_server]
+| USER |unicloud  |[Client][Replica_Server][Server]|Username for running app
+| USER_UID |1000  |[Client][Replica_Server][Server]|Userid for running app
+| USER_GIDS |None |[Client][Replica_Server][Server]|Additional group ids for user, comma separated (eg: 33,14) 
 
 <br>
 
