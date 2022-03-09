@@ -1,0 +1,113 @@
+version: '3.3'
+services:
+  # SERVER
+  test_unicloud_server:
+    image: agarbato1/unison-unicloud
+    ports:
+      - "2222:22"
+      - "5001:80"
+    environment:
+      - USER=unison
+      - USER_UID=1000
+      # - USER_GIDS=33,14
+      - SERVER_HOSTNAME=unicloud_testing_server
+      - SERVER_UI_USERNAME=admin
+      - SERVER_UI_PASSWORD=abcd12345
+      - SERVER_DEBUG=True
+      - ROLE=SERVER
+    networks:
+      unison:
+        aliases:
+          - unicloud_server
+          - api_server
+    volumes:
+      - type: bind
+        source: ./local_tests/server
+        target: /data
+      - type: bind
+        source: ./local_tests/server/shares
+        target: /shares
+  # REPLICA_SERVER
+  test_unicloud_replica_server:
+    image: agarbato1/unison-unicloud
+    environment:
+      - CLIENT_HOSTNAME=testing-replica-server
+      - ROLE=REPLICA_SERVER
+      - USER=unison
+      - USER_UID=1000
+      - SERVER_HOSTNAME=unicloud_server
+      - SERVER_PORT=22
+      - SERVER_SHARE=share1
+      - SHARE_IGNORE=.git*|.idea|.unison|.DS_Store
+      - API_PROTOCOL=http
+      - API_PORT=80
+      - SYNC_INTERVAL=60
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ./local_tests/replica_server
+        target: /data
+      - type: bind
+        source: ./local_tests/replica_server/share
+        target: /data/share
+    networks:
+      unison:
+        aliases:
+          - unicloud_replica_server
+  # CLIENT
+  test_unicloud_client:
+    image: agarbato1/unison-unicloud
+    environment:
+      - CLIENT_HOSTNAME=testing-client1
+      - ROLE=CLIENT
+      - USER=unison
+      - USER_UID=1000
+      - SERVER_HOSTNAME=unicloud_server
+      - SERVER_PORT=22
+      - SERVER_SHARE=share1
+      - SHARE_IGNORE=.git*|.idea|.unison|.DS_Store
+      - API_PROTOCOL=http
+      - API_PORT=80
+      - SYNC_INTERVAL=60
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ./local_tests/client
+        target: /data
+      - type: bind
+        source: ./local_tests/client/share
+        target: /data/share
+    networks:
+      unison:
+  # CLIENT-TO-REPLICA-SERVER
+  test_unicloud_client_replica:
+    image: agarbato1/unison-unicloud
+    environment:
+      - CLIENT_HOSTNAME=testing-client1-2replica
+      - ROLE=CLIENT
+      - USER=unison
+      - USER_UID=1000
+      - SERVER_HOSTNAME=unicloud_replica_server
+      - SERVER_PORT=22
+      - SERVER_SHARE=share1
+      - SHARE_IGNORE=.git*|.idea|.unison|.DS_Store
+      - API_HOSTNAME=api_server # Don't forget this if the client is connecting to a replica server!
+      - API_PROTOCOL=http
+      - API_PORT=80
+      - SYNC_INTERVAL=120
+    restart: on-failure
+    volumes:
+      - type: bind
+        source: ./local_tests/client_replica
+        target: /data
+      - type: bind
+        source: ./local_tests/client_replica/share
+        target: /data/share
+    networks:
+      unison:
+
+networks:
+  unison:
+    driver: bridge
+    ipam:
+      driver: default

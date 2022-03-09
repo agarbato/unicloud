@@ -29,6 +29,16 @@ class Log(object):
      self.header()
      self.close()
 
+   def ssh_keys_sync_start(self):
+       self.header()
+       self.logger.info(f"{strftime(self.format)} Unicloud Sync SSH Key Started")
+
+   def ssh_keys_sync_end(self, result):
+       self.result = result
+       self.logger.info(f"{strftime(self.format)} Unicloud Sync SSH Key End, Result {self.result}")
+       self.header()
+       self.close()
+
    def client_error(self, result):
      self.result = result
      self.logger.info(f"{strftime(self.format)} {result}")

@@ -2,6 +2,7 @@
 .idea
 docker-compose-local.yml
 /local_tests/*/*/*
+/examples/*/*/*/*
 unicloud.db
 !.git*
 !cleanup.sh

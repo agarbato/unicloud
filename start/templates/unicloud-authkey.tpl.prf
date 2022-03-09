@@ -1,0 +1,9 @@
+root=ssh://{{ user }}@{{ server_hostname }}:{{ server_port }}//data/.ssh/unicloud_authorized_keys
+root=/data/.ssh/unicloud_authorized_keys
+clientHostName={{ client_hostname }}
+batch = true
+auto = true
+prefer = newer
+log = false
+
+

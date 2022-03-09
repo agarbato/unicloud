@@ -9,12 +9,14 @@ from log import Log
 root_dir = "/data"
 log_dir = f"{root_dir}/log"
 logfile = f"{log_dir}/client.log"
+logfile_auth_keys = f"{log_dir}/sync_auth_keys.log"
+logfile_replica = f"{log_dir}/replica_server.log"
 lockfile = f"{log_dir}/client.lock"
 command = "unison unicloud"
 
-start_sync_url = f"{server_api_protocol}://{server_hostname}:{server_api_port}/sync/start/{client_hostname}"
-end_sync_url = f"{server_api_protocol}://{server_hostname}:{server_api_port}/sync/end/{client_hostname}"
-share_exist_url = f"{server_api_protocol}://{server_hostname}:{server_api_port}/shares/exist"
+start_sync_url = f"{server_api_protocol}://{server_api_hostname}:{server_api_port}/sync/start/{client_hostname}"
+end_sync_url = f"{server_api_protocol}://{server_api_hostname}:{server_api_port}/sync/end/{client_hostname}"
+share_exist_url = f"{server_api_protocol}://{server_api_hostname}:{server_api_port}/shares/exist"
 
 
 def get_ts():
@@ -84,7 +86,21 @@ def scheduler_sync():
     end_sync(result, start_ts, log)
   log.close()
 
+
+def sync_auth_keys():
+  log = Log(logfile_auth_keys)
+  log.ssh_keys_sync_start()
+  command = "unison unicloud_replica_ssh_keys"
+  run = ShellCmd(command)
+  if run.getrc() == 0:
+    result = "OK"
+  else:
+    result = "KO"
+  log.ssh_keys_sync_end(result)
+
+
 # THE SCHEDULER
+
 
 scheduler = BlockingScheduler({
   'apscheduler.jobstores.default': {
@@ -94,6 +110,8 @@ scheduler = BlockingScheduler({
 })
 
 scheduler.add_job(func=scheduler_sync, id="unison_sync_job", trigger="interval", seconds=int(sync_interval), next_run_time=datetime.now(), replace_existing=True)
+if role == "replica_server":
+  scheduler.add_job(func=sync_auth_keys, id="unison_sync_auth_key", trigger="interval", seconds=60, next_run_time=datetime.now(), replace_existing=True)
 scheduler.start()
 
 
