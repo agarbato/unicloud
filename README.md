@@ -46,7 +46,7 @@ Open your browser [here](http://127.0.0.1:5001/) passing credentials specified o
 
 Wait a few seconds and the app should be up and running.   
 On the homepage you will see that there are no registered clients and no shares defined.   
-Before you can start to sync, two steps are required:       
+Before you can start to sync, **two mandatory steps are required**:       
   
  - Activate the client from the [clients](http://127.0.0.1:5001/clients) page.
  - Create your first share and name it `share1` from the [shares](http://127.0.0.1:5001/shares/mgt) management page    
