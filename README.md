@@ -2,25 +2,27 @@
 
 <img src="./docs/screenshots/homepage.jpg" width="90%" height="90%"/>
 
-This started as a personal project a while ago but I decided to make it public. I've been using unison for a long time to keep folders in sync between different computers.   
-I decided to create this project to add a web interface to unison,  monitor all sync and make it simpler to add a new replica of my files and run unison on docker.  
+This started as a personal project a while ago but I decided to make it public. I've been using unison for a long time to keep folders in sync between different computers.  
+I decided to create this project to add a web interface to unison, monitor all sync and make it simpler to add a new replica of my files and run unison on docker.  
 In this way when I have a spare computer where I can run docker I just add another replica to my important files.      
-The tool provide an automatic way to manage your clients through a registration process and give you a nice overview of sync events and status.     
+The tool provides an automatic way to manage your clients through a registration process and give you a nice overview of sync events and status.     
 Clients can sync from a central server or from a local replica to save bandwidth.    
-This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style.      
-I'm planning to integrate bootstrap in the project as soon as I will have some free time.    
+
+This was one of my first python projects and I have zero to little experience with html, css and graphic design. I would be happy if someone 
+is willing to contribute to redesign the interface using bootstrap.        
 
 <br>
 
 # Features
 
+ - You host, you build you run! 
  - Fast and simple way to add replicas to your files thanks to docker.
  - Central API Server to register clients, record logs, manage shares
  - Bi-directional Sync thanks to [Unison](https://www.cis.upenn.edu/~bcpierce/unison/)
- - Sync from local replica server and save bandwidth syncing from the nearest replica.
+ - Sync from local replica servers and save bandwidth syncing from the nearest replica.
  - Log sync events filtered by status, changes etc.
- - Simple file Manager for shares
- - Sync Threshold warning
+ - Simple file Manager to browse your files
+ - Sync Threshold Warning
  - Small memory usage and image footprint, thanks to [Alpine Linux](https://alpinelinux.org/)
  - Home Assistant Integration
 
@@ -60,6 +62,19 @@ If you want to start again fresh, simple run :
 
 <br>
 
+## Troubleshooting
+
+Since the startup process prints everything on standard output run
+
+    docker-compose logs 
+
+to find useful information.  
+Don't switch role between client and server as you could end up in a messy situation.   
+Try to start fresh deleting data folder to create the initial configuration.  
+Check example folder where you can find some working docker-compose files.   
+If you need help create an issue providing logs and your docker-compose, I'll be happy to help.   
+Windows WSL clients are known to have some issue with SSH, check older issue on the repo.   
+
 ## Server, Client and replica server   
 
 To run unicloud you need at least a server and a client.   
@@ -88,12 +103,12 @@ This is very convenient especially if you have to sync a large amount of data.
 | HOME_ASSISTANT_URL|None|Server|Home Assistant URL
 | HOME_ASSISTANT_PUSH_INTERVAL|60|Server|Home Assistant Push Interval
 | HOME_ASSISTANT_TOKEN|None|Server|Home assistant Long Live token
-| CLIENT_HOSTNAME |$HOSTNAME  |Client/Replica_Server|Client Hostname (see notes below)
-| CLIENT_DEST |/data/share  |Client/Replica_Server|Path of synced folder
-| SERVER_HOSTNAME |None  |Client/Replica_Server|Server Hostname
-| SERVER_PORT |22  |Client/Replica_Server|Server SSH Port to connect
-| SERVER_SHARE |None  |Client/Replica_Server|Server Share Name (not path!!)
-| REPLICA_SERVER_SOURCE|/data/share|Client|Server share Path (used only by a client connected to a replica server)
+| CLIENT_HOSTNAME |$HOSTNAME  |[Client][Replica_Server]|Client Hostname (see notes below)
+| CLIENT_DEST |/data/share  |[Client][Replica_Server]|Path of synced folder
+| SERVER_HOSTNAME |None  |[Client][Replica_Server]|Server Hostname
+| SERVER_PORT |22  |[Client][Replica_Server]|Server SSH Port to connect
+| SERVER_SHARE |None  |[Client][Replica_Server]|Server Share Name (not path!!)
+| REPLICA_SERVER_SOURCE|/data/share|[Client]|Server share Path (used only by a client connected to a replica server)
 | API_HOSTNAME |SERVER_HOSTNAME|Client/Replica_Server|Api Hostname, Default to Server Hostname
 | API_PROTOCOL |http  |Client/Replica_Server|Api protocol: [http\|https]
 | API_PORT |80  |Client/Replica_Server|Api port
@@ -105,17 +120,6 @@ This is very convenient especially if you have to sync a large amount of data.
 | USER_UID |1000  |Client/Replica_Server/Server|Userid for running app
 | USER_GIDS |None |Client/Replica_Server/Server|Additional group ids for user, comma separated (eg: 33,14) 
 
-<br>
-
-## Sync
-
-If you never used unison you should have a look first at [unison doc](https://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html) to better understand how it works and why it's better than other sync tools.
-It's been around since 1998 but it's still an active project and people still rely on it to secure their files.      
-When you add a large share folder unison needs to index first your files. The first sync could take a while but this is totally normal, once the index is in place 
-you will notice the next syncs will be very fast even for a very large folder.   
-
-The default sync interval is 300s (5mins).  I suggest to avoid a sync interval smaller than 60seconds.       
-  
 <br>
 
 ## Volumes and persistence
@@ -140,6 +144,15 @@ Shares root folder can be changed with *SHARES_PATH* env variable.
 
 Nothing prevents you to mount additional volumes on the server and configure them as shares on a different path, just remember to configure correctly *USERID* variable so that the application can read files.   
 Shares root is also used by the file manager as root folder so if you mount on a different location you won't be able to browse files.   
+
+<br>
+
+## Sync
+
+If you never used unison you should have a look first at [unison doc](https://www.cis.upenn.edu/~bcpierce/unison/download/releases/stable/unison-manual.html) to better understand how it works and why it's better than other sync tools.
+It's been around since 1998 but it's still an active project and people still rely on it to secure their files.      
+When you add a large share folder unison needs to index first your files. The first sync could take a while but this is totally normal, once the index is in place
+you will notice the next syncs will be very fast even for a very large folder.
 
 <br>
 
