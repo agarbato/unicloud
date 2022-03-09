@@ -29,7 +29,8 @@ I'm planning to integrate bootstrap in the project as soon as I will have some f
 ## Quick start
 
 Quick start for lazy readers :-)   
-Follow below instructions or check examples folder where you can find some "ready to go" docker-compose.  
+Follow below instructions or check examples folder where you can find some "ready to go" docker-compose.     
+
 **Make sure default userid(1000) is a valid id with read/write permission on your system, if not change it on the docker-compose.yml**   
 <br>Before you can start using this tool you might want to test locally with [docker-compose](https://docs.docker.com/compose/install/).   
 Simply run :
