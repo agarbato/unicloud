@@ -1,9 +1,15 @@
 #!/bin/sh
 docker-compose stop
 docker-compose rm
-rm -rf client server replica_server
-mkdir -p client/share
-mkdir -p replica_server/share
+rm -rf client client_replica server replica_server
+
+echo "Create dirs.."
+mkdir -p client/share client_replica/share  replica_server/share server/shares
+
+echo "Create some random file to test sync"
 echo "Test file client" > client/share/client_test.txt
-mkdir -p server/shares
-touch client/.gitkeep client/share/.gitkeep server/.gitkeep server/shares/.gitkeep  replica_server/.gitkeep replica_server/share/.gitkeep
+echo "Test file client" > client_replica/share/client_test.txt
+
+touch client/.gitkeep client/share/.gitkeep
+touch client_replica/.gitkeep client_replica/share/.gitkeep
+touch server/.gitkeep server/shares/.gitkeep replica_server/.gitkeep replica_server/share/.gitkeep
