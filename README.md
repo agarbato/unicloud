@@ -2,15 +2,13 @@
 
 <img src="./docs/screenshots/homepage.jpg" width="90%" height="90%"/>
 
-This started as a personal project a while ago but I decided to make it public. I've been using unison for a long time to keep folders in sync between different computers.
-I guess I never totally trusted public clouds to host my files.  At first, like I guess everybody using unison, I just added a few cron jobs on my machines and ran unison   
-every *n* minutes but I felt that I had lost control of it, especially when for some reasons the sync was broken.   
+This started as a personal project a while ago but I decided to make it public. I've been using unison for a long time to keep folders in sync between different computers.   
 I decided to create this project to add a web interface to unison,  monitor all sync and make it simpler to add a new replica of my files and run unison on docker.  
 In this way when I have a spare computer where I can run docker I just add another replica to my important files.      
-The tool provide an automatic way to manage your clients through a registration process and give you a nice overview of sync events and status.   
-This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style.   
+The tool provide an automatic way to manage your clients through a registration process and give you a nice overview of sync events and status.     
+Clients can sync from a central server or from a local replica to save bandwidth.    
+This was one of my first python projects and I have zero to little experience with html, css and graphic design so you might find the result maybe a little old style.      
 I'm planning to integrate bootstrap in the project as soon as I will have some free time.    
-
 
 <br>
 
@@ -19,6 +17,7 @@ I'm planning to integrate bootstrap in the project as soon as I will have some f
  - Fast and simple way to add replicas to your files thanks to docker.
  - Central API Server to register clients, record logs, manage shares
  - Bi-directional Sync thanks to [Unison](https://www.cis.upenn.edu/~bcpierce/unison/)
+ - Sync from local replica server and save bandwidth syncing from the nearest replica.
  - Log sync events filtered by status, changes etc.
  - Simple file Manager for shares
  - Sync Threshold warning
@@ -29,6 +28,8 @@ I'm planning to integrate bootstrap in the project as soon as I will have some f
 
 ## Quick start
 
+Quick start for lazy readers :-)   
+Follow below instructions or check examples folder where you can find some "ready to go" docker-compose.  
 **Make sure default userid(1000) is a valid id with read/write permission on your system, if not change it on the docker-compose.yml**   
 <br>Before you can start using this tool you might want to test locally with [docker-compose](https://docs.docker.com/compose/install/).   
 Simply run :
@@ -58,6 +59,20 @@ If you want to start again fresh, simple run :
 
 <br>
 
+## Server, Client and replica server   
+
+To run unicloud you need at least a server and a client.   
+Server manage share files and act as API Server to register clients and sync events.  
+Synchronization is done with unison through SSH.  
+Since unison allows bi-directional sync an additional role exist on unicloud, a *replica server*   
+A replica server is nothing more than a simple client which also expose SSH server allowing other clients to sync from it.     
+Once a client is registered its ssh pub key is stored on server and propagated to all replica servers.  
+A client can hence connect to any replica server.  
+A typical scenario where you might need a replica server is where your central server is remote on internet and you have several clients on your local network.     
+Instead of uploading/downloading multiple times from/to your local network you might have a lan server (always on) and some occasional clients that sync from your local server.     
+This is very convenient especially if you have to sync a large amount of data.  
+
+
 ## Environment variables
 
 |Name  |Default  |Scope  | Description
@@ -77,6 +92,7 @@ If you want to start again fresh, simple run :
 | SERVER_HOSTNAME |None  |Client/Replica_Server|Server Hostname
 | SERVER_PORT |22  |Client/Replica_Server|Server SSH Port to connect
 | SERVER_SHARE |None  |Client/Replica_Server|Server Share Name (not path!!)
+| REPLICA_SERVER_SOURCE|/data/share|Client|Server share Path (used only by a client connected to a replica server)
 | API_HOSTNAME |SERVER_HOSTNAME|Client/Replica_Server|Api Hostname, Default to Server Hostname
 | API_PROTOCOL |http  |Client/Replica_Server|Api protocol: [http\|https]
 | API_PORT |80  |Client/Replica_Server|Api port
