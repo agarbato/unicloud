@@ -28,12 +28,12 @@ is willing to contribute to redesign the interface using bootstrap.
 
 <br>
 
-## Quick start
+## Quick start   
 
 Quick start for lazy readers :-)   
 Follow below instructions or check examples folder where you can find some "ready to go" docker-compose.     
 
-**App needs persistent volumes, check docker-compose example and documentation below about volumes**
+**App needs persistent volumes, check docker-compose example and documentation below about volumes**  
 **Make sure default userid(1000) is a valid id with read/write permission on your system, if not change it on the docker-compose.yml**   
 
 <br>Before you can start using this tool you might want to test locally with [docker-compose](https://docs.docker.com/compose/install/).   
@@ -52,6 +52,7 @@ Before you can start to sync, **two mandatory steps are required**:
  - Create your first share and name it `share1` from the [shares](http://127.0.0.1:5001/shares/mgt) management page    
 
 **The share name must match the one defined on the docker-compose by the `SERVER_SHARE` env variable.**   
+
 The client will keep restarting until registration is completed and the share is defined, check docker-compose logs for troubleshooting.       
 <br>When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH.   
 <br>Follow messages on the homepage to complete all the required steps.   
