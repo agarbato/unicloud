@@ -38,7 +38,7 @@ services:
       - SERVER_PORT=22
       - SERVER_SHARE=share1
       - SHARE_IGNORE=.git*|.idea|.unison|.DS_Store
-      - UNISON_PARAMS=sshargs = -o KexAlgorithms=ecdh-sha2-nistp521 -o ServerAliveInterval=60 -o ServerAliveCountMax=10
+     # - UNISON_PARAMS=sshargs = -o KexAlgorithms=ecdh-sha2-nistp521 -o ServerAliveInterval=60 -o ServerAliveCountMax=10
       - API_PROTOCOL=http
       - API_PORT=80
       - SYNC_INTERVAL=120
@@ -50,6 +50,8 @@ services:
       - type: bind
         source: ./local_tests/client/share
         target: /data/share
+    depends_on:
+      - test_unicloud_server
     networks:
       unison:
 
