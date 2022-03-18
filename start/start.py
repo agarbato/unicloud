@@ -142,8 +142,8 @@ def test_connection():
         print("SSH Connection OK")
         return True
     else:
-        print(f"SSH Connection KO, exit code {cmd.getrc()}")
-        return False
+        print(f"SSH Connection KO, exit code {cmd.getrc()}, output {cmd}")
+        return cmd
 
 
 def client_conf(role):
