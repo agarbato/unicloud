@@ -111,6 +111,7 @@ def conf_supervisord():
   print("Creating Supervise Config")
   context = {
       'role': role,
+      'server_debug': server_debug,
       'log_dir': log_dir,
       'uwsgi_ini': uwsgi_ini,
       'user': user,

@@ -37,6 +37,7 @@ RUN mkdir -p /var/run/sshd /run/nginx /usr/local/unicloud
 ADD app/    /usr/local/unicloud/
 ADD app_client/    /usr/local/unicloud_client/
 ADD conf/sshd/sshd_config_alpine /etc/sshd_config
+ADD conf/sshd/sshd_config_alpine_debug /etc/sshd_config_debug
 RUN mv /etc/nginx/http.d/default.conf /etc/nginx/http.d/default.conf.install
 RUN rm -f /etc/logrotate.d/*
 ADD conf/nginx/default.conf /etc/nginx/http.d/default.conf
