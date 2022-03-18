@@ -34,7 +34,7 @@ Quick start for lazy readers :-)
 Follow below instructions or check examples folder where you can find some "ready to go" docker-compose.     
 
 **App needs persistent volumes, check docker-compose example and documentation below about volumes**  
-**Make sure default userid(1000) is a valid id with read/write permission on your system, if not change it on the docker-compose.yml**   
+**Make sure default userid(1000) is a valid id with read/write permission on your system and persistent volumes, if not change it on the docker-compose.yml**   
 
 <br>Before you can start using this tool you might want to test locally with [docker-compose](https://docs.docker.com/compose/install/).   
 Simply run :
