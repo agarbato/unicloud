@@ -106,7 +106,6 @@ def gen_key():
     print(cmd)
     ShellCmd(f"chown -R {user}:{user} {ssh_dir}")
 
-
 def conf_supervisord():
   print("Creating Supervise Config")
   context = {
@@ -336,13 +335,12 @@ def exit_screen(status, error="None", role="None"):
 
 config_status = config_exist()
 check_user_uid()
-add_user()
-check_write_permission(user, root_dir)
+
 
 if not config_status:
   print("Config not found, first run? Initializing..")
-  #add_user()
-  #check_write_permission(user, root_dir)
+  add_user()
+  check_write_permission(user, root_dir)
   create_dirs()
   gen_key()
   conf_supervisord()
@@ -354,8 +352,8 @@ if not config_status:
 else:
   print("Persistent config found..")
   print("Initializing environment..")
-  #add_user()
-  #check_write_permission(user, root_dir)
+  add_user()
+  check_write_permission(user, root_dir)
   conf_supervisord()
 if role == "client" or role == "replica_server":
   cache_api_hostname()
