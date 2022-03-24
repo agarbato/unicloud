@@ -88,8 +88,7 @@ def add_user():
   ShellCmd(f"groupadd -g {user_uid} {user}")
   ShellCmd(f"useradd -u {user_uid} -g {user_uid} -s /bin/bash -c 'unison sync user' -d /data {user}")
   print("Fix dirs permission")
-  cmd = ShellCmd(f"chown -R {user}:{user} {ssh_dir} {etc_dir} {unison_dir} {log_dir}")
-  print(cmd)
+  ShellCmd(f"chown -R {user}:{user} {ssh_dir} {etc_dir} {unison_dir} {log_dir}")
   ShellCmd(f"sed -i s/{user}:!/{user}:*/g /etc/shadow")
   if user_gids:
     print(f"Adding user to groups {user_gids}")
@@ -342,9 +341,9 @@ check_user_uid()
 
 if not config_status:
   print("Config not found, first run? Initializing..")
-  check_write_permission(user, root_dir)
   create_dirs()
   add_user()
+  check_write_permission(user, root_dir)
   gen_key()
   conf_supervisord()
   ShellCmd(f"touch {donefile}")
