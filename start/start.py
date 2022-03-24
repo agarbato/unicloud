@@ -87,7 +87,9 @@ def add_user():
   print("Adding Unicloud user")
   ShellCmd(f"groupadd -g {user_uid} {user}")
   ShellCmd(f"useradd -u {user_uid} -g {user_uid} -s /bin/bash -c 'unison sync user' -d /data {user}")
-  ShellCmd(f"chown -R {user}:{user} {ssh_dir} {etc_dir} {unison_dir} {log_dir}")
+  print("Fix dirs permission")
+  cmd = ShellCmd(f"chown -R {user}:{user} {ssh_dir} {etc_dir} {unison_dir} {log_dir}")
+  print(cmd)
   ShellCmd(f"sed -i s/{user}:!/{user}:*/g /etc/shadow")
   if user_gids:
     print(f"Adding user to groups {user_gids}")
@@ -105,6 +107,7 @@ def gen_key():
     cmd = ShellCmd(f"su -c \"ssh-keygen -f /data/.ssh/id_rsa -t rsa -N '' \" {user}")
     print(cmd)
     ShellCmd(f"chown -R {user}:{user} {ssh_dir}")
+
 
 def conf_supervisord():
   print("Creating Supervise Config")
@@ -369,4 +372,3 @@ else:
   exit_screen("server_ok")
 
 start_supervisord()
-
