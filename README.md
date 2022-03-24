@@ -36,8 +36,7 @@ Please read volume persistent requirements:
 
 - **To work properly app need persistent volumes, check docker-compose example and documentation below about volumes for more details.**
 - **Do not run docker/docker-compose as root, app will exit!!**
-  **As docker best practice, add your user to docker group instead with   
-  `usermod -a -G docker <your_username>`**
+  **As docker best practice, add your user to docker group instead with `usermod -a -G docker <your_username>`**
 
 - **Make sure default userid(1000) is a  system valid id with read/write permission on persistent volumes, if not change `USER_UID` env var on docker-compose.yml**
   **On linux run command `id` to get your user id**
