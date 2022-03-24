@@ -127,6 +127,12 @@ def start_supervisord():
     ShellCmd(f"/usr/bin/supervisord --configuration {supervise_cfg} --logfile {supervise_log}")
 
 
+def check_user_uid():
+    print(f"Check User uid")
+    if user_uid == 0:
+        exit_screen("error_uid")
+
+
 def check_write_permission(user, directory):
     print(f"Check User {user} has write permission to {directory} folder")
     cmd = ShellCmd(f"su -c 'touch {root_dir}/.testrw' {user}")
@@ -311,6 +317,12 @@ def exit_screen(status, error="None", role="None"):
       print("Exit container now..")
       print("========================================================================")
       sys.exit(500)
+    elif status == "error_uid":
+      print("========================================================================")
+      print(f"Running as user_uid {user_uid} (root) is not supported")
+      print("Exit container now..")
+      print("========================================================================")
+      sys.exit(500)
     elif status == "share_404":
       print("========================================================================")
       print(f"Share {server_share} is not defined on server")
@@ -323,6 +335,7 @@ def exit_screen(status, error="None", role="None"):
 
 
 config_status = config_exist()
+check_user_uid()
 add_user()
 check_write_permission(user, root_dir)
 
