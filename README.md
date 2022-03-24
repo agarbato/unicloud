@@ -29,7 +29,7 @@ is willing to contribute to redesign the interface using bootstrap.
 <br>  
 
 ## Quick start
-Quick start for lazy readers :-)     
+
 Follow below instructions or check examples folder where you can find some "ready to go" docker-compose.
 
 Please read volume persistent requirements:
@@ -45,18 +45,22 @@ Please read volume persistent requirements:
 <br>Before you can start using this tool you might want to test locally with [docker-compose](https://docs.docker.com/compose/install/).     
 Simply run :
 
-docker-compose up -d  
+
+     docker-compose up -d  
+
 Docker will pull the image from the docker hub and start the project.     
 Open your browser [here](http://127.0.0.1:5001/) passing credentials specified on the docker-compose file.
 
 Wait a few seconds and the app should be up and running.     
-On the homepage you will see that there are no registered clients and no shares defined.     
-Before you can start to sync, **two mandatory steps are required**:
+On the homepage you will see that there are no registered clients and no shares defined.
+
+**Before you can start to sync, **two mandatory steps are required**:**
 
 - Activate the client from the [clients](http://127.0.0.1:5001/clients) page.
 - Create your first share and name it `share1` from the [shares](http://127.0.0.1:5001/shares/mgt) management page
 
-**The share name must match the one defined on the docker-compose by the `SERVER_SHARE` env variable.**   
+**The share name must match the one defined on the docker-compose by the `SERVER_SHARE` env variable.  [SERVER_SHARE] is not server path, is one of the share name defined on server**
+
 The client will keep restarting until registration is completed and the share is defined, check docker-compose logs for troubleshooting.         
 <br>When you activate a client the ssh pub key will be automatically added to the authorized_keys and unison will be able to sync using SSH.     
 <br>Follow messages on the homepage to complete all the required steps.     
@@ -71,15 +75,23 @@ If you want to start again fresh, simple run :
 
 Startup process prints everything on standard output, run
 
-docker-compose logs   
-to find useful information.    
-Don't switch role between client and server as you could end up in a messy situation.     
-Try to start fresh deleting data folder to create the initial configuration.    
-Do not try to reinvent the wheel, Check example folder where you can find some working docker-compose files.     
-If you need help create an issue providing logs and your docker-compose, I'll be happy to help.     
-Windows WSL clients are known to have some issue with SSH, check older issue on the repo.     
-If you can get your client to sync make sure SSH is running, a clear message will inform you if it's not.    
-On server /data/log you'll find ssh debug logs among others logs.
+     docker-compose logs   
+
+to find some useful information.
+
+- Don't switch role between client and server as you could end up in a
+  misconfiguration situation.
+- Try to start fresh deleting data folder to create the initial
+  configuration.
+- Do not try to reinvent the wheel, check example folder where you can
+  find some working docker-compose files.
+- If you can't get your client to sync make sure SSH is running, a clear
+  message will inform you if it's not.    On server /data/log you'll
+  find ssh debug logs among others logs.
+- Windows WSL clients are known to have some issue with SSH, check
+  older issue on the repo.
+
+If you need help create an issue providing logs and your docker-compose, I'll be happy to help.
 
 ## Server, Client and replica server
 To run unicloud you need at least a server and a client.     
@@ -128,6 +140,9 @@ This is very convenient especially if you have to sync a large amount of data.
 
 ## Volumes and persistence
 
+**Make sure default userid(1000) is a  system valid id with read/write permission on persistent volumes, if not change `USER_UID` env var on docker-compose.yml**
+**On linux run command `id` to get your user id**
+
 Client needs two volumes, one to persist its configuration and unison profiles/db files and one for the actual share folder to keep in sync.
 
 - [**/data**] Unison and system configuration.
@@ -140,10 +155,11 @@ Server also need two volumes:
 
 It's best to have a single shares root folder volume and then assign, mount and configure all shares as sub-folders.
 
-\+ [**/shares**] &ensp;&ensp;&ensp;[**/shares/share1**] &ensp;&ensp;&ensp;[**/shares/share2**]     
+\+ [**/shares**] &ensp;&ensp;&ensp;[**/shares/share1**] &ensp;&ensp;&ensp;[**/shares/share2**]
+
 Shares root folder can be changed with *SHARES_PATH* env variable.
 
-Nothing prevents you to mount additional volumes on the server and configure them as shares on a different path, just remember to configure correctly *USERID* variable so that the application can read files.     
+Nothing prevents you to mount additional volumes on the server and configure them as shares on a different path, just remember to configure correctly *USER_UID* variable so that the application can read files.     
 Shares root is also used by the file manager as root folder so if you mount on a different location you won't be able to browse files.
 
 <br>  
