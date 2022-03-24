@@ -339,9 +339,9 @@ check_user_uid()
 
 if not config_status:
   print("Config not found, first run? Initializing..")
-  add_user()
   check_write_permission(user, root_dir)
   create_dirs()
+  add_user()
   gen_key()
   conf_supervisord()
   ShellCmd(f"touch {donefile}")
