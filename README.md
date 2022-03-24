@@ -34,7 +34,10 @@ Quick start for lazy readers :-)
 Follow below instructions or check examples folder where you can find some "ready to go" docker-compose.     
 
 **App needs persistent volumes, check docker-compose example and documentation below about volumes**  
-**Make sure default userid(1000) is a valid id with read/write permission on your system and persistent volumes, if not change it on the docker-compose.yml**   
+**Do not run docker/docker-compose as root, app will exit!!**  
+**As docker best practice, add your user to docker group instead with usermod -a -G docker <your_username>**  
+**Make sure default userid(1000) is a valid id with read/write permission on your system and persistent volumes, if not change it on the docker-compose.yml**      
+**On linux run command *id* to know your user id**    
 
 <br>Before you can start using this tool you might want to test locally with [docker-compose](https://docs.docker.com/compose/install/).   
 Simply run :
@@ -67,16 +70,18 @@ If you want to start again fresh, simple run :
 
 ## Troubleshooting
 
-Since the startup process prints everything on standard output run
+Startup process prints everything on standard output, run
 
     docker-compose logs 
 
 to find useful information.  
 Don't switch role between client and server as you could end up in a messy situation.   
 Try to start fresh deleting data folder to create the initial configuration.  
-Check example folder where you can find some working docker-compose files.   
+Do not try to reinvent the wheel, Check example folder where you can find some working docker-compose files.   
 If you need help create an issue providing logs and your docker-compose, I'll be happy to help.   
 Windows WSL clients are known to have some issue with SSH, check older issue on the repo.   
+If you can get your client to sync make sure SSH is running, a clear message will inform you if it's not.  
+On server /data/log you'll find ssh debug logs among others logs.  
 
 ## Server, Client and replica server   
 
