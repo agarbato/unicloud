@@ -78,6 +78,15 @@
 {#           </span>#}
            </div></td></tr>
           <tr><td>
+          {% if sshd_status %}
+             <span style='color: {{ green }};'>
+             SSHD : Running<br>
+             </span>
+          {% else %}
+              <span style='color: {{ red }};'>
+             SSHD : Stopped, Check /data/log/sshd_log !!!<br>
+             </span>
+          {% endif %}
           {% if unicloud_stats['toregister'] > 0 %}
              <span style='color: {{ red }};'>
              Found {{ unicloud_stats['toregister'] }} client/s to register, go to <a title="Clients" href="/clients">clients</a> page to complete registration<br>

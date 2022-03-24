@@ -10,7 +10,7 @@ from urllib.error import URLError, HTTPError
 from start_env import *
 from shell_cmd import ShellCmd
 
-## LOCAL SETTINGS
+# LOCAL SETTINGS
 
 root_dir = "/data"
 etc_dir = f"{root_dir}/etc"
@@ -124,9 +124,16 @@ def conf_supervisord():
 
 def start_supervisord():
     #print ("Starting Supervisord")
-    cmd = ShellCmd(f"/usr/bin/supervisord --configuration {supervise_cfg} --logfile {supervise_log}")
-    print(cmd.getrc())
-    print(cmd)
+    ShellCmd(f"/usr/bin/supervisord --configuration {supervise_cfg} --logfile {supervise_log}")
+
+
+def check_write_permission(user, directory):
+    print(f"Check User {user} has write permission to {directory} folder")
+    cmd = ShellCmd(f"su -c 'touch {root_dir}/.testrw' {user}")
+    if not cmd.getrc() == 0:
+        exit_screen("error_wrong_permission")
+    else:
+        print("Permission OK!")
 
 
 def cache_api_hostname():
@@ -281,11 +288,22 @@ def exit_screen(status, error="None", role="None"):
       print("========================================================================")
       print("-=(: UniCloud Server started: Enjoy :)=-")
       print("")
-      print("SSH : On")
-      print("API : On")
+      print("SSH : On - Running")
+      print("API : On - Running")
       print(f"Port: {server_port}")
       print(f"User: {user}")
       print("========================================================================")
+    elif status == "error_wrong_permission":
+      print("========================================================================")
+      print(f"-=(: [{role}] Unicloud Permission ERROR")
+      print(f"User {user} with uid {user_uid} can't write to mounted volume {root_dir}!")
+      print(f"Make sure {user_uid} is a valid id on your system")
+      print(f"On Linux run 'id' command to know your userid")
+      print("Do not run docker/docker-compose as root")
+      print(f"Change USER_UID env var according.")
+      print("Exit container now..")
+      print("========================================================================")
+      sys.exit(500)
     elif status == "api_error":
       print("========================================================================")
       print(f"Error contacting API at {status_url}")
@@ -305,12 +323,14 @@ def exit_screen(status, error="None", role="None"):
 
 
 config_status = config_exist()
-
+add_user()
+check_write_permission(user, root_dir)
 
 if not config_status:
   print("Config not found, first run? Initializing..")
+  #add_user()
+  #check_write_permission(user, root_dir)
   create_dirs()
-  add_user()
   gen_key()
   conf_supervisord()
   ShellCmd(f"touch {donefile}")
@@ -321,13 +341,12 @@ if not config_status:
 else:
   print("Persistent config found..")
   print("Initializing environment..")
-  add_user()
+  #add_user()
+  #check_write_permission(user, root_dir)
   conf_supervisord()
 if role == "client" or role == "replica_server":
   cache_api_hostname()
   print(api_check())
-  #get_share_path()
-  #client_register()
   conn = test_connection()
   if conn:
      client_conf(role)
@@ -339,3 +358,4 @@ else:
   exit_screen("server_ok")
 
 start_supervisord()
+
