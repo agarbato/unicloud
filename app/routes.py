@@ -11,6 +11,7 @@ from events import Event, event_form
 from homestats import *
 from apscheduler.schedulers.background import BackgroundScheduler
 from scheduler_tasks import *
+from pysupervisor import pysupervisor_sshd_status
 from time import strftime
 from conf import *
 
@@ -109,10 +110,12 @@ def _jinja2_filter_get_share_path(share):
 @app.route("/", methods=['GET'])
 @basic_auth.required
 def home():
+    sshd_status = pysupervisor_sshd_status()
     sys_stats = homestats_sys(startTime)
     unicloud_stats = homestats_unicloud()
     runtime_stats = homestats_runtime()
-    return render_template("index.html", sys_stats=sys_stats, unicloud_stats=unicloud_stats, runtime_stats=runtime_stats)
+    return render_template("index.html", sys_stats=sys_stats, unicloud_stats=unicloud_stats,
+                           runtime_stats=runtime_stats, sshd_status=sshd_status)
 
 # DOC #
 
