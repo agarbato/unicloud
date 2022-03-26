@@ -240,6 +240,7 @@ def server_conf():
          'server_ui_username': server_ui_username,
          'server_ui_password': server_ui_password,
          'server_debug': server_debug,
+         'filemanager_root': filemanager_root,
          'shares_path': shares_path,
          'max_log_events': max_log_events,
          'home_assistant': home_assistant,

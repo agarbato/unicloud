@@ -23,7 +23,7 @@ startTime = time.time()
 
 init_db()
 app = Flask(__name__, static_url_path='/static')
-files_index = AutoIndex(app, shares_path, add_url_rules=False)
+files_index = AutoIndex(app, filemanager_root, add_url_rules=False)
 api = Api(app)
 
 if server_debug:
