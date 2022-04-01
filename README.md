@@ -10,9 +10,7 @@ Clients can sync from a central server or from a local replica to save bandwidth
 
 This was one of my first python projects and I have zero to little experience with html, css and graphic design. I would be happy if someone   
 is willing to contribute to redesign the interface using bootstrap.
-
-<br>  
-
+<br>
 # Demo
 
 Live demo [here](https://unicloud-demo.duckdns.org/)  
