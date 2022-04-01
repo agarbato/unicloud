@@ -247,30 +247,36 @@ def client_process():
     ssh_key = request.form.get('ssh_key')
     share = request.form.get('share')
     register_type = "ui"
-    if name is not None or ssh_key is not None:
-       client = ClientMgt(name)
-       if client.exist()[0] > 0:
-           result = "Error Client %s already exist" % name
-           rc = 500
-       else:
-           result = "\n".join(client.add(ssh_key, authkeyfile, register_type, share))
-           rc = 200
-       return render_template("client_mgt_result.html", result=result), rc
+    if server_demo_mode:
+        return render_template("client_mgt_result_demo.html"), 200
+    else:
+        if name is not None or ssh_key is not None:
+           client = ClientMgt(name)
+           if client.exist()[0] > 0:
+               result = "Error Client %s already exist" % name
+               rc = 500
+           else:
+               result = "\n".join(client.add(ssh_key, authkeyfile, register_type, share))
+               rc = 200
+           return render_template("client_mgt_result.html", result=result), rc
 
 
 @app.route("/clients/del/process", methods=['POST'])
 @basic_auth.required
 def del_process():
     name = request.form.get('del_name')
-    if name is not None:
-       client = ClientMgt(name)
-       print (client.exist()[0])
-       if client.exist()[0] == 0:
-           result = "Client %s does not exist" % name
-       else:
-           client.remove(authkeyfile)
-           result = "Client %s removed successfully" % name
-       return render_template("client_mgt_result.html", result=result), 200
+    if server_demo_mode:
+        return render_template("client_mgt_result_demo.html"), 200
+    else:
+        if name is not None:
+           client = ClientMgt(name)
+           print(client.exist()[0])
+           if client.exist()[0] == 0:
+               result = "Client %s does not exist" % name
+           else:
+               client.remove(authkeyfile)
+               result = "Client %s removed successfully" % name
+           return render_template("client_mgt_result.html", result=result), 200
 
 
 @app.route("/clients/activate/process", methods=['POST'])
@@ -359,19 +365,22 @@ def share_add_process():
     path = request.form.get('path')
     description = request.form.get('description')
     create = request.form.get('create')
-    if name is not None or path is not None or description is not None:
-       share = ShareMgt(name)
-       result = share.add(path, description, create)
-       #print (result)
-       if result is not True:
-           result = "Error, share %s or path %s already exist" % (name, path)
-           rc = 500
-       else:
-           result = "Share %s added successfully<br>Path: %s" % ( name, path)
-           rc = 200
+    if server_demo_mode:
+        return render_template("share_mgt_result_demo.html"), 200
     else:
-       result = "Please Fill all the fields in the form..."
-    return render_template("share_mgt_result.html", result=result), rc
+        if name is not None or path is not None or description is not None:
+           share = ShareMgt(name)
+           result = share.add(path, description, create)
+           #print (result)
+           if result is not True:
+               result = "Error, share %s or path %s already exist" % (name, path)
+               rc = 500
+           else:
+               result = "Share %s added successfully<br>Path: %s" % ( name, path)
+               rc = 200
+        else:
+           result = "Please Fill all the fields in the form..."
+        return render_template("share_mgt_result.html", result=result), rc
 
 
 @app.route("/shares/del/process", methods=['POST'])
@@ -381,17 +390,20 @@ def share_del_process():
     s = ShareMgt(name)
     path = s.info(info="path")
     delete_folder = request.form.get('delete_folder')
-    result = s.delete(path, delete_folder)
-    if result is not True:
-       result = f"Error, Path {path} does not exist or share not present"
-       rc = 500
+    if server_demo_mode:
+        return render_template("share_mgt_result_demo.html"), 200
     else:
-       if delete_folder != "Yes":
-          result = f"Share {name} Removed successfully<br>Existing Files on Path: {path} were not removed"
-       else:
-          result = f"Share {name} Removed successfully<br>All Files on Path: {path} removed"
-       rc = 200
-    return render_template("share_mgt_result.html", result=result), rc
+        result = s.delete(path, delete_folder)
+        if result is not True:
+           result = f"Error, Path {path} does not exist or share not present"
+           rc = 500
+        else:
+           if delete_folder != "Yes":
+              result = f"Share {name} Removed successfully<br>Existing Files on Path: {path} were not removed"
+           else:
+              result = f"Share {name} Removed successfully<br>All Files on Path: {path} removed"
+           rc = 200
+        return render_template("share_mgt_result.html", result=result), rc
 
 
 @app.route("/shares/getsize/<name>/process", methods=['POST'])

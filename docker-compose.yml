@@ -50,8 +50,6 @@ services:
       - type: bind
         source: ./local_tests/client/share
         target: /data/share
-    depends_on:
-      - test_unicloud_server
     networks:
       unison:
 
