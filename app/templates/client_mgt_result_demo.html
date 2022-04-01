@@ -1,0 +1,11 @@
+{% extends "layout.html" %}
+{% set active_page = "clients" %}
+{% block title %}{{ result }}{% endblock %}
+{% block content %}
+<p> Not allowed on demo mode</p>
+<p> Redirect to Clients in 5secs.. </p>
+<meta http-equiv="refresh" content="5;url=/clients" />
+{% endblock %}
+
+
+

@@ -240,6 +240,7 @@ def server_conf():
          'server_ui_username': server_ui_username,
          'server_ui_password': server_ui_password,
          'server_debug': server_debug,
+         'server_demo_mode': server_demo_mode,
          'filemanager_root': filemanager_root,
          'shares_path': shares_path,
          'max_log_events': max_log_events,
