@@ -15,7 +15,7 @@ class ShellCmd(object):
                                stdout=subprocess.PIPE,
                                stderr=subprocess.STDOUT)
         stdout, stderr = out.communicate()
-        self.output = stdout.decode()[:-1]
+        self.output = stdout.decode(errors='replace')[:-1]
         self.rc = out.returncode
         self.pid = out.pid
         # print (self.output)
