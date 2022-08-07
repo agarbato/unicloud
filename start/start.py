@@ -161,7 +161,8 @@ def test_connection():
         return cmd
 
 def remove_lock():
-    command = " if [ -f lck* ] ; then rm -f lck* ; fi"
+    print("Check for lock files from previous interrupted sync")
+    command = "if [ -f lck* ] ; then rm -f lck* ; fi"
     ShellCmd(command)
 
 def client_conf(role):
