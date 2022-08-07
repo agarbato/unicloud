@@ -114,6 +114,7 @@ def scheduler_tasks_purge_logs(app):
 
 
 def scheduler_tasks_remove_locks(directory):
+    print(f"{strftime(time_format)} - Scheduled task: Remove Lock files")
     now = time.time()
     olderthreshold = 7200
     files_in_directory = os.listdir(directory)
