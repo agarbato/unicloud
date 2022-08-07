@@ -369,8 +369,8 @@ if role == "client" or role == "replica_server":
   conn = test_connection()
   if conn:
      client_conf(role)
-     exit_screen("client_ok", "None", role)
      remove_lock()
+     exit_screen("client_ok", "None", role)
   else:
      exit_screen("client_ko")
 else:
