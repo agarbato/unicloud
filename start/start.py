@@ -161,6 +161,12 @@ def test_connection():
         return cmd
 
 
+def remove_lock():
+    print("Check for lock files from previous interrupted sync")
+    command = f"if [ -f {unison_dir}/lk* ] ; then rm -f {unison_dir}/lk* ; fi ; echo $?"
+    ShellCmd(command)
+
+
 def client_conf(role):
     print("Exporting environment variables to client app..")
     context = {
@@ -365,6 +371,7 @@ if role == "client" or role == "replica_server":
   conn = test_connection()
   if conn:
      client_conf(role)
+     remove_lock()
      exit_screen("client_ok", "None", role)
   else:
      exit_screen("client_ko")
