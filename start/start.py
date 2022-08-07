@@ -160,6 +160,9 @@ def test_connection():
         print(f"SSH Connection KO, exit code {cmd.getrc()}, output {cmd}")
         return cmd
 
+def remove_lock():
+    command = " if [ -f lck* ] ; then rm -f lck* ; fi"
+    ShellCmd(command)
 
 def client_conf(role):
     print("Exporting environment variables to client app..")
@@ -366,6 +369,7 @@ if role == "client" or role == "replica_server":
   if conn:
      client_conf(role)
      exit_screen("client_ok", "None", role)
+     remove_lock()
   else:
      exit_screen("client_ko")
 else:
