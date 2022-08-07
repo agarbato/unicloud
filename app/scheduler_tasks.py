@@ -123,4 +123,4 @@ def scheduler_tasks_remove_locks(directory):
         filestamp = os.stat(os.path.join(directory, file)).st_mtime
         filecompare = now - olderthreshold
         if filestamp < filecompare:
-            os.remove(file)
+            os.remove(f"{directory/}file")
