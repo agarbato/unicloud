@@ -28,7 +28,7 @@ services:
         target: /shares
   # CLIENT
   test_unicloud_client:
-    image: agarbato1/unison-unicloud:dev
+    image: agarbato1/unison-unicloud
     environment:
       - CLIENT_HOSTNAME=testing-client1
       - ROLE=CLIENT
