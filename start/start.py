@@ -162,7 +162,7 @@ def test_connection():
 
 def remove_lock():
     print("Check for lock files from previous interrupted sync")
-    command = f"if [ -f {unison_dir}/lk* ] ; then rm -f {unison_dir/}lck* ; fi ; echo $?"
+    command = f"if [ -f {unison_dir}/lk* ] ; then rm -f {unison_dir}/lck* ; fi ; echo $?"
     ShellCmd(command)
 
 def client_conf(role):
