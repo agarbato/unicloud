@@ -1,5 +1,6 @@
 import time
 import json
+import os
 from homestats import *
 from client_mgt import ClientMgt
 from share_mgt import ShareMgt
@@ -111,3 +112,14 @@ def scheduler_tasks_purge_logs(app):
         else:
             print("Not reached max log events yet : %d" % int(max_log_events))
 
+
+def scheduler_tasks_remove_locks(directory):
+    now = time.time()
+    olderthreshold = 7200
+    files_in_directory = os.listdir(directory)
+    filtered_files = [file for file in files_in_directory if file.startswith("lk")]
+    for file in filtered_files:
+        filestamp = os.stat(os.path.join(directory, file)).st_mtime
+        filecompare = now - olderthreshold
+        if filestamp < filecompare:
+            os.remove(file)

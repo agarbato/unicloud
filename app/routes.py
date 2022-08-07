@@ -49,6 +49,7 @@ if home_assistant:
     scheduler.add_job(func=scheduler_tasks_update_home_assistant_shares, trigger="interval", seconds=home_assistant_push_interval, args=(app,))
 scheduler.add_job(func=scheduler_tasks_share_update_size, trigger="interval", hours=6, args=(app,))
 scheduler.add_job(func=scheduler_tasks_purge_logs, trigger="interval", hours=12, args=(app,))
+scheduler.add_job(func=scheduler_tasks_remove_locks, trigger="interval", minutes=15, args=(f"{root_dir}/.unison",))
 
 scheduler.start()
 
