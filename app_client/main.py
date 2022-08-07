@@ -1,5 +1,6 @@
 import time
 import requests
+import os
 from conf import *
 from apscheduler.schedulers.background import BlockingScheduler
 from datetime import datetime
@@ -73,7 +74,15 @@ def end_sync(result, start_ts, log):
   log.header()
 
 
+def remove_lock(directory):
+  files_in_directory = os.listdir(directory)
+  filtered_files = [file for file in files_in_directory if file.startswith("lk")]
+  for file in filtered_files:
+    os.remove(f"{directory}/{file}")
+
+
 def scheduler_sync():
+  remove_lock("root_dir/.unison")
   log = Log(logfile)
   start_ts = get_ts()
   result = start_sync(log, start_ts)
