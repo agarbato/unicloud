@@ -82,7 +82,7 @@ def remove_lock(directory):
 
 
 def scheduler_sync():
-  remove_lock("root_dir/.unison")
+  remove_lock(f"{root_dir}/.unison")
   log = Log(logfile)
   start_ts = get_ts()
   result = start_sync(log, start_ts)
