@@ -154,8 +154,10 @@ def status():
 @app.route("/clients", methods=['GET'])
 @basic_auth.required
 def clients():
+    orderby = request.args.get('orderby', 'id')
+    order = request.args.get('order', 'asc')
     client = ClientMgt("all-clients-page")
-    res = client.list_clients_page()
+    res = client.list_clients_page(orderby, order)
     #print (res)
     return render_template("clients.html", clients=res)
 

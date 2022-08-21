@@ -151,3 +151,13 @@
     background-color: #4CAF50;
     color: white;
 }
+
+a.navlink:link {
+    color: white;
+    text-decoration: none;
+}
+
+a.navlink:visited {
+    color: white;
+    text-decoration: none;
+}
