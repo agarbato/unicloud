@@ -182,8 +182,10 @@ class ClientMgt(object):
         clientlist = query_db(query)
         return clientlist
 
-    def list_clients_page(self):
-        query = ("SELECT name,status,joindate,threshold,ssh_key,lastseen from clients;")
+    def list_clients_page(self, orderby="id"):
+        self.orderby = orderby
+        query = (f"SELECT name,status,joindate,threshold,ssh_key,lastseen from clients order by {orderby};")
+        print(query)
         res = query_db(query)
         return res
 
