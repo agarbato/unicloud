@@ -24,8 +24,8 @@ def scheduler_tasks_update_sync_status(app):
                 c_status.update_sync_status(sync_status)
 
 
-def scheduler_tasks_home_assistant_post(sensor_name, data):
-    url = f"{home_assistant_url}/api/states/sensor.unicloud_{sensor_name}"
+def scheduler_tasks_home_assistant_post(sensor_name, data, domain="sensor"):
+    url = f"{home_assistant_url}/api/states/{domain}.unicloud_{sensor_name}"
     headers = {
         'Authorization': f'Bearer {home_assistant_token}',
         'content-type': 'application/json',
@@ -67,6 +67,12 @@ def scheduler_tasks_update_home_assistant_clients(app):
                                    "Sync_Ok": client_info['ok'], "Sync_Ko": client_info['ko'],
                                    "Sync_Threshold": client_info['threshold'], "Sync_Total": client_info['total']}}
             scheduler_tasks_home_assistant_post(sensor_name, data)
+            if sync_status == "In Sync":
+                binary_status = "off"
+            else:
+                binary_status = "on"
+            data = {f"state": binary_status, "attributes": {"device_class": "problem"}}
+            scheduler_tasks_home_assistant_post(sensor_name, data, "binary_sensor")
 
 
 def scheduler_tasks_update_home_assistant_shares(app):

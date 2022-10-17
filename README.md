@@ -43,7 +43,7 @@ Please read volume persistent requirements:
 - **Do not run docker/docker-compose as root, app will exit!!**
   **As docker best practice, add your user to docker group instead with `usermod -a -G docker <your_username>`**
 
-- **Make sure default userid(1000) is a  system valid id with read/write permission on persistent volumes, if not change `USER_UID` env var on docker-compose.yml**
+- **Make sure default userid(1000) is a  system valid id with read/write permission on persistent volumes, if not change `USER_UID` env var on docker-compose.yml**   
   **On linux run command `id` to get your user id**
 
 <br>Before you can start using this tool you might want to test locally with [docker-compose](https://docs.docker.com/compose/install/).     
@@ -216,9 +216,9 @@ You can decide how many events logs you want to keep with *MAX_LOG_EVENTS* var, 
 Why? Just because it's cool :-)     
 I use home assistant for a lot of stuff so I wanted to have unicloud as entities on HA.     
 I didn't have time so far to create a real integration, maybe I will consider it for the future if useful.     
-As for now client/server/shares infos are published at a custom interval (HOME_ASSITANT_PUSH_INTERVAL).     
+As for now client/server/shares infos are published at a custom interval (HOME_ASSITANT_PUSH_INTERVAL).  
+Clients have also binary_sensors for replica sync status (InSync/OutOfSync).    
 Configuration is simple, make sure you have a token and  fillup all 4 HOME_ASSISTANT_* ENV VARS.
-
 
 This is the result on home assistant.
 
