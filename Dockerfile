@@ -14,7 +14,7 @@ RUN apk add --no-cache \
     supervisor \
     mutt \
     shadow \
-    sqlite \ 
+    sqlite \
     pwgen \
     nginx \
     fcgiwrap \
@@ -27,9 +27,8 @@ RUN apk add --no-cache \
     g++ \
     py3-pip \
     logrotate \
-    unison \
     python3-dev \
-    #&& apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/v3.13/community unison==2.48.15_p4-r1 \
+    && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community unison==2.53.0-r0  \
     && pip3 install flask flask_restful uwsgi requests  flask-basicAuth flask-autoindex psutil apscheduler sqlalchemy \
     && apk del libc-dev linux-headers gcc g++ python3-dev
 
