@@ -1,4 +1,5 @@
-<a href="https://www.buymeacoffee.com/agarbato" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a># Unicloud, a unison ui web interface and a smart file syncronizer :-)
+<a href="https://www.buymeacoffee.com/agarbato" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-green.png" alt="Buy Me A Coffee" height="41" width="174"></a>   
+# Unicloud, a unison ui web interface and a smart file syncronizer :-)
 
 <img src="./docs/screenshots/homepage.jpg" width="90%" height="90%"/>  
 
