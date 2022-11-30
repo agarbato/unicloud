@@ -1,4 +1,4 @@
-FROM alpine:3.16.0
+FROM alpine:3.17.0
 
 MAINTAINER andrea.garbato@gmail.com
 
@@ -28,7 +28,8 @@ RUN apk add --no-cache \
     py3-pip \
     logrotate \
     python3-dev \
-    && apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community unison==2.53.0-r0  \
+    unison \
+    #&& apk add --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community unison==2.53.0-r0  \
     && pip3 install flask flask_restful uwsgi requests  flask-basicAuth flask-autoindex psutil apscheduler sqlalchemy \
     && apk del libc-dev linux-headers gcc g++ python3-dev
 
