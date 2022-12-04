@@ -1,5 +1,5 @@
 import subprocess
-
+import time
 
 class ShellCmd(object):
     output = {}
@@ -23,6 +23,8 @@ class ShellCmd(object):
         # print (self.output)
         for line in self.output.split('\n'):
             self.output_lines.append(line)
+        while out.poll() is None:
+            time.sleep(0.5)
 
     def __repr__(self):
         return self.output
